@@ -1,0 +1,61 @@
+
+{% load static %}
+
+% load bootstrap5 %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PV Tracking</title>
+    
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" /> -->
+<!-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> -->
+    <style>
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>PV System Tracking Setup</h1>
+    <p>To get your latitude and longitude, click on the map below where your PV system is located.</p>
+    
+    <div id="map"></div>
+    
+    <form method="POST" >
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" id="id_lat" name="lat">
+        <input type="hidden" id="id_lon" name="lon">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script>
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: {lat: 0, lng: 0}
+        });
+
+        google.maps.event.addListener(map, 'click', function(event) {
+            document.getElementById('id_lat').value = event.latLng.lat();
+            document.getElementById('id_lon').value = event.latLng.lng();
+        });
+    }
+    var map = L.map('map', {
+    center: [51.505, -0.09],
+    zoom: 13
+    });
+</script>
+
+</body>
+</html>

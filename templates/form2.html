@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PV Tracking</title>
+</head>
+<body>
+    <h1>PV Tracking</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Track PV</button>
+    </form>
+
+    {% if result %}
+        <h2>Tracking Results</h2>
+        <pre>{{ result|safe }}</pre>
+    {% endif %}
+</body>
+</html>
