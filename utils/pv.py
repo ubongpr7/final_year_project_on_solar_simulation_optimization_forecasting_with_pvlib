@@ -11,6 +11,7 @@ def get_lat_long(address):
     if g.ok:
         print(g.latlng)
         return g.latlng
+    print('failed g')
     return None
 
 def interactive_map(address='Ondo'):
