@@ -26,11 +26,18 @@
     <form hx-post="{% url 'map' %}" hx-target="#map-container" hx-trigger="submit" hx-swap="post">
         {% csrf_token %}
         {% bootstrap_form form %}
-      
-        <select id="address-select" name="address" size="5" 
-                onchange="document.getElementById('id_address').value=this.value;">
-            <!-- Options will be populated here -->
-        </select>
+        <div class="mb-3">
+            <select id="address-select" name="address" class="form-select" size="5"
+                    style="display: none;"  <!-- Initially hidden -->
+                    onchange="document.getElementById('address-input').value=this.value;">
+                <!-- Options will be populated here -->
+            </select>
+        </div>
+
+        <div id="loading-indicator" class="spinner-border text-primary" role="status" style="display: none;">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+
         {% buttons %}
         <button type="submit" class="btn btn-primary">
           Submit
@@ -40,12 +47,17 @@
 
     </form>
 
+
     <script>
-        document.querySelector('#id_address').addEventListener('input', function() {
-            document.querySelector('#suggestions').innerHTML = '';
+        document.getElementById('address-input').addEventListener('input', function() {
+            var select = document.getElementById('address-select');
+            if (this.value.length > 0) {
+                select.style.display = 'block';
+            } else {
+                select.style.display = 'none';
+            }
         });
     </script>
-
     <div id="map">
         {{ map }}
     </div>

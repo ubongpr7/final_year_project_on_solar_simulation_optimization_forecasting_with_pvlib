@@ -27,9 +27,9 @@ def get_address_suggestions(request):
         if locations:
             for location in locations:
                 suggestions.append(location.address)
-        return render(request, 'option.html', {'suggestions': suggestions})
+        return render(request, 'options.html', {'suggestions': suggestions})
     else:
-        return render(request, 'option.html', {'suggestions': []})
+        return render(request, 'options.html', {'suggestions': []})
 
 
 def map_view(request):
