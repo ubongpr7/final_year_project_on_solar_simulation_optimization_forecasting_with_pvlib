@@ -47,14 +47,15 @@
      document.body.addEventListener('htmx:afterRequest', function(event) {
         const detail = event.detail;
         const xhr = detail.xhr;
-
+        
     // Ensure it's a POST request
     if (xhr.method === 'POST') {
+        console.log('post request')
         // Check if the target is the correct element (e.g., the form container)
         const targetId = xhr.target.getAttribute('id');
         if (targetId === 'map-container') {
             
-        console.log('post request')
+        console.log('map request')
         const lat = detail.serverResponse.latitude;
         const lon = detail.serverResponse.longitude;
         const tz = detail.serverResponse.timezone;
