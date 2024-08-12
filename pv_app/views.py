@@ -44,8 +44,8 @@ def map_view(request):
             map_html = interactive_map(address)['map']
             location = interactive_map(address).get('location',None)
             print('location: ',location)
-            request.session.set('location',location)
-            print(request.session.get('request.session'))
+            request.session['location']=location
+            print('session location: ',request.session.get('request.session'))
             return render(request, 'map.html', {'form': form, 'map': map_html,'location':location})
 
     else:
