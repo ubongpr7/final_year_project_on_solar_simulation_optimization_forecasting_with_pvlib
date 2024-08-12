@@ -44,6 +44,10 @@ def map_view(request):
             map_html = interactive_map(address)['map']
             location = interactive_map(address).get('location',None)
             print('location: ',location)
+            timezone=get_timezone_from_address(address)
+            print('timezone: ',timezone)
+            request.session['timezone'] = timezone
+            print('session timezone: ',request.session['timezone'])
             return render(request, 'map.html', {'form': form, 'map': map_html})
 
     else:

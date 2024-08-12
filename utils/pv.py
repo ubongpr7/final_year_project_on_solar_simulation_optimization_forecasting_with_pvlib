@@ -6,9 +6,41 @@ import geocoder
 import folium
 import geocoder
 from geopy.geocoders import Nominatim
+import tzwhere
+import pytz
+import datetime
+
+geolocator = Nominatim(user_agent="abcd")
+
+def get_timezone_from_address(address):
+    location = geolocator.geocode(address)
+
+    if location is None:
+        return None
+
+    latitude, longitude = location.latitude, location.longitude
+    tzwhere_obj = tzwhere.tzwhere()
+    timezone_str = tzwhere_obj.tzNameAt(latitude, longitude)
+
+    if timezone_str is None:
+        return None
+
+    timezone = pytz.timezone(timezone_str)
+    return timezone
+
+# Example usage:
+address = "New York City, NY, USA"
+timezone = get_timezone_from_address(address)
+
+if timezone:
+    now = datetime.datetime.now(timezone)
+    print(now)
+
+def get_address(coordinates):
+    location = geolocator.reverse(coordinates, format="address")
 
 def get_lat_long(address):
-    geolocator = Nominatim(user_agent="abcd")
+    # geolocator = Nominatim(user_agent="abcd")
 
     location = geolocator.geocode(address)
     if location:
