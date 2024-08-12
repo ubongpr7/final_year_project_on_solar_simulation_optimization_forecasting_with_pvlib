@@ -36,6 +36,10 @@
           Submit
         </button>
       {% endbuttons %}
+      <input type="hidden" id="latitude" name="latitude" value="{{latitude}}">
+    <input type="hidden" id="longitude" name="longitude" value="{{longitude}}">
+    <input type="hidden" id="timezone" name="timezone" value="{{timezone}}}">
+
 
 
     </form>
@@ -54,12 +58,6 @@
             } 
             
         });
-        document.addEventListener('htmx:afterRequest', function(event) {
-                
-            htmx.find("#id_lat").value = '{{latitude}}';
-            htmx.find("#id_lon").value = "{{longitude}}";
-            htmx.find('#id_tz').value = "{{timezone}}";
-
-        })
+        
         
     </script>
