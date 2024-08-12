@@ -5,14 +5,17 @@ import folium
 import geocoder
 import folium
 import geocoder
+from geopy.geocoders import Nominatim
 
 def get_lat_long(address):
-    g = geocoder.google(address)  # Using OpenStreetMap for geocoding
-    if g.ok:
-        print(g.latlng)
-        return g.latlng
-    print('failed g')
+    geolocator = Nominatim(user_agent="myGeocoder")
+    location = geolocator.geocode(address)
+    if location:
+        return [location.latitude, location.longitude]
     return None
+
+lat_lng = get_lat_long("Ondo, Nigeria")
+print(lat_lng)  # Output: (7.1, 4.83) or similar
 
 def interactive_map(address='Ondo'):
     # Create a base map centered around Nigeria
