@@ -18,7 +18,7 @@ def home(request):
 
 
 def get_address_suggestions(request):
-    query = request.GET.get('query', '')
+    query = request.GET.get('address', '')
     print(query)
     if query:
         geolocator = Nominatim(user_agent="abcd")
