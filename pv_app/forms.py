@@ -18,6 +18,18 @@ class AddressForm(forms.Form):
     )
 
 
+PLOT_CHOICES = [
+    ('scatter', 'Scatter Plot'),
+    ('bar', 'Bar Chart'),
+    ('line', 'Line Chart'),
+    # Add more plot types as needed
+]
+
+class PlotForm(forms.Form):
+    plot_type = forms.ChoiceField(choices=PLOT_CHOICES, label="Select Plot Type")
+    x_column = forms.ChoiceField(label="Select X-axis Column")
+    y_column = forms.ChoiceField(label="Select Y-axis Column", required=False)
+
 class PVTrackingForm(forms.Form):
     lat = forms.FloatField(
         label="Latitude",

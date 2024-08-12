@@ -122,6 +122,41 @@ class ViewSampleDataView(View):
         sample_data = df.head(sample_count).to_html(classes='table table-striped')
         return HttpResponse(sample_data)
 
+def get_columns_view(request):
+    df = pd.read_json(StringIO(request.session.get('data')))
+    columns = df.columns.tolist()
+
+    plot_form = PlotForm()
+    plot_form.fields['x_column'].choices = [(col, col) for col in columns]
+    plot_form.fields['y_column'].choices = [(col, col) for col in columns]
+
+    return render(request, 'cols.html', {'plot_form': plot_form})
+
+
+import plotly.express as px
+from django.http import JsonResponse
+from django.shortcuts import render
+
+def plot_data_view(request):
+    df = pd.read_json(StringIO(request.session.get('data')))
+
+    plot_type = request.POST.get('plot_type')
+    x_column = request.POST.get('x_column')
+    y_column = request.POST.get('y_column')
+
+    fig = None
+    if plot_type == 'scatter':
+        fig = px.scatter(df, x=x_column, y=y_column)
+    elif plot_type == 'bar':
+        fig = px.bar(df, x=x_column, y=y_column)
+    elif plot_type == 'line':
+        fig = px.line(df, x=x_column, y=y_column)
+    # Add more plot types as needed
+
+    graph_html = fig.to_html(full_html=False)
+
+    return JsonResponse({'plot': graph_html})
+
 class CleanAndVisualizeView(View):
     def post(self, request):
         action = request.POST.get('action')
