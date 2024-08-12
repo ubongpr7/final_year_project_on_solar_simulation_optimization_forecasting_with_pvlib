@@ -83,11 +83,14 @@
 
     document.addEventListener('htmx:afterRequest', function(event) {  
         if (document.getElementById('latitude'))  {
-            console.log(document.getElementById('latitude').value)
-            document.getElementById('id_lat').value = document.getElementById('latitude').value;
-    
-            document.getElementById('id_lon').value =document.getElementById('longitude').value ;
-            document.getElementById('id_tz').value = document.getElementById('timezone').value;
+            if (document.getElementById('id_lon')){
+                console.log(document.getElementById('latitude').value)
+                document.getElementById('id_lat').value = document.getElementById('latitude').value;
+        
+                document.getElementById('id_lon').value =document.getElementById('longitude').value ;
+                document.getElementById('id_tz').value = document.getElementById('timezone').value;
+
+            }
 
         }   
     });
