@@ -3,34 +3,34 @@ import pandas as pd
 import plotly.express as plt
 import folium 
 import geocoder
+import folium
+import geocoder
 
 def get_lat_long(address):
-    g = geocoder.google(address) 
+    g = geocoder.osm(address)  # Using OpenStreetMap for geocoding
     if g.ok:
-        return g
+        return g.latlng
     return None
 
 def interactive_map(address='Ondo'):
-    m = folium.Map(location=[7, 7], zoom_start=8)
+    # Create a base map centered around Nigeria
+    m = folium.Map(location=[9.0820, 8.6753], zoom_start=8)
     
-    location= get_lat_long(address)
+    location = get_lat_long(address)
     if location:
-        lat = location.lat
-        lng = location.lng
-        country = location.country
-        if lat == None or lng == None:
-            return {'search_status':'failed','map':m._repr_html_()}
+        lat, lng = location[0], location[1]
+        if lat is None or lng is None:
+            return {'search_status': 'failed', 'map': m._repr_html_()}
 
-        # Create Map Object
-
+        # Add a marker on the map
         folium.Marker([lat, lng], tooltip='Click for more',
-                    popup=country).add_to(m)
-        # Get HTML Representation of Map Object
-        m = m._repr_html_()
-        m= folium.Map(location=[7,7],zoom_start=8)
-        return  {'search_status':'success','map':m._repr_html_()}
-    return {'search_status':'failed','map':m._repr_html_()}
+                      popup=address).add_to(m)
+        
+        # Return the HTML representation of the map
+        return {'search_status': 'success', 'map': m._repr_html_()}
     
+    return {'search_status': 'failed', 'map': m._repr_html_()}
+ 
 
 
 def pv_tracking(tz='US/Eastern',from_='2024-08-23',to_='2024-09-01',lat=40,lon=-89,freq='5min',max_angle=90,axis_tilt=0,axis_azimuth=180):

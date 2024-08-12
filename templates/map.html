@@ -1,0 +1,30 @@
+
+{% load static %}
+
+% load bootstrap5 %}
+<!-- templates/map.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Map</title>
+    <style>
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Address on Map</h1>
+    <form hx-post="{% url 'map_view' %}" hx-target="#map-con" hx-trigger="submit" hx-swap="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="map">
+        {{ map|safe }}
+    </div>
+</body>
+</html>

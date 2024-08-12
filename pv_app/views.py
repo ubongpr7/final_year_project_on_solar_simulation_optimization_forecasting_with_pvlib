@@ -3,7 +3,7 @@ from django.shortcuts import render
 from utils.pv import pv_tracking,interactive_map
 from django.views.generic import FormView
 from django.urls import reverse_lazy
-from .forms import PVTrackingForm
+from .forms import PVTrackingForm,AddressForm
 
 # Create your views here.
 def home(request):
@@ -15,6 +15,20 @@ def home(request):
 
 
 
+
+def map_view(request):
+    address = 'Nigeria'  
+    map_html = interactive_map(address)['map']
+    
+    if request.method == 'POST':
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            address = form.cleaned_data['address']
+            map_html = interactive_map(address)['map']
+    else:
+        form = AddressForm()
+
+    return render(request, 'map.html', {'form': form, 'map': map_html})
 
 class PVTrackingView(FormView):
     template_name = 'forms.html'
