@@ -7,7 +7,7 @@ import folium
 import geocoder
 
 def get_lat_long(address):
-    g = geocoder.osm(address)  # Using OpenStreetMap for geocoding
+    g = geocoder.google(address)  # Using OpenStreetMap for geocoding
     if g.ok:
         return g.latlng
     return None
