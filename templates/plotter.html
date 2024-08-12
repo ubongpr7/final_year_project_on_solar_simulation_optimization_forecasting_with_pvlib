@@ -1,4 +1,4 @@
-<h3>Columns</h3>
+<h3>Choose aColumn</h3>
 <div id="columns-list" class="list-group">
     {% for column in columns %}
     <a href="#" class="list-group-item" hx-trigger="click" hx-get="{% url 'clean_and_visualize' %}?column={{ column }}" hx-target="#plot">{{ column }}</a>
