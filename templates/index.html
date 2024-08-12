@@ -19,7 +19,7 @@
 </head>
 <body>
 
-    <style>
+<style>
         /* Page loader container */
 #page-loader {
     position: fixed;
@@ -115,11 +115,11 @@
     </div>    
 </div>
 <div class="tabs">
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area">Solar Irradiance Tracking 1</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area">IV curve</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area">PV modeling</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area">Performance Monitoring</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area">Temperature< Forecating </button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area" hx-trigger="click">Solar Irradiance Tracking 1</button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area" hx-trigger="click">IV curve</button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area" hx-trigger="click">PV modeling</button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area" hx-trigger="click">Performance Monitoring</button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area" hx-trigger="click">Temperature< Forecating </button>
     
 </div>
 
