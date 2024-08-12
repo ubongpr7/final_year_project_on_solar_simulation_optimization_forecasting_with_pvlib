@@ -9,14 +9,14 @@ from geopy.geocoders import Nominatim
 
 def get_lat_long(address):
     geolocator = Nominatim(user_agent="abcd")
-    
+
     location = geolocator.geocode(address)
     if location:
         return [location.latitude, location.longitude]
     return None
 
 lat_lng = get_lat_long("Ondo, Nigeria")
-print(lat_lng)  # Output: (7.1, 4.83) or similar
+# print(lat_lng)  # Output: (7.1, 4.83) or similar
 
 def interactive_map(address='Ondo'):
     # Create a base map centered around Nigeria
