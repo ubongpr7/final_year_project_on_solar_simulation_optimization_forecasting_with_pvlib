@@ -26,9 +26,11 @@
     <form hx-post="{% url 'map' %}" hx-target="#map-container" hx-trigger="submit" hx-swap="post">
         {% csrf_token %}
         {% bootstrap_form form %}
-        
-      <div id="loading-indicator" style="display: none;">Loading...</div>
-      <ul id="suggestions"></ul>
+      
+        <select id="address-select" name="address" size="5" 
+                onchange="document.getElementById('id_address').value=this.value;">
+            <!-- Options will be populated here -->
+        </select>
         {% buttons %}
         <button type="submit" class="btn btn-primary">
           Submit

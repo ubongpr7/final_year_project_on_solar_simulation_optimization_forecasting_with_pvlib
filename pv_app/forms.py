@@ -9,9 +9,10 @@ class AddressForm(forms.Form):
         label='Enter Address',
         max_length=255,
         widget=forms.TextInput(attrs={
+            'id': 'address-input',
             'hx-get': '/get-address-suggestions/',
             'hx-trigger': 'keyup changed delay:500ms',
-            'hx-target': '#suggestions',
+            'hx-target': '#address-select',
             'hx-indicator': '#loading-indicator',
         })
     )

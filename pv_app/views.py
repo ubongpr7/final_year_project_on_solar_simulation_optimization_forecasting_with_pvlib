@@ -22,17 +22,14 @@ def get_address_suggestions(request):
     print(query)
     if query:
         geolocator = Nominatim(user_agent="abcd")
-        locations = geolocator.geocode(query, exactly_one=False, limit=5)  # Limit to 5 suggestions
+        locations = geolocator.geocode(query, exactly_one=False, limit=10)  # Limit to 5 suggestions
         suggestions = []
         if locations:
             for location in locations:
-                suggestions.append({
-                    'address': location.address,
-                    'latitude': location.latitude,
-                    'longitude': location.longitude
-                })
-        return JsonResponse(suggestions, safe=False)
-    return JsonResponse([], safe=False)
+                suggestions.append(location.address)
+        return render(request, 'option.html', {'suggestions': suggestions})
+    else:
+        return render(request, 'option.html', {'suggestions': []})
 
 
 def map_view(request):
