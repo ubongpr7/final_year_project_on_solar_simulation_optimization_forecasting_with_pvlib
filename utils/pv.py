@@ -20,9 +20,9 @@ def get_lat_long(address):
 # lat_lng = get_lat_long("Ondo, Nigeria")
 # print(lat_lng)  # Output: (7.1, 4.83) or similar
 
-def interactive_map(address='Ondo'):
+def interactive_map(address='Ondo, Nigeria'):
     # Create a base map centered around Nigeria
-    m = folium.Map(location=[9.0820, 8.6753], zoom_start=8)
+    m = folium.Map(location=[10, 0], zoom_start=10)
     
     location = get_lat_long(address)
     if location:
@@ -40,7 +40,8 @@ def interactive_map(address='Ondo'):
                       popup=address).add_to(m)
         
             # Return the HTML representation of the map
-            return {'search_status': 'success', 'map': m._repr_html_()}
+            return {'search_status': 'success', 'map': m._repr_html_(),'lat':lat,'lon':lng}
+            # return {'search_status': 'success    '}
     else:
         return {'search_status': 'failed', 'map': m._repr_html_()}
  

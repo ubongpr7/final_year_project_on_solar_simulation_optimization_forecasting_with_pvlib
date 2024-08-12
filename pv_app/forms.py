@@ -17,7 +17,19 @@ class AddressForm(forms.Form):
         })
     )
 
+
 class PVTrackingForm(forms.Form):
+    lat = forms.FloatField(
+        label="Latitude",
+        required=True,
+        help_text="Enter the latitude for the location of the PV system."
+    )
+    lon = forms.FloatField(
+        label="Longitude",
+        required=True,
+        help_text="Enter the longitude for the location of the PV system."
+    )
+
     tz = forms.ChoiceField(
         label="Time Zone",
         choices=[(tz, tz) for tz in pytz.all_timezones],
@@ -56,5 +68,13 @@ class PVTrackingForm(forms.Form):
         initial=180,
         help_text="Enter the azimuth angle of the tracking axis."
     )
-    lat = forms.FloatField(widget=forms.HiddenInput())  # Hidden field for latitude
-    lon = forms.FloatField(widget=forms.HiddenInput())  # Hidden field for longitude
+    address = forms.CharField(
+        label="Search Address",
+        required=False,
+        help_text="Enter an address to automatically update latitude and longitude."
+    )
+
+
+
+class DataUploadForm(forms.Form):
+    file = forms.FileField(label='Upload CSV file')

@@ -42,7 +42,9 @@ def map_view(request):
         if form.is_valid():
             address = form.cleaned_data['address']
             map_html = interactive_map(address)['map']
-            return render(request, 'map.html', {'form': form, 'map': map_html})
+            lat = interactive_map(address)['lat']
+            lon = interactive_map(address)['lon']
+            return render(request, 'map.html', {'form': form, 'map': map_html,'lat':lat,'lon':lon})
     else:
         form = AddressForm()
 
@@ -81,3 +83,65 @@ class PVTrackingView(FormView):
         # Add result to context
         context = self.get_context_data(result=result)
         return self.render_to_response(context)
+
+
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views import View
+import pandas as pd
+from .forms import DataUploadForm
+import plotly.express as px
+
+from django.http import JsonResponse, HttpResponse
+from django.views import View
+import pandas as pd
+from .forms import DataUploadForm
+
+class DataUploadView(View):
+    template_name = 'uploader.html'
+    
+    def get(self, request):
+        form = DataUploadForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = DataUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = request.FILES['file']
+            df = pd.read_csv(file)  # Assuming CSV for simplicity
+            request.session['data'] = df.to_json()  # Save DataFrame in session
+            columns = df.columns.tolist()
+            return render(request, 'plotter.html', {'columns': columns})
+        return HttpResponse("Invalid file format", status=400)
+
+class ViewSampleDataView(View):
+    def get(self, request):
+        sample_count = int(request.GET.get('sample_count', 5))
+        df = pd.read_json(request.session.get('data'))
+        sample_data = df.head(sample_count).to_html(classes='table table-striped')
+        return HttpResponse(sample_data)
+
+class CleanAndVisualizeView(View):
+    def post(self, request):
+        action = request.POST.get('action')
+        column = request.POST.get('column')
+        df = pd.read_json(request.session.get('data'))
+        
+        if action == 'fillna_zero':
+            df[column] = df[column].fillna(0)
+        elif action == 'fillna_mean':
+            df[column] = df[column].fillna(df[column].mean())
+        elif action == 'convert_datetime':
+            df[column] = pd.to_datetime(df[column])
+        
+        request.session['data'] = df.to_json()  # Update session data
+
+        return HttpResponse("Success")
+
+    def get(self, request):
+        df = pd.read_json(request.session.get('data'))
+        column = request.GET.get('column')
+        fig = px.histogram(df, x=column)
+        plot_html = plot(fig, output_type='div')
+        return HttpResponse(plot_html)
