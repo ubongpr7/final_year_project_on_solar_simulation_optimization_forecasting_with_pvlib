@@ -26,18 +26,23 @@ def interactive_map(address='Ondo'):
     
     location = get_lat_long(address)
     if location:
+        print(location)
         lat, lng = location[0], location[1]
         if lat is None or lng is None:
+            print('failed lat' )
             return {'search_status': 'failed', 'map': m._repr_html_()}
 
         # Add a marker on the map
-        folium.Marker([lat, lng], tooltip='Click for more',
+        else:
+            print('success')
+
+            folium.Marker([lat, lng], tooltip='Click for more',
                       popup=address).add_to(m)
         
-        # Return the HTML representation of the map
-        return {'search_status': 'success', 'map': m._repr_html_()}
-    
-    return {'search_status': 'failed', 'map': m._repr_html_()}
+            # Return the HTML representation of the map
+            return {'search_status': 'success', 'map': m._repr_html_()}
+    else:
+        return {'search_status': 'failed', 'map': m._repr_html_()}
  
 
 
