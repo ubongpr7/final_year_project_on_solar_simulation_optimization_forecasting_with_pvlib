@@ -28,7 +28,6 @@
         {% bootstrap_form form %}
         <div class="mb-3">
             <select id="address-select" name="address" class="form-select" size="5"
-                    style="display: none;"  <!-- Initially hidden -->
                     onchange="document.getElementById('address-input').value=this.value;">
                 <!-- Options will be populated here -->
             </select>
@@ -53,9 +52,8 @@
             var select = document.getElementById('address-select');
             if (this.value.length > 0) {
                 select.style.display = 'block';
-            } else {
-                select.style.display = 'none';
-            }
+            } 
+            
         });
     </script>
     <div id="map">
