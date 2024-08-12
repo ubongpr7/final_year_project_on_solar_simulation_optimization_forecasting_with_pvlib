@@ -53,3 +53,16 @@
     <div id="map">
         {{ map|safe }}
     </div>
+
+    <script>
+        // Assuming you have a way to get the lat, lon, and tz from the map
+        function updateParentFields(lat, lon, tz) {
+            const latField = document.getElementById('id_lat');
+            const lonField = document.getElementById('id_lon');
+            const tzField = document.getElementById('id_tz');
+            
+            latField.value = lat;
+            lonField.value = lon;
+            tzField.value = tz;
+        }
+    </script>    

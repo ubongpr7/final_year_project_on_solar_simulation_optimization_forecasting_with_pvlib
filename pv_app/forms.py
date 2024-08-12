@@ -80,11 +80,6 @@ class PVTrackingForm(forms.Form):
         initial=180,
         help_text="Enter the azimuth angle of the tracking axis."
     )
-    address = forms.CharField(
-        label="Search Address",
-        required=False,
-        help_text="Enter an address to automatically update latitude and longitude."
-    )
 
 
 
