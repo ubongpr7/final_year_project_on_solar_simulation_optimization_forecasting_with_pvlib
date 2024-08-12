@@ -13,12 +13,10 @@ def get_lat_long(address):
     location = geolocator.geocode(address)
     if location:
         print(location.latitude, location.longitude)
-        return [location.latitude, location.longitude,location]
+        return location
     else:
         return None
 
-# lat_lng = get_lat_long("Ondo, Nigeria")
-# print(lat_lng)  # Output: (7.1, 4.83) or similar
 
 def interactive_map(address='Ondo, Nigeria'):
     # Create a base map centered around Nigeria
@@ -27,7 +25,7 @@ def interactive_map(address='Ondo, Nigeria'):
     location = get_lat_long(address)
     if location:
         print(location)
-        lat, lng = location[0], location[1]
+        lat, lng = location.latitude, location.longitude
         if lat is None or lng is None:
             print('failed lat' )
             return {'search_status': 'failed', 'map': m._repr_html_()}
@@ -41,7 +39,7 @@ def interactive_map(address='Ondo, Nigeria'):
                       popup=address).add_to(m)
         
             # Return the HTML representation of the map
-            return {'search_status': 'success', 'map': m._repr_html_(),'location':location[3]}
+            return {'search_status': 'success', 'map': m._repr_html_(),'location':location}
             # return {'search_status': 'success    '}
     else:
         return {'search_status': 'failed', 'map': m._repr_html_()}
