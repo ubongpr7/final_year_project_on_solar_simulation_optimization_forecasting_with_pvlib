@@ -42,11 +42,12 @@ def map_view(request):
         if form.is_valid():
             address = form.cleaned_data['address']
             map_html = interactive_map(address)['map']
-            lat = interactive_map(address)['lat']
             location = interactive_map(address).get('location',None)
             print('location: ',location)
+            request.session.set('location',location)
+            print(request.session.get('request.session'))
             return render(request, 'map.html', {'form': form, 'map': map_html,'location':location})
-            
+
     else:
         form = AddressForm()
 
