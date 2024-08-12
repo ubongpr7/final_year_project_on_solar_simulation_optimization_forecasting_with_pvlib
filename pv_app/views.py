@@ -153,9 +153,9 @@ def plot_data_view(request):
         fig = px.line(df, x=x_column, y=y_column)
     # Add more plot types as needed
 
-    graph_html = fig.to_html(full_html=False)
+    graph_html = fig.to_html()
 
-    return JsonResponse({'plot': graph_html})
+    return render(request,'plot.html',{'plot': graph_html})
 
 class CleanAndVisualizeView(View):
     def post(self, request):
