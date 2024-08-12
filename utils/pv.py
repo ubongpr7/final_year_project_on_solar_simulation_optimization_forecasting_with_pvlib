@@ -29,7 +29,8 @@ def get_timezone_from_address(address):
     if timezone_str is None:
         return None
 
-    return timezone_str
+    timezone = pytz.timezone(timezone_str)
+    return timezone
 
 # Example usage:
 address = "New York City, NY, USA"
