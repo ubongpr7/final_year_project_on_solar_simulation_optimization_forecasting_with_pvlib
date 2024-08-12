@@ -141,9 +141,10 @@ class CleanAndVisualizeView(View):
 
     def get(self, request):
         df = pd.read_json(StringIO(request.session.get('data')))
+        print(df.index)
         # df = pd.read_json(request.session.get('data'))
         column = request.GET.get('column')
-        fig = px.histogram(df, x=column)
+        fig = px.line(df, y=column,x=df.index)
         plot_html = fig.to_html()
 
         return HttpResponse(plot_html)
