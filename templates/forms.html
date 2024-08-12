@@ -23,9 +23,10 @@
     <p>To get your latitude and longitude, click on the map below where your PV system is located.</p>
     
     <div class="container">
-        <div id="map-con" hx-get="{%url 'map' %}" hx-trigger="revealed" hx-swap="innerHTML">
-
+        <div id="map-container" hx-get="{% url 'map' %}" hx-trigger="load" hx-target="#map-container">
+            <!-- The map will be loaded here -->
         </div>
+    
     </div>    
     <form method="POST" >
         {% csrf_token %}
