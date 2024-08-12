@@ -35,12 +35,13 @@ def interactive_map(address='Ondo, Nigeria'):
         # Add a marker on the map
         else:
             print('success')
+            m = folium.Map(location=[lat, lng], zoom_start=10)
 
             folium.Marker([lat, lng], tooltip='Click for more',
                       popup=address).add_to(m)
         
             # Return the HTML representation of the map
-            return {'search_status': 'success', 'map': m._repr_html_(),'lat':lat,'lon':lng}
+            return {'search_status': 'success', 'map': m._repr_html_(),'location':location}
             # return {'search_status': 'success    '}
     else:
         return {'search_status': 'failed', 'map': m._repr_html_()}
