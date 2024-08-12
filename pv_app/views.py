@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from utils.pv import pv_tracking,interactive_map
+from utils.pv import pv_tracking,interactive_map,get_lat_long
 from django.views.generic import FormView
 from django.urls import reverse_lazy
 from .forms import PVTrackingForm,AddressForm
