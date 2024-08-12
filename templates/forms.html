@@ -43,7 +43,7 @@
 <input type="hidden" id="id_tz" name="tz" value=""> -->
 <script>
     document.addEventListener('htmx:afterRequest', function(event) {       
-        
+        console.log(document.getElementById('latitude').value)
         document.getElementById('id_lat').value = document.getElementById('latitude').value;
 
         document.getElementById('id_lon').value =document.getElementById('longitude').value ;
