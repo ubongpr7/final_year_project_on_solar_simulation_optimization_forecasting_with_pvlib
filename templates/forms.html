@@ -41,12 +41,11 @@
 <!-- <input type="hidden" id="id_lat" name="lat" value="">
 <input type="hidden" id="id_lon" name="lon" value="">
 <input type="hidden" id="id_tz" name="tz" value=""> -->
-
 <script>
     // Update fields in the parent page with the values returned from the backend
      document.body.addEventListener('htmx:afterRequest', function(event) {
         const detail = event.detail;
-        console.log('detail: ',detail)
+        console.log('event: ',event)
         const xhr = detail.xhr;
         console.log('xhr: ',xhr)
 
