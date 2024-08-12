@@ -10,7 +10,13 @@ import tzwhere
 import pytz
 import datetime
 
+
 geolocator = Nominatim(user_agent="abcd")
+from timezonefinder import TimezoneFinder
+
+def get_timezone(lat, lng):
+  tf = TimezoneFinder()
+  return tf.timezone_at(lng=lng, lat=lat)
 
 def get_timezone_from_address(address):
     location = geolocator.geocode(address)
@@ -19,9 +25,7 @@ def get_timezone_from_address(address):
         return None
 
     latitude, longitude = location.latitude, location.longitude
-    tzwhere_obj = tzwhere.tzwhere()
-    timezone_str = tzwhere_obj.tzNameAt(latitude, longitude)
-
+    timezone_str=str(get_timezone(latitude, longitude ))
     if timezone_str is None:
         return None
 
