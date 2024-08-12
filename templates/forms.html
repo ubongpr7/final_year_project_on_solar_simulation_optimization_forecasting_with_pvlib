@@ -50,7 +50,8 @@
         console.log('xhr: ',xhr)
 
     // Ensure it's a POST request
-    if (xhr.method === 'POST') {
+    console.log('XMLHttpRequest ',xhr.XMLHttpRequest)
+    if (xhr.XMLHttpRequest  === 'POST') {
         console.log('post request')
         // Check if the target is the correct element (e.g., the form container)
         const targetId = xhr.target.getAttribute('id');
