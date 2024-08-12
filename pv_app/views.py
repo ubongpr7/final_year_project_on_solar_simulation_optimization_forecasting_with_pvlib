@@ -19,6 +19,7 @@ def home(request):
 
 def get_address_suggestions(request):
     query = request.GET.get('query', '')
+    print(query)
     if query:
         geolocator = Nominatim(user_agent="abcd")
         locations = geolocator.geocode(query, exactly_one=False, limit=5)  # Limit to 5 suggestions
