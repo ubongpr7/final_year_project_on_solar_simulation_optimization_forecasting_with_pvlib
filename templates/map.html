@@ -32,7 +32,7 @@
         </div>
 
         {% buttons %}
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-primary" hx-on::after-request="performAnimation() >
           Submit
         </button>
       {% endbuttons %}
@@ -49,6 +49,12 @@
             } 
             
         });
+        function performAnimation() {       
+            console.log('{{latitude}}')
+        document.getElementById('id_lat').value = '{{latitude}}';
+        document.getElementById('id_lon').value = "{{longitude}}";
+        document.getElementById('id_tz').value = "{{timezone}}";
+        }
     </script>
     <div id="map">
         {{ map|safe }}
