@@ -47,6 +47,7 @@ def map_view(request):
             latitude=location.latitude
             longitude=location.longitude
             timezone=get_timezone_from_address(address)
+            print('timezone: ',timezone)
             context = {
                 'form': form,
                 'map': map_html,
