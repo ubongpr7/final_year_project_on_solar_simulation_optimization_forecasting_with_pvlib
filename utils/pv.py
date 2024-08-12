@@ -17,7 +17,7 @@ def get_lat_long(address):
     else:
         return None
 
-lat_lng = get_lat_long("Ondo, Nigeria")
+# lat_lng = get_lat_long("Ondo, Nigeria")
 # print(lat_lng)  # Output: (7.1, 4.83) or similar
 
 def interactive_map(address='Ondo'):
