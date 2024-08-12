@@ -3,11 +3,7 @@
 
 {% load bootstrap5 %}
 <!-- templates/map.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Interactive Map</title>
+
     <style>
         #map {
             width: 60%;
@@ -20,8 +16,6 @@
 {% bootstrap_javascript %}
 <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 
-</head>
-<body>
     <h1>Search Address on Map</h1>
     <form hx-post="{% url 'map' %}" hx-target="#map-container" hx-trigger="submit" hx-swap="post">
         {% csrf_token %}
@@ -57,7 +51,5 @@
         });
     </script>
     <div id="map">
-        {{ map }}
+        {{ map|safe }}
     </div>
-</body>
-</html>

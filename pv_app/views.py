@@ -22,7 +22,7 @@ def get_address_suggestions(request):
     print(query)
     if query:
         geolocator = Nominatim(user_agent="abcd")
-        locations = geolocator.geocode(query, exactly_one=False, limit=10)  # Limit to 5 suggestions
+        locations = geolocator.geocode(query, exactly_one=False, limit=100)  # Limit to 5 suggestions
         suggestions = []
         if locations:
             for location in locations:
@@ -34,14 +34,14 @@ def get_address_suggestions(request):
 
 def map_view(request):
     address = 'Nigeria'  
-    map_html = get_lat_long(address)
+    map_html = interactive_map(address)['map']
     form = AddressForm()
     
     if request.method == 'POST':
         form = AddressForm(request.POST)
         if form.is_valid():
             address = form.cleaned_data['address']
-            map_html = get_lat_long(address)
+            map_html = interactive_map(address)['map']
             return render(request, 'map.html', {'form': form, 'map': map_html})
     else:
         form = AddressForm()
