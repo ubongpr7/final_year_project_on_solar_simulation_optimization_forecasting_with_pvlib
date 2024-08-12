@@ -32,7 +32,7 @@
         </div>
 
         {% buttons %}
-        <button type="submit" class="btn btn-primary" hx-on::after-request="performAnimation() >
+        <button type="submit" class="btn btn-primary" hx-on::after-request="performAnimation()" >
           Submit
         </button>
       {% endbuttons %}
@@ -41,21 +41,6 @@
     </form>
 
 
-    <script>
-        document.getElementById('address-input').addEventListener('input', function() {
-            var select = document.getElementById('address-select');
-            if (this.value.length > 0) {
-                select.style.display = 'block';
-            } 
-            
-        });
-        function performAnimation() {       
-            console.log('{{latitude}}')
-        document.getElementById('id_lat').value = '{{latitude}}';
-        document.getElementById('id_lon').value = "{{longitude}}";
-        document.getElementById('id_tz').value = "{{timezone}}";
-        }
-    </script>
     <div id="map">
         {{ map|safe }}
     </div>
@@ -72,3 +57,19 @@
             tzField.value = tz;
         }
     </script>    
+    
+    <script>
+        document.getElementById('address-input').addEventListener('input', function() {
+            var select = document.getElementById('address-select');
+            if (this.value.length > 0) {
+                select.style.display = 'block';
+            } 
+            
+        });
+        function performAnimation() {       
+            console.log('{{latitude}}')
+        document.getElementById('id_lat').value = '{{latitude}}';
+        document.getElementById('id_lon').value = "{{longitude}}";
+        document.getElementById('id_tz').value = "{{timezone}}";
+        }
+    </script>
