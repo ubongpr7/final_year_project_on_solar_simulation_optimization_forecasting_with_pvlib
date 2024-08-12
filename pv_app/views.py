@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from io import StringIO
 from django.http import JsonResponse
 from geopy.geocoders import Nominatim
 
@@ -140,8 +140,10 @@ class CleanAndVisualizeView(View):
         return HttpResponse("Success")
 
     def get(self, request):
-        df = pd.read_json(request.session.get('data'))
+        df = pd.read_json(StringIO(request.session.get('data')))
+        # df = pd.read_json(request.session.get('data'))
         column = request.GET.get('column')
         fig = px.histogram(df, x=column)
-        plot_html = plot(fig, output_type='div')
+        plot_html = fig.to_html()
+
         return HttpResponse(plot_html)
