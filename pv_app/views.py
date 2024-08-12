@@ -46,7 +46,7 @@ def map_view(request):
             print('location: ',location)
             timezone=get_timezone_from_address(address)
             print('timezone: ',timezone)
-            request.session['timezone'] = timezone
+            request.session['timezone'] = str(timezone)
             print('session timezone: ',request.session['timezone'])
             return render(request, 'map.html', {'form': form, 'map': map_html})
 
