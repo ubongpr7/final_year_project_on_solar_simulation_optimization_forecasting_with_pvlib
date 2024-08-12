@@ -6,8 +6,22 @@
     <title>Document</title>
 </head>
 <body>
+    <style>
+        #map-c {
+            width: 50%;
+            height: 500px;
+            position: absolute;
+            left: 50%;
+        }
+    </style>
     <h1>Home</h1>
     {{pv_tracking|safe }}
-    {{ map|safe}}
+    <div class="container">
+        <div class="row">
+            <div id="map-c">
+                {{ map|safe}}
+            </div>
+        </div>
+    </div>
 </body>
 </html>

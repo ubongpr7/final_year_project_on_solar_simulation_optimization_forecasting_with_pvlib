@@ -15,6 +15,7 @@ def home(request):
 
 
 
+
 class PVTrackingView(FormView):
     template_name = 'forms.html'
     form_class = PVTrackingForm
