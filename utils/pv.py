@@ -12,7 +12,9 @@ def get_lat_long(address):
 
     location = geolocator.geocode(address)
     if location:
+        print(location.latitude, location.longitude)
         return [location.latitude, location.longitude]
+    print("Location not found")
     return None
 
 lat_lng = get_lat_long("Ondo, Nigeria")
