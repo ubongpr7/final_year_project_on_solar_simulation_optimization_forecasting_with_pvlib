@@ -8,7 +8,8 @@ import geocoder
 from geopy.geocoders import Nominatim
 
 def get_lat_long(address):
-    geolocator = Nominatim(user_agent="myGeocoder")
+    geolocator = Nominatim(user_agent="abcd")
+    
     location = geolocator.geocode(address)
     if location:
         return [location.latitude, location.longitude]
