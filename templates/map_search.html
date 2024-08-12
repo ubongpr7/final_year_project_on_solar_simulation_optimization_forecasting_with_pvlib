@@ -1,0 +1,21 @@
+
+<div>
+    <label for="address">Enter Address:</label>
+    <input type="text" id="address" name="address"
+           hx-get="/get-address-suggestions/"
+           hx-trigger="keyup changed delay:500ms"
+           hx-target="#suggestions"
+           hx-indicator="#loading-indicator">
+    <div id="loading-indicator" style="display: none;">Loading...</div>
+    <ul id="suggestions"></ul>
+</div>
+<script src="https://unpkg.com/htmx.org@1.8.1"></script>
+
+<script>
+    document.querySelector('#address').addEventListener('input', function() {
+        document.querySelector('#suggestions').innerHTML = '';
+    });
+</script>
+
+
+

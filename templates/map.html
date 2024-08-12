@@ -26,12 +26,23 @@
     <form hx-post="{% url 'map' %}" hx-target="#map-container" hx-trigger="submit" hx-swap="post">
         {% csrf_token %}
         {% bootstrap_form form %}
+        
+      <div id="loading-indicator" style="display: none;">Loading...</div>
+      <ul id="suggestions"></ul>
         {% buttons %}
         <button type="submit" class="btn btn-primary">
           Submit
         </button>
       {% endbuttons %}
+
+
     </form>
+
+    <script>
+        document.querySelector('#id_address').addEventListener('input', function() {
+            document.querySelector('#suggestions').innerHTML = '';
+        });
+    </script>
 
     <div id="map">
         {{ map }}

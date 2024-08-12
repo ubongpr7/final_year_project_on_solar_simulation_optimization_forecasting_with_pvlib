@@ -3,8 +3,18 @@ from django import forms
 import pytz
 
 
+
 class AddressForm(forms.Form):
-    address = forms.CharField(label='Search Address',)
+    address = forms.CharField(
+        label='Enter Address',
+        max_length=255,
+        widget=forms.TextInput(attrs={
+            'hx-get': '/get-address-suggestions/',
+            'hx-trigger': 'keyup changed delay:500ms',
+            'hx-target': '#suggestions',
+            'hx-indicator': '#loading-indicator',
+        })
+    )
 
 class PVTrackingForm(forms.Form):
     tz = forms.ChoiceField(

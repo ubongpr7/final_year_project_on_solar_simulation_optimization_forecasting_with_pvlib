@@ -1,5 +1,8 @@
 from django.shortcuts import render
 
+from django.http import JsonResponse
+from geopy.geocoders import Nominatim
+
 from utils.pv import pv_tracking,interactive_map,get_lat_long
 from django.views.generic import FormView
 from django.urls import reverse_lazy
@@ -14,6 +17,21 @@ def home(request):
     return render(request,'index.html',context)
 
 
+def get_address_suggestions(request):
+    query = request.GET.get('query', '')
+    if query:
+        geolocator = Nominatim(user_agent="abcd")
+        locations = geolocator.geocode(query, exactly_one=False, limit=5)  # Limit to 5 suggestions
+        suggestions = []
+        if locations:
+            for location in locations:
+                suggestions.append({
+                    'address': location.address,
+                    'latitude': location.latitude,
+                    'longitude': location.longitude
+                })
+        return JsonResponse(suggestions, safe=False)
+    return JsonResponse([], safe=False)
 
 
 def map_view(request):
