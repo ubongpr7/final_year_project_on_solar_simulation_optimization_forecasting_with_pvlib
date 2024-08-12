@@ -21,7 +21,7 @@
 </head>
 <body>
     <h1>Search Address on Map</h1>
-    <form hx-post="{% url 'map_view' %}" hx-target="#map-con" hx-trigger="submit" hx-swap="post">
+    <form hx-post="{% url 'map' %}" hx-target="#map-con" hx-trigger="submit" hx-swap="post">
         {% csrf_token %}
         {% bootstrap_form form %}
         <button type="submit">Search</button>
