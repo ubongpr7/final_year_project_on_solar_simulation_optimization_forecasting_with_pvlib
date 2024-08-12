@@ -65,7 +65,7 @@
     <p>To get your latitude and longitude, click on the map below where your PV system is located.</p>
     
     <div class="container">
-        <div id="map-container" hx-get="{% url 'map' %}" hx-trigger="load" hx-target="#map-container">
+        <div id="map-container" hx-get="{% url 'map' %}" hx-trigger="revealed" hx-target="#map-container">
             <!-- The map will be loaded here -->
         </div>
     
@@ -76,12 +76,15 @@
 </div>
 
 <script>
-    document.addEventListener('htmx:afterRequest', function(event) {       
-        console.log(document.getElementById('latitude').value)
-        document.getElementById('id_lat').value = document.getElementById('latitude').value;
+    document.addEventListener('htmx:afterRequest', function(event) {  
+        if (document.getElementById('latitude'))  {
+            console.log(document.getElementById('latitude').value)
+            document.getElementById('id_lat').value = document.getElementById('latitude').value;
+    
+            document.getElementById('id_lon').value =document.getElementById('longitude').value ;
+            document.getElementById('id_tz').value = document.getElementById('timezone').value;
 
-        document.getElementById('id_lon').value =document.getElementById('longitude').value ;
-        document.getElementById('id_tz').value = document.getElementById('timezone').value;
+        }   
     });
        
 </script>
