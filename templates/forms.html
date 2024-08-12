@@ -45,13 +45,9 @@
     // Update fields in the parent page with the values returned from the backend
      document.body.addEventListener('htmx:afterRequest', function(event) {
         const detail = event.detail;
-        console.log('event: ',event)
-        const xhr = detail.xhr;
-        console.log('xhr: ',xhr)
 
     // Ensure it's a POST request
-    console.log('XMLHttpRequest ',xhr.XMLHttpRequest)
-    if (xhr.XMLHttpRequest  === 'POST') {
+    if (detail.verb === 'POST') {
         console.log('post request')
         // Check if the target is the correct element (e.g., the form container)
         const targetId = xhr.target.getAttribute('id');
