@@ -19,12 +19,14 @@ def home(request):
 def map_view(request):
     address = 'Nigeria'  
     map_html = interactive_map(address)['map']
+    form = AddressForm()
     
     if request.method == 'POST':
         form = AddressForm(request.POST)
         if form.is_valid():
             address = form.cleaned_data['address']
             map_html = interactive_map(address)['map']
+            return render(request, 'map.html', {'form': form, 'map': map_html})
     else:
         form = AddressForm()
 
