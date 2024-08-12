@@ -47,7 +47,7 @@
         const detail = event.detail;
 
     // Ensure it's a POST request
-    if (detail.verb === 'POST') {
+    if (detail.verb === 'post') {
         console.log('post request')
         // Check if the target is the correct element (e.g., the form container)
         const targetId = xhr.target.getAttribute('id');
