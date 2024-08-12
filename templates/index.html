@@ -1,36 +1,55 @@
 
-{%load static%}
-{%load bootstrap5 %}
+{% load static %}
+
+{% load bootstrap5 %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>PV Tracking</title>
     
 {# Load CSS and JavaScript #}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-
+    
+        
 </head>
 <body>
-    <style>
-        #map-c {
-            width: 50%;
-            height: 500px;
-            position: absolute;
-            left: 50%;
-        }
-    </style>
-    <h1>Home</h1>
-    {{pv_tracking|safe }}
+
+<div class="container" hx->
+    {% bootstrap_messages %}
+    <h1>PV System Tracking Setup</h1>
+    <p>To get your latitude and longitude, click on the map below where your PV system is located.</p>
+    
     <div class="container">
-        <div class="row">
-            <div id="map-c">
-                {{ map|safe}}
-            </div>
+        <div id="map-container" hx-get="{% url 'map' %}" hx-trigger="load" hx-target="#map-container">
+            <!-- The map will be loaded here -->
         </div>
+    
+    </div>    
+    <div id="pv-form" hx-get="{% url 'pv_tracking' %}" hx-trigger="load" hx-target="#map-container">
+
     </div>
+</div>
+
+<script>
+    document.addEventListener('htmx:afterRequest', function(event) {       
+        console.log(document.getElementById('latitude').value)
+        document.getElementById('id_lat').value = document.getElementById('latitude').value;
+
+        document.getElementById('id_lon').value =document.getElementById('longitude').value ;
+        document.getElementById('id_tz').value = document.getElementById('timezone').value;
+    });
+       
+</script>
+
+<script>
+    console.log('{{ longitude }}')
+    
+</script>
+
 </body>
 </html>

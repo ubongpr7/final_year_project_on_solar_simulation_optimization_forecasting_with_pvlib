@@ -16,7 +16,7 @@
 {% bootstrap_javascript %}
 <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 
-    <h1>Search Address on Map</h1>
+    <h3>Search Address on Map</h3>
     <form hx-post="{% url 'map' %}" hx-target="#map-container" hx-trigger="submit" hx-swap="post">
         {% csrf_token %}
         {% bootstrap_form form %}

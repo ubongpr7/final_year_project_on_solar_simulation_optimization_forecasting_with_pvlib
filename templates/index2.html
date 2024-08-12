@@ -1,0 +1,36 @@
+
+{%load static%}
+{%load bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<script src="https://unpkg.com/htmx.org@1.9.2"></script>
+
+</head>
+<body>
+    <style>
+        #map-c {
+            width: 50%;
+            height: 500px;
+            position: absolute;
+            left: 50%;
+        }
+    </style>
+    <h1>Home</h1>
+    {{pv_tracking|safe }}
+    <div class="container">
+        <div class="row">
+            <div id="map-c">
+                {{ map|safe}}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
