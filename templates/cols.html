@@ -1,15 +1,17 @@
+{% load bootstrap5 %}
 <form id="plot-form" hx-post="{% url 'plot_data' %}" hx-target="#plot" hx-swap="outerHTML">
     <div class="form-group">
+        {% csrf_token %}
         <label for="plot_type">Plot Type</label>
-        {{ plot_form.plot_type }}
+        {%bootstrap_field plot_form.plot_type%}
     </div>
     <div class="form-group">
         <label for="x_column">X-axis Column</label>
-        {{ plot_form.x_column }}
+        {%bootstrap_field plot_form.x_column%}
     </div>
     <div class="form-group">
         <label for="y_column">Y-axis Column</label>
-        {{ plot_form.y_column }}
+        {%bootstrap_field plot_form.y_column%}
     </div>
     <button type="submit" class="btn btn-primary">Plot</button>
 </form>
