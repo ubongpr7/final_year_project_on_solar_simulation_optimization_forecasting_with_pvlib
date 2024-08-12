@@ -128,10 +128,7 @@
 </div>
 
 <script>
-    document.getElementById('map-container').addEventListener('htmx:afterRequest', function() {
-    // Trigger the second request after the first one is done
-    htmx.trigger('#pv-form', 'firstRequestDone');
-});
+   
 
     document.addEventListener('htmx:afterRequest', function(event) {  
         if (document.getElementById('latitude'))  {
