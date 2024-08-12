@@ -44,22 +44,18 @@
 
 <script>
     // Update fields in the parent page with the values returned from the backend
-    document.body.addEventListener('htmx:afterRequest', function(event) {
-        if (event.detail.verb === 'post'){
-            console.log('post request')
-            const detail = event.detail;
-            const lat = detail.serverResponse.latitude;
-            const lon = detail.serverResponse.longitude;
-            const tz = detail.serverResponse.timezone;
+     document.body.addEventListener('htmx:afterRequest', function(event) {
+        const detail = event.detail;
+        console.log('post request')
+        const lat = detail.serverResponse.latitude;
+        const lon = detail.serverResponse.longitude;
+        const tz = detail.serverResponse.timezone;
     
-            document.getElementById('id_lat').value = lat;
-            document.getElementById('id_lon').value = lon;
-            document.getElementById('id_tz').value = tz;
-
-        }else{
-            console.log('get request')
-        }
+        document.getElementById('id_lat').value = lat;
+        document.getElementById('id_lon').value = lon;
+        document.getElementById('id_tz').value = tz;
     });
+       
 </script>
 
 <script>
