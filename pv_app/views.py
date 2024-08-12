@@ -6,7 +6,7 @@ from geopy.geocoders import Nominatim
 from utils.pv import pv_tracking,interactive_map,get_lat_long
 from django.views.generic import FormView
 from django.urls import reverse_lazy
-from .forms import PVTrackingForm,AddressForm
+from .forms import PVTrackingForm,AddressForm,PlotForm
 
 # Create your views here.
 def home(request):
