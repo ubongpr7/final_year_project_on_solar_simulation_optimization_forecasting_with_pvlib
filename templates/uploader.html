@@ -7,6 +7,17 @@
     <script src="https://unpkg.com/htmx.org"></script>
 </head>
 <body>
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    .table-wrapper .table {
+        width: 100%;
+        min-width: 800px; /* Adjust this width as needed */
+        table-layout: fixed; /* Ensures consistent column widths */
+    }
+    
 <div class="container mt-5">
     <h2>Upload Data</h2>
     <form id="upload-form" hx-post="." hx-target="#columns-section" enctype="multipart/form-data">
@@ -23,7 +34,7 @@
         <h3>Sample Data</h3>
         <label for="sample-count">Number of Samples:</label>
         <input type="number" id="sample-count" value="5" min="1" hx-get="{% url 'view_sample_data' %}" hx-trigger="change" hx-target="#sample-data">
-        <div id="sample-data" class="mt-3"></div>
+        <div class="table-wrapper"></div><div id="sample-data" class="mt-3"></div></div>
     </div>
     
     <div id="visualization-section" class="mt-4" style="display:none;">
