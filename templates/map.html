@@ -32,7 +32,7 @@
         </div>
 
         {% buttons %}
-        <button type="submit" class="btn btn-primary" hx-on::after-request="performAnimation()" >
+        <button type="submit" class="btn btn-primary" >
           Submit
         </button>
       {% endbuttons %}
@@ -54,5 +54,12 @@
             } 
             
         });
+        document.addEventListener('htmx:afterRequest', function(event) {
+                
+            htmx.find("#id_lat").value = '{{latitude}}';
+            htmx.find("#id_lon").value = "{{longitude}}";
+            htmx.find('#id_tz').value = "{{timezone}}";
+
+        })
         
     </script>
