@@ -44,15 +44,23 @@ def map_view(request):
             map_html = interactive_map(address)['map']
             location = interactive_map(address).get('location',None)
             print('location: ',location)
+            latitude=location.latitude
+            longitude=location.longitude
             timezone=get_timezone_from_address(address)
-            print('timezone: ',timezone)
-            request.session['timezone'] = str(timezone)
-            print('session timezone: ',request.session['timezone'])
-            return render(request, 'map.html', {'form': form, 'map': map_html})
+            context = {
+                'form': form,
+                'map': map_html,
+                'latitude':latitude,
+                'longitude':longitude,
+                'timezone':timezone
+                
+                }
+
+            return render(request, 'map.html', context)
 
     else:
         form = AddressForm()
-
+    
     return render(request, 'map.html', {'form': form, 'map': map_html})
 
 class PVTrackingView(FormView):

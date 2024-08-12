@@ -33,13 +33,13 @@
     <form method="POST" >
         {% csrf_token %}
         {% bootstrap_form form %}
-        <input type="hidden" id="id_lat" name="lat">
-        <input type="hidden" id="id_lon" name="lon">
+        
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
 
 <script>
+    console.log('{{ longitude }}')
     
 </script>
 
