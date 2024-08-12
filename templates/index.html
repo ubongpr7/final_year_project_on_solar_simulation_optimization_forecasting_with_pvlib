@@ -53,6 +53,49 @@
         transform: rotate(360deg);
     }
 }
+.tabs {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #f1f1f1;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: background-color 0.3s;
+}
+
+.tab-button:hover, .tab-button:focus {
+    background-color: #ddd;
+}
+
+.tab-button:active {
+    background-color: #bbb;
+}
+
+.content-area {
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+
+.card-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
 
     </style>
     <div id="page-loader" class="loader" style="display: none;">
@@ -73,6 +116,18 @@
     <div id="pv-form" hx-get="{% url 'pv_tracking' %}" hx-trigger="event:firstRequestDone" hx-target="#map-container">
 
     </div>
+</div>
+<div class="tabs">
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area">Solar Irradiance Tracking 1</button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area">IV curve</button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area">PV modeling</button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area">Performance Monitoring</button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}" hx-target="#content-area">Temperature< Forecating </button>
+    
+</div>
+
+<div id="content-area" class="content-area">
+    <!-- HTMX-loaded content will appear here -->
 </div>
 
 <script>
