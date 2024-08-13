@@ -16,7 +16,7 @@
                 
             <form hx-post="{{request.path}}" hx-target="#content-area" hx-trigger="submit" hx-swap="post"  >
                 {% csrf_token %}
-                <div class="col-12">
+                <div class="row">
 
                     {% for field in form %}
     
