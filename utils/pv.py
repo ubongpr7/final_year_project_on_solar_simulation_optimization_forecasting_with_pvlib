@@ -177,7 +177,7 @@ def climate_plots(lat, lon,y_,plot_type='line', tz='UTC', title='Ambient Tempera
         x=weather.index,
         y=weather[y_],
         title=title,
-        labels={'x': 'Time', y_: 'Temperature (°C)'},
+        labels={'x': 'Time', 'y': y_},
         color=color,
         plot_type=plot_type,
     )
