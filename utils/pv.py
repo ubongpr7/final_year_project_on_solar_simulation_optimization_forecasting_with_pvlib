@@ -192,5 +192,17 @@ def climate_plots(lat, lon,y_,plot_type='line', tz='UTC', title='Ambient Tempera
 
 
 def plot_temperature(lat, lon,plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
-    return climate_plots(lat, lon,plot_type,y_='temp_air' tz, title, color,)
+    return climate_plots(lat, lon,plot_type,y_='temp_air', tz, title, color,)
 
+def plot_wind_speed(lat, lon,plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
+    return climate_plots(lat, lon,plot_type,y_='wind_speed' ,tz, title, color,)
+
+
+def plot_ghi(lat, lon,plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
+    return climate_plots(lat, lon,plot_type,y_='ghi', tz, title, color,)
+
+def plot_dni(lat, lon,plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
+    return climate_plots(lat, lon,plot_type,y_='dni' ,tz, title, color,)
+
+def plot_dhi(lat, lon,plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
+    return climate_plots(lat, lon,plot_type,y_='dhi' ,tz, title, color,)
