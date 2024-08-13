@@ -116,6 +116,36 @@ class PVTrackingView(FormView):
             lon=lon,
             )
             graph_title='Wind Speed Variation Over Time'
+        elif visualizer=='gni':
+            result=plot_gni(
+            tz=tz,
+            color=plot_color,
+            plot_type=plot_type,
+            
+            lat=lat,
+            lon=lon,
+            )
+            graph_title='GNI Variation Over Time'
+        elif visualizer=='dni':
+            result=plot_dni(
+            tz=tz,
+            color=plot_color,
+            plot_type=plot_type,
+            
+            lat=lat,
+            lon=lon,
+            )
+            graph_title='DNI Variation Over Time'
+        elif visualizer=='dhi':
+            result=plot_dhi(
+            tz=tz,
+            color=plot_color,
+            plot_type=plot_type,
+            
+            lat=lat,
+            lon=lon,
+            )
+            graph_title='DHI Variation Over Time'
 
         elif visualizer=='true_tracker':
 
