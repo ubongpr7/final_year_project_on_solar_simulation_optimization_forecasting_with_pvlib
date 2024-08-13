@@ -69,6 +69,12 @@ class PVTrackingView(FormView):
     template_name = 'forms.html'
     form_class = PVTrackingForm
     success_url = '/'
+    def get(self, request, *args, **kwargs):
+    # Check for URL parameters
+    visualizer = request.GET.get('visualizer', None)
+    request.session['visualizer'] = visualizer
+    return super().get(request, *args, **kwargs)
+    
 
     def form_valid(self, form):
         # Get cleaned data from the form
@@ -83,7 +89,9 @@ class PVTrackingView(FormView):
         axis_azimuth = form.cleaned_data['axis_azimuth']
 
         # Call the pv_tracking function
-        visualizer=self.request.POST.get('visualizer',None)
+        visualizer=self.request.session.get('visualizer')
+        graph_title=''
+        result=''   
         if visualizer=='temp':
             result = plot_temperature(
             tz=tz,
