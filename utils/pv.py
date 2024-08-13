@@ -11,6 +11,10 @@ import pytz
 import datetime
 
 
+import pandas as pd
+from pvlib.forecast import GFS
+from pvlib.location import Location
+
 geolocator = Nominatim(user_agent="abcd")
 from timezonefinder import TimezoneFinder
 
@@ -83,6 +87,7 @@ def interactive_map(address='Ondo, Nigeria'):
 
 
 def pv_tracking(tz='US/Eastern',from_='2024-08-23',to_='2024-09-01',lat=40,lon=-89,freq='5min',max_angle=90,axis_tilt=0,axis_azimuth=180):
+
     tz = tz
     # lat, lon = 40, -80
 
@@ -111,5 +116,46 @@ def pv_tracking(tz='US/Eastern',from_='2024-08-23',to_='2024-09-01',lat=40,lon=-
         y=truetracking_angles.tracker_theta,
         title='True Tracking Angle',
         labels={'x':'Time','y':'Tracking angle'}
+    )
+    return fig.to_html()
+
+
+
+def plot_temperature(tz='US/Eastern', from_='2024-08-23', to_='2024-09-01', lat=40, lon=-89, freq='5min'):
+    """
+    Plot temperature variation over a specified time period for a given location.
+
+    Parameters:
+    - tz (str): Time zone.
+    - from_ (str): Start date in YYYY-MM-DD format.
+    - to_ (str): End date in YYYY-MM-DD format.
+    - lat (float): Latitude of the location.
+    - lon (float): Longitude of the location.
+    - freq (str): Frequency of data points (e.g., '5min', '1H').
+
+    Returns:
+    - HTML representation of the plot.
+    """
+    # Define location
+    location = Location(latitude=lat, longitude=lon, tz=tz)
+
+    # Use GFS model to get weather data
+    model = GFS()
+    start = pd.Timestamp(from_, tz=tz)
+    end = pd.Timestamp(to_, tz=tz)
+
+    # Get weather data
+    weather_data = model.get_processed_data(location.latitude, location.longitude, start, end)
+
+    # Resample the data to the desired frequency
+    weather_data_resampled = weather_data['temp_air'].resample(freq).mean()
+
+
+
+    fig= plt.line(
+        x=weather_data_resampled.index,
+        y=weather_data_resampled.values,
+        title='Temperature Variation Over Time',
+        labels={'x':'Time','y':'Temperature (°C)'}
     )
     return fig.to_html()

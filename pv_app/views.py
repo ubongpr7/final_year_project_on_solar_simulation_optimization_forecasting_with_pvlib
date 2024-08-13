@@ -83,20 +83,35 @@ class PVTrackingView(FormView):
         axis_azimuth = form.cleaned_data['axis_azimuth']
 
         # Call the pv_tracking function
-        result = pv_tracking(
+        visualizer=self.request.get('visualizer',None)
+        if visualizer=='temp':
+            result = plot_temperature(
             tz=tz,
             from_=from_,
             to_=to_,
             lat=lat,
             lon=lon,
-            freq=freq,
-            max_angle=max_angle,
-            axis_tilt=axis_tilt,
-            axis_azimuth=axis_azimuth
-        )
+            freq=f'{freq}min'
+            )
+            graph_title='Temperature Variation Over Time'
+        elif visualizer=='true_tracker':
 
-        # Add result to context
-        graph_title='True Tracking Angle'
+            result = pv_tracking(
+                tz=tz,
+                from_=from_,
+                to_=to_,
+                lat=lat,
+                lon=lon,
+                freq=f'{freq}min',
+                max_angle=max_angle,
+                axis_tilt=axis_tilt,
+                axis_azimuth=axis_azimuth
+            )
+            graph_title='True Tracking Angle'
+
+
+
+
         context = self.get_context_data(result=result,graph_title=graph_title)
         return self.render_to_response(context)
 

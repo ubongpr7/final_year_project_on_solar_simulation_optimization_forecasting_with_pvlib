@@ -60,10 +60,10 @@ class PVTrackingForm(forms.Form):
         widget=forms.TextInput(attrs={'type': 'date'}),
         help_text="Choose the end date for the tracking period."
     )
-    freq = forms.CharField(
+    freq = forms.IntigerField(
         label="Frequency",
-        initial='5min',
-        help_text="Specify the frequency of the tracking data (e.g., '5min')."
+        initial=5,
+        help_text="Specify the frequency of the tracking data in minuites(e.g., 5)."
     )
     max_angle = forms.FloatField(
         label="Maximum Angle",
