@@ -70,10 +70,10 @@ class PVTrackingView(FormView):
     form_class = PVTrackingForm
     success_url = '/'
     def get(self, request, *args, **kwargs):
-    # Check for URL parameters
-    visualizer = request.GET.get('visualizer', None)
-    request.session['visualizer'] = visualizer
-    return super().get(request, *args, **kwargs)
+        # Check for URL parameters
+        visualizer = request.GET.get('visualizer', None)
+        request.session['visualizer'] = visualizer
+        return super().get(request, *args, **kwargs)
     
 
     def form_valid(self, form):
