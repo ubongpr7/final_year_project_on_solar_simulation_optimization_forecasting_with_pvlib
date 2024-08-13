@@ -165,7 +165,7 @@ def climate_plots(lat, lon,y_,plot_type='line', tz='UTC', title='Ambient Tempera
             'WS10m': 'wind_speed'
         })
     weather=weather.fillna({
-        'gni':weather['gni'].mean(),
+        'ghi':weather['ghi'].mean(),
         'dhi':weather['dhi'].mean(),
         'temp_air':weather['temp_air'].mean(),
         'wind_speed':weather['wind_speed'].mean(),
