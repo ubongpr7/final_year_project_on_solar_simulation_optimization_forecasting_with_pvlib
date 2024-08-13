@@ -16,15 +16,20 @@
                 
             <form hx-post="{{request.path}}" hx-target="#content-area" hx-trigger="submit" hx-swap="post"  >
                 {% csrf_token %}
-                {% for field in form %}
-                <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                        {% bootstrap_field field %}
-            
-                    </div>
-                {% endfor %}
+                <div class="col-12">
+
+                    {% for field in form %}
+    
+                    
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12">
+                            {% bootstrap_field field %}
                 
+                        </div>
+                    {% endfor %}
+                    
+                </div>
                 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary align-center">Submit</button>
             </form>
             </div>
         </div>
