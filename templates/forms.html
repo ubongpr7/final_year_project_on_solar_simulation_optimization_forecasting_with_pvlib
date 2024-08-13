@@ -13,7 +13,7 @@
     <div class="card-header">Form</div>
     <div class="card-body">
         
-    <form hx-post="{% url 'pv_tracking'  %}" hx-target="#pv-form" hx-trigger="submit" hx-swap="post"  >
+    <form hx-post="{% url 'pv_tracking'  %}" hx-target="#content-area" hx-trigger="submit" hx-swap="post"  >
         {% csrf_token %}
         {% bootstrap_form form %}
         
