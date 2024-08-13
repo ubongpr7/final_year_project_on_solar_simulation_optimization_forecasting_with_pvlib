@@ -17,12 +17,11 @@
 <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 <div class="container">
     <div class="row">
-        <div class="col-6 col-md-12">
+        <div class="col-6 col-lg-12">
             
 <div class="card">
-    <div class="card-header">Form</div>
+    <div class="card-header">Search Address on Map</div>
     <div class="card-body">
-        <h3>Search Address on Map</h3>
         <form hx-post="{% url 'map' %}" hx-target="#map-container" hx-trigger="submit" hx-swap="post">
             {% csrf_token %}
             {% bootstrap_form form %}
@@ -54,15 +53,15 @@
 </div>
 
         </div>
-        <div class="col-6 col-md-12">
+        <div class="col-6 col-lg-12">
             
-    <div id="map">
-        {{ map|safe }}
-    </div>
 <div class="card">
-    <div class="card-header">Form</div>
+    <div class="card-header">{{location.address}} Map</div>
     <div class="card-body">
 
+        <div id="map">
+            {{ map|safe }}
+        </div>
     </div>
 </div>
 

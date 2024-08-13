@@ -23,13 +23,14 @@
 </div>
 
 <div class="card">
-    <div class="card-header">Graph/Visualization</div>
+    <div class="card-header">{{graph_title}}</div>
     <div class="card-body">
-        {{result|safe }}
-        <!-- Example graph (you could use a canvas, SVG, or image here) -->
         <div id="graph-placeholder" style="height: 200px; background-color: #e0e0e0;">
-            <!-- Your graph rendering logic here -->
-            <p style="text-align: center; padding-top: 80px;">Graph Placeholder</p>
+            
+            <p style="text-align: center; padding-top: 80px;">
+                {{result|safe }}
+            
+            </p>
         </div>
     </div>
 </div>

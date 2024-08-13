@@ -53,7 +53,8 @@ def map_view(request):
                 'map': map_html,
                 'latitude':latitude,
                 'longitude':longitude,
-                'timezone':timezone
+                'timezone':timezone,
+                'location':location,
                 
                 }
 
@@ -95,7 +96,8 @@ class PVTrackingView(FormView):
         )
 
         # Add result to context
-        context = self.get_context_data(result=result)
+        graph_title='True Tracking Angle'
+        context = self.get_context_data(result=result,graph_title=graph_title)
         return self.render_to_response(context)
 
 
