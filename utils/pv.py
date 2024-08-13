@@ -147,17 +147,18 @@ def pv_tracking(tz='US/Eastern',color=None,plot_type='line',from_='2024-08-23',t
 requests_cache.install_cache('pvgis_requests_cache', backend='sqlite')
 
 
-    weather, _, info, _ = pvgis.get_pvgis_tmy(lat, lon, map_variables=True)
+weather, _, info, _ = pvgis.get_pvgis_tmy(lat, lon, map_variables=True)
 
-    # Rename columns to more descriptive names
-    weather = weather.rename(
-        columns={
-            'G(h)': 'ghi',
-            'Gb(n)': 'dni',
-            'Gd(h)': 'dhi',
-            'T2m': 'temp_air',
-            'WS10m': 'wind_speed'
-        })
+# Rename columns to more descriptive names
+weather = weather.rename(
+    columns={
+        'G(h)': 'ghi',
+        'Gb(n)': 'dni',
+        'Gd(h)': 'dhi',
+        'T2m': 'temp_air',
+        'WS10m': 'wind_speed'
+    })
+print(weather.columns)
 
 def plot_temperature(lat, lon,plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
     """
