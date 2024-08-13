@@ -117,7 +117,7 @@ class PVTrackingView(FormView):
             )
             graph_title='Wind Speed Variation Over Time'
         elif visualizer=='ghi':
-            result=plot_gni(
+            result=plot_ghi(
             tz=tz,
             color=plot_color,
             plot_type=plot_type,
