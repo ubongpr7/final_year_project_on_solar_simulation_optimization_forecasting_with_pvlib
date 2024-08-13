@@ -103,9 +103,20 @@ class PVTrackingView(FormView):
             # to_=to_,
             lat=lat,
             lon=lon,
-            # freq=f'{freq}min'
             )
             graph_title='Temperature Variation Over Time'
+        elif visualizer=='wind':
+            result=plot_wind_speed(
+            tz=tz,
+            color=plot_color,
+            plot_type=plot_type,
+            # from_=from_,
+            # to_=to_,
+            lat=lat,
+            lon=lon,
+            )
+            graph_title='Wind Speed Variation Over Time'
+
         elif visualizer=='true_tracker':
 
             result = pv_tracking(
