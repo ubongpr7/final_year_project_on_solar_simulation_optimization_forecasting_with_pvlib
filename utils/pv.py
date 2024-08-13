@@ -169,6 +169,8 @@ def climate_plots(lat, lon,y_,plot_type='line', tz='UTC', title='Ambient Tempera
         'dhi':weather['dhi'].mean(),
         'temp_air':weather['temp_air'].mean(),
         'wind_speed':weather['wind_speed'].mean(),
+        'pressure':weather['pressure'].mean(),
+        'relative_humidity':weather['relative_humidity'].mean(),
 
     })
     print(weather.columns)
@@ -202,3 +204,10 @@ def plot_dni(lat, lon,plot_type='line', tz='UTC', title='Ambient DNI', color='#6
 
 def plot_dhi(lat, lon,plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
     return climate_plots(lat=lat, lon=lon,plot_type=plot_type,y_='dhi' ,tz=tz, title=title, color=color,)
+
+
+def plot_relative_humidity(lat, lon,plot_type='line', tz='UTC', title='Relative Humidity', color='#603a47'):
+    return climate_plots(lat=lat, lon=lon,plot_type=plot_type,y_='relative_humidity' ,tz=tz, title=title, color=color,)
+
+def plot_pressure(lat, lon,plot_type='line', tz='UTC', title='Presure Variation', color='#603a47'):
+    return climate_plots(lat=lat, lon=lon,plot_type=plot_type,y_='pressure' ,tz=tz, title=title, color=color,)

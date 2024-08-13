@@ -118,7 +118,8 @@
 
     <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">Solar Irradiance Tracking 1</button>
     <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">PV modeling</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">Performance Monitoring</button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=pressure" hx-target="#content-area" hx-trigger="click">Pressure Variation/button>
+    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=humidity" hx-target="#content-area" hx-trigger="click">Humidty Variation</button>
     <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=ghi" hx-target="#content-area" hx-trigger="click">GHI Variation</button>
     <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=dni" hx-target="#content-area" hx-trigger="click">DNI Variation</button>
     <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=dhi" hx-target="#content-area" hx-trigger="click">DHI Variation</button>

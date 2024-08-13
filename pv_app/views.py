@@ -136,6 +136,26 @@ class PVTrackingView(FormView):
             lon=lon,
             )
             graph_title='DNI Variation Over Time'
+        elif visualizer=='humidity':
+            result=plot_relative_humidity(
+            tz=tz,
+            color=plot_color,
+            plot_type=plot_type,
+            
+            lat=lat,
+            lon=lon,
+            )
+            graph_title='Humidity Variation Over Time'
+        elif visualizer=='pressure':
+            result=plot_pressure(
+            tz=tz,
+            color=plot_color,
+            plot_type=plot_type,
+            
+            lat=lat,
+            lon=lon,
+            )
+            graph_title='Pressure Variation Over Time'
         elif visualizer=='dhi':
             result=plot_dhi(
             tz=tz,
