@@ -15,39 +15,62 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+<div class="container">
+    <div class="row">
+        <div class="col-6 col-md-12">
+            
+<div class="card">
+    <div class="card-header">Form</div>
+    <div class="card-body">
+        <h3>Search Address on Map</h3>
+        <form hx-post="{% url 'map' %}" hx-target="#map-container" hx-trigger="submit" hx-swap="post">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <div class="mb-3">
+                <select id="address-select" name="address" class="form-select" size="5"
+                        onchange="document.getElementById('address-input').value=this.value;">
+                    <!-- Options will be populated here -->
+                </select>
+            </div>
+    
+            <div id="loading-indicator" class="spinner-border text-primary" role="status" style="display: none;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+    
+            {% buttons %}
+            <button type="submit" class="btn btn-primary" >
+              Submit
+            </button>
+          {% endbuttons %}
+          <input type="hidden" id="latitude" name="latitude" value="{{latitude}}">
+        <input type="hidden" id="longitude" name="longitude" value="{{longitude}}">
+        <input type="hidden" id="timezone" name="timezone" value="{{timezone}}}">
+    
+    
+    
+        </form>
+    
+    </div>
+</div>
 
-    <h3>Search Address on Map</h3>
-    <form hx-post="{% url 'map' %}" hx-target="#map-container" hx-trigger="submit" hx-swap="post">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-        <div class="mb-3">
-            <select id="address-select" name="address" class="form-select" size="5"
-                    onchange="document.getElementById('address-input').value=this.value;">
-                <!-- Options will be populated here -->
-            </select>
         </div>
-
-        <div id="loading-indicator" class="spinner-border text-primary" role="status" style="display: none;">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-
-        {% buttons %}
-        <button type="submit" class="btn btn-primary" >
-          Submit
-        </button>
-      {% endbuttons %}
-      <input type="hidden" id="latitude" name="latitude" value="{{latitude}}">
-    <input type="hidden" id="longitude" name="longitude" value="{{longitude}}">
-    <input type="hidden" id="timezone" name="timezone" value="{{timezone}}}">
-
-
-
-    </form>
-
-
+        <div class="col-6 col-md-12">
+            
     <div id="map">
         {{ map|safe }}
     </div>
+<div class="card">
+    <div class="card-header">Form</div>
+    <div class="card-body">
+
+    </div>
+</div>
+
+        </div>
+    </div>
+</div>
+    
+
 
     
     <script>
