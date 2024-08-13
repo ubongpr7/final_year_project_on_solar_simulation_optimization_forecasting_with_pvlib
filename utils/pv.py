@@ -122,7 +122,7 @@ def pv_tracking(tz='US/Eastern',color=None,plot_type='line',from_='2024-08-23',t
         weather,
         'index',
         'tracker_theta',
-        title='True Tracking Angle,
+        title='True Tracking Angle',
     )
     fig = generate_plot(
         x=truetracking_angles.index,
