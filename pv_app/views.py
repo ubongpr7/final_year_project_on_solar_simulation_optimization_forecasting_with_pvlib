@@ -83,7 +83,7 @@ class PVTrackingView(FormView):
         axis_azimuth = form.cleaned_data['axis_azimuth']
 
         # Call the pv_tracking function
-        visualizer=self.request.get('visualizer',None)
+        visualizer=self.request.POST.get('visualizer',None)
         if visualizer=='temp':
             result = plot_temperature(
             tz=tz,

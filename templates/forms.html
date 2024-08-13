@@ -13,8 +13,9 @@
     <div class="card-header">Form</div>
     <div class="card-body">
         
-    <form hx-post="{% url 'pv_tracking'  %}" hx-target="#content-area" hx-trigger="submit" hx-swap="post"  >
+    <form hx-post="{{request.path}}" hx-target="#content-area" hx-trigger="submit" hx-swap="post"  >
         {% csrf_token %}
+        {{request.path}}
         {% bootstrap_form form %}
         
         <button type="submit" class="btn btn-primary">Submit</button>
