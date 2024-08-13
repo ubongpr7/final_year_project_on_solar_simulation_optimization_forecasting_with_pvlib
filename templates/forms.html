@@ -16,10 +16,9 @@
                 
             <form hx-post="{{request.path}}" hx-target="#content-area" hx-trigger="submit" hx-swap="post"  >
                 {% csrf_token %}
-                {% bootstrap_form form %}
                 {% for field in form %}
                 <div class="col-lg-4 col-md-6 col-sm-12 col-12">
-                        {{ field }}
+                        {% bootstrap_field field %}
             
                     </div>
                 {% endfor %}
