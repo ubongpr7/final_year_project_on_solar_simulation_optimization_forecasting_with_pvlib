@@ -60,7 +60,7 @@ class PVTrackingForm(forms.Form):
         widget=forms.TextInput(attrs={'type': 'date'}),
         help_text="Choose the end date for the tracking period."
     )
-    freq = forms.IntigerField(
+    freq = forms.IntegerField(
         label="Frequency",
         initial=5,
         help_text="Specify the frequency of the tracking data in minuites(e.g., 5)."
