@@ -165,7 +165,7 @@ import requests_cache
 import plotly.express as px
 import pandas as pd
 import pvlib
-from pvlib import pvgis
+from pvlib.iotools import pvgis
 from pvlib.location import Location
 
 # Cache requests to avoid repeated API calls
