@@ -141,20 +141,10 @@ def pv_tracking(tz='US/Eastern',color=None,plot_type='line',from_='2024-08-23',t
 requests_cache.install_cache('pvgis_requests_cache', backend='sqlite')
 
 
-weather, _, info, _ = pvgis.get_pvgis_tmy(lat, lon, map_variables=True)
 
-# Rename columns to more descriptive names
-weather = weather.rename(
-    columns={
-        'G(h)': 'ghi',
-        'Gb(n)': 'dni',
-        'Gd(h)': 'dhi',
-        'T2m': 'temp_air',
-        'WS10m': 'wind_speed'
-    })
-print(weather.columns)
 
-def plot_temperature(lat, lon,plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
+
+def climate_plots(lat, lon,y_,plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
     """
     Fetches TMY weather data for the given location and plots the ambient temperature.
 
@@ -168,20 +158,39 @@ def plot_temperature(lat, lon,plot_type='line', tz='UTC', title='Ambient Tempera
     # Fetch TMY weather data from PVGIS
 
     # Create a Plotly line plot for ambient temperature
+        
+    weather, _, info, _ = pvgis.get_pvgis_tmy(lat, lon, map_variables=True)
+
+    # Rename columns to more descriptive names
+    weather = weather.rename(
+        columns={
+            'G(h)': 'ghi',
+            'Gb(n)': 'dni',
+            'Gd(h)': 'dhi',
+            'T2m': 'temp_air',
+            'WS10m': 'wind_speed'
+        })
+    print(weather.columns)
     sample=df_sample_to_bootstrap_cards(
         weather,
         'index',
-        'temp_air',
+        y_,
         title,
     )
     fig = generate_plot(
         x=weather.index,
-        y=weather['temp_air'],
+        y=weather[y_],
         title=title,
-        labels={'x': 'Time', 'temp_air': 'Temperature (°C)'},
+        labels={'x': 'Time', y_: 'Temperature (°C)'},
         color=color,
         plot_type=plot_type,
     )
 
     return {"fig":fig.to_html(),"sample":sample}
+
+
+
+
+def plot_temperature(lat, lon,plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
+    return climate_plots(lat, lon,plot_type,y_='temp_air' tz, title, color,)
 
