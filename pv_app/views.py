@@ -87,11 +87,11 @@ class PVTrackingView(FormView):
         if visualizer=='temp':
             result = plot_temperature(
             tz=tz,
-            from_=from_,
-            to_=to_,
+            # from_=from_,
+            # to_=to_,
             lat=lat,
             lon=lon,
-            freq=f'{freq}min'
+            # freq=f'{freq}min'
             )
             graph_title='Temperature Variation Over Time'
         elif visualizer=='true_tracker':

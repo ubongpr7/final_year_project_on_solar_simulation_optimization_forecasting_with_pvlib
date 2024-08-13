@@ -12,7 +12,7 @@ import datetime
 
 
 import pandas as pd
-from pvlib.forecast import GFS
+# from pvlib.forecast import GFS
 from pvlib.location import Location
 
 geolocator = Nominatim(user_agent="abcd")
@@ -121,41 +121,95 @@ def pv_tracking(tz='US/Eastern',from_='2024-08-23',to_='2024-09-01',lat=40,lon=-
 
 
 
-def plot_temperature(tz='US/Eastern', from_='2024-08-23', to_='2024-09-01', lat=40, lon=-89, freq='5min'):
+# def plot_temperature(tz='US/Eastern', from_='2024-08-23', to_='2024-09-01', lat=40, lon=-89, freq='5min'):
+#     """
+#     Plot temperature variation over a specified time period for a given location.
+
+#     Parameters:
+#     - tz (str): Time zone.
+#     - from_ (str): Start date in YYYY-MM-DD format.
+#     - to_ (str): End date in YYYY-MM-DD format.
+#     - lat (float): Latitude of the location.
+#     - lon (float): Longitude of the location.
+#     - freq (str): Frequency of data points (e.g., '5min', '1H').
+
+#     Returns:
+#     - HTML representation of the plot.
+#     """
+#     # Define location
+#     location = Location(latitude=lat, longitude=lon, tz=tz)
+
+#     # Use GFS model to get weather data
+#     model = GFS()
+#     start = pd.Timestamp(from_, tz=tz)
+#     end = pd.Timestamp(to_, tz=tz)
+
+#     # Get weather data
+#     weather_data = model.get_processed_data(location.latitude, location.longitude, start, end)
+
+#     # Resample the data to the desired frequency
+#     weather_data_resampled = weather_data['temp_air'].resample(freq).mean()
+
+
+
+#     fig= plt.line(
+#         x=weather_data_resampled.index,
+#         y=weather_data_resampled.values,
+#         title='Temperature Variation Over Time',
+#         labels={'x':'Time','y':'Temperature (°C)'}
+#     )
+#     return fig.to_html()
+
+
+import requests_cache
+import plotly.express as px
+import pandas as pd
+import pvlib
+from pvlib import pvgis
+from pvlib.location import Location
+
+# Cache requests to avoid repeated API calls
+requests_cache.install_cache('pvgis_requests_cache', backend='sqlite')
+
+def plot_temperature(lat, lon, tz='UTC', title='Ambient Temperature', color='#603a47'):
     """
-    Plot temperature variation over a specified time period for a given location.
+    Fetches TMY weather data for the given location and plots the ambient temperature.
 
     Parameters:
-    - tz (str): Time zone.
-    - from_ (str): Start date in YYYY-MM-DD format.
-    - to_ (str): End date in YYYY-MM-DD format.
-    - lat (float): Latitude of the location.
-    - lon (float): Longitude of the location.
-    - freq (str): Frequency of data points (e.g., '5min', '1H').
-
-    Returns:
-    - HTML representation of the plot.
+    - lat: float, latitude of the location
+    - lon: float, longitude of the location
+    - tz: str, time zone of the location (default 'UTC')
+    - title: str, title of the plot (default 'Ambient Temperature')
+    - color: str, color of the plot line (default '#603a47')
     """
-    # Define location
-    location = Location(latitude=lat, longitude=lon, tz=tz)
+    # Fetch TMY weather data from PVGIS
+    weather, _, info, _ = pvgis.get_pvgis_tmy(lat, lon, map_variables=True)
 
-    # Use GFS model to get weather data
-    model = GFS()
-    start = pd.Timestamp(from_, tz=tz)
-    end = pd.Timestamp(to_, tz=tz)
+    # Rename columns to more descriptive names
+    weather = weather.rename(
+        columns={
+            'G(h)': 'ghi',
+            'Gb(n)': 'dni',
+            'Gd(h)': 'dhi',
+            'T2m': 'temp_air',
+            'WS10m': 'wind_speed'
+        })
 
-    # Get weather data
-    weather_data = model.get_processed_data(location.latitude, location.longitude, start, end)
-
-    # Resample the data to the desired frequency
-    weather_data_resampled = weather_data['temp_air'].resample(freq).mean()
-
-
-
-    fig= plt.line(
-        x=weather_data_resampled.index,
-        y=weather_data_resampled.values,
-        title='Temperature Variation Over Time',
-        labels={'x':'Time','y':'Temperature (°C)'}
+    # Create a Plotly line plot for ambient temperature
+    fig = px.line(
+        # weather,
+        x=weather.index,
+        y=weather['temp_air'],
+        title=title,
+        labels={'x': 'Time', 'temp_air': 'Temperature (°C)'},
+        line_shape='linear',
+        color_discrete_sequence=[color]
     )
+
     return fig.to_html()
+
+# # Example usage
+# lat = 40.0
+# lon = -89.0
+# html_plot = plot_temperature(lat, lon, tz='US/Eastern', title='Ambient Temperature in New York')
+# print(html_plot)
