@@ -194,8 +194,8 @@ def plot_wind_speed(lat, lon,plot_type='line', tz='UTC', title='Ambient Wind', c
     return climate_plots(lat=lat, lon=lon,plot_type=plot_type,y_='wind_speed' ,tz=tz, title=title, color=color)
 
 
-def plot_ghi(lat, lon,plot_type='line', tz='UTC', title='Ambient GNI', color='#603a47'):
-    return climate_plots(lat=lat, lon=lon,plot_type=plot_type,y_='gni' ,tz=tz, title=title, color=color)
+def plot_ghi(lat, lon,plot_type='line', tz='UTC', title='Ambient GHI', color='#603a47'):
+    return climate_plots(lat=lat, lon=lon,plot_type=plot_type,y_='ghi' ,tz=tz, title=title, color=color)
 
 def plot_dni(lat, lon,plot_type='line', tz='UTC', title='Ambient DNI', color='#603a47'):
     return climate_plots(lat=lat, lon=lon,plot_type=plot_type,y_='dni' ,tz=tz, title=title, color=color)

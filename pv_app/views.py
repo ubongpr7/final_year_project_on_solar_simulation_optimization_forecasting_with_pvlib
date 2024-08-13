@@ -116,7 +116,7 @@ class PVTrackingView(FormView):
             lon=lon,
             )
             graph_title='Wind Speed Variation Over Time'
-        elif visualizer=='gni':
+        elif visualizer=='ghi':
             result=plot_gni(
             tz=tz,
             color=plot_color,
@@ -125,7 +125,7 @@ class PVTrackingView(FormView):
             lat=lat,
             lon=lon,
             )
-            graph_title='GNI Variation Over Time'
+            graph_title='GHI Variation Over Time'
         elif visualizer=='dni':
             result=plot_dni(
             tz=tz,
