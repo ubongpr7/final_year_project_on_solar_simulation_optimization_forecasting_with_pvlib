@@ -15,13 +15,13 @@
         
     <form hx-post="{{request.path}}" hx-target="#content-area" hx-trigger="submit" hx-swap="post"  >
         {% csrf_token %}
-        {{request.path}}
         {% bootstrap_form form %}
         
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     </div>
 </div>
+    {{result.sample|safe }}
 
 <div class="card">
     <div class="card-header">{{graph_title}}</div>
@@ -29,7 +29,7 @@
         <div id="graph-placeholder" style="height: 200px; background-color: #e0e0e0;">
             
             <p style="text-align: center; padding-top: 80px;">
-                {{result|safe }}
+                {{result.fig|safe }}
             
             </p>
         </div>

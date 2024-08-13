@@ -87,6 +87,8 @@ class PVTrackingView(FormView):
         max_angle = form.cleaned_data['max_angle']
         axis_tilt = form.cleaned_data['axis_tilt']
         axis_azimuth = form.cleaned_data['axis_azimuth']
+        plot_color = form.cleaned_data['plot_color']
+        plot_type = form.cleaned_data['plot_type']
 
         # Call the pv_tracking function
         visualizer=self.request.session.get('visualizer')
@@ -95,6 +97,8 @@ class PVTrackingView(FormView):
         if visualizer=='temp':
             result = plot_temperature(
             tz=tz,
+            color=plot_color,
+            plot_type=plot_type,
             # from_=from_,
             # to_=to_,
             lat=lat,
@@ -109,6 +113,8 @@ class PVTrackingView(FormView):
                 from_=from_,
                 to_=to_,
                 lat=lat,
+                color=plot_color,
+                plot_type=plot_type,
                 lon=lon,
                 freq=f'{freq}min',
                 max_angle=max_angle,
