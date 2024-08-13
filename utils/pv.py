@@ -117,12 +117,7 @@ def pv_tracking(tz='US/Eastern',color=None,plot_type='line',from_='2024-08-23',t
         ) 
 
     truetracking_angles = truetracking_angles.fillna({'tracker_theta':0})
-    fig= plt.line(
-        x=truetracking_angles.index,
-        y=truetracking_angles.tracker_theta,
-        title='True Tracking Angle',
-        labels={'x':'Time','y':'Tracking angle'},
-    )
+    
     sample=df_sample_to_bootstrap_cards(
         weather,
         'index',
@@ -134,7 +129,6 @@ def pv_tracking(tz='US/Eastern',color=None,plot_type='line',from_='2024-08-23',t
         y=truetracking_angles.tracker_theta,
         title='True Tracking Angle',
         labels={'x':'Time','y':'Tracking angle'},
-        # line_shape='linear',
         color=color,
         plot_type=plot_type,
     )
