@@ -118,12 +118,6 @@ def pv_tracking(tz='US/Eastern',color=None,plot_type='line',from_='2024-08-23',t
 
     truetracking_angles = truetracking_angles.fillna({'tracker_theta':0})
     
-    sample=df_sample_to_bootstrap_cards(
-        truetracking_angles,
-        'index',
-        'tracker_theta',
-        title='True Tracking Angle',
-    )
     fig = generate_plot(
         x=truetracking_angles.index,
         y=truetracking_angles.tracker_theta,
@@ -132,7 +126,7 @@ def pv_tracking(tz='US/Eastern',color=None,plot_type='line',from_='2024-08-23',t
         color=color,
         plot_type=plot_type,
     )
-    return {"fig":fig.to_html(),"sample":sample}
+    return {"fig":fig.to_html(),"sample":"sample"}
 
 
 
@@ -178,12 +172,7 @@ def climate_plots(lat, lon,y_,plot_type='line', tz='UTC', title='Ambient Tempera
 
     })
     print(weather.columns)
-    sample=df_sample_to_bootstrap_cards(
-        weather,
-        'index',
-        y_,
-        title,
-    )
+    
     fig = generate_plot(
         x=weather.index,
         y=weather[y_],
@@ -193,7 +182,7 @@ def climate_plots(lat, lon,y_,plot_type='line', tz='UTC', title='Ambient Tempera
         plot_type=plot_type,
     )
 
-    return {"fig":fig.to_html(),"sample":sample}
+    return {"fig":fig.to_html(),"sample":"sample"}
 
 
 
