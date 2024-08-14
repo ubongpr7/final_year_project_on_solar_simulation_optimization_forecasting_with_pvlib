@@ -42,6 +42,7 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
 .tabs {
     display: flex;
     border-bottom: 2px solid #ddd;
@@ -115,6 +116,10 @@
     <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=wind" hx-target="#content-area" hx-trigger="click">Wind Variation</button>
     <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=temp" hx-target="#content-area" hx-trigger="click">Temperature Forecating </button>
     
+</div>
+
+<div id="content-area" class="content-area">
+    <!-- HTMX-loaded content will appear here -->
 </div>
 
 
