@@ -42,38 +42,6 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-#page-loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Ensures it's on top */
-}
-
-/* Spinner */
-.spinner {
-    border: 8px solid rgba(0, 0, 0, 0.1);
-    border-top: 8px solid #3498db; /* Blue color */
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1s linear infinite;
-}
-
-/* Spin animation */
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
 .tabs {
     display: flex;
     border-bottom: 2px solid #ddd;
@@ -119,9 +87,9 @@
 
 
     </style>
-    <div id="page-loader" class="loader" style="display: none;">
+    <!-- <div id="page-loader" class="loader" style="display: none;">
         <div class="spinner"></div>
-    </div>
+    </div> -->
     
 <div class="container" hx->
     {% bootstrap_messages %}
@@ -147,10 +115,6 @@
     <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=wind" hx-target="#content-area" hx-trigger="click">Wind Variation</button>
     <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=temp" hx-target="#content-area" hx-trigger="click">Temperature Forecating </button>
     
-</div>
-
-<div id="content-area" class="content-area">
-    <!-- HTMX-loaded content will appear here -->
 </div>
 
 
@@ -198,17 +162,6 @@ document.querySelector('.loader').style.display = 'none';
        
 </script>
 
-<script>
-    document.body.addEventListener('htmx:request', function() {
-    document.getElementById('page-loader').style.display = 'flex';
-});
-
-document.body.addEventListener('htmx:afterRequest', function() {
-    document.getElementById('page-loader').style.display = 'none';
-});
-
-    
-</script>
-
+   
 </body>
 </html>
