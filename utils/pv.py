@@ -124,7 +124,7 @@ def pv_tracking(tz='US/Eastern',color=None,plot_type='line',from_='2024-08-23',t
         title='True Tracking Angle',
         labels={'x':'Time','y':'Tracking angle'},
         color=color,
-        df=df_month,
+        # df=df_month,
         plot_type=plot_type,
     )
     return {"fig":fig.to_html(),"sample":"sample"}

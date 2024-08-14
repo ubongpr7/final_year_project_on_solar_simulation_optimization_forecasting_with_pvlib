@@ -29,7 +29,7 @@ def generate_plot(x, y,df=None, plot_type='line', title='Plot', labels=None, col
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'bar':
-        fig = px.bar(df, title=title, labels=labels)
+        fig = px.bar(df, value=y,title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'area':
@@ -37,19 +37,19 @@ def generate_plot(x, y,df=None, plot_type='line', title='Plot', labels=None, col
         fig.update_traces(line=dict(color=color))
 
     elif plot_type == 'histogram':
-        fig = px.histogram(df, title=title, labels={labels.get('x', 'X-Axis')})
+        fig = px.histogram(df, x=y, color='month', title=title, labels={labels.get('x', 'X-Axis')})
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'box':
-        fig = px.box(df, title=title, labels=labels)
+        fig = px.box(df,x=y, y=x,title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'violin':
-        fig = px.violin(df, title=title, labels=labels)
+        fig = px.violin(df,x=y, y=x, title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'pie':
-        fig = px.pie(df, title=title)
+        fig = px.pie(df,values=y, names=df.month, title=title)
         fig.update_traces(marker=dict(colors=[color]))
 
     elif plot_type == 'density_contour':
