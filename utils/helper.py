@@ -53,7 +53,7 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
         
 
     elif plot_type == 'box':
-        fig = px.box(df,x='month',y=y,title=title,color='month',color_discrete_sequence=[color] labels=labels)
+        fig = px.box(df,x='month',y=y,title=title,color='month',color_discrete_sequence=[color], labels=labels)
         fig.update_traces(marker=dict(colors=color))
         
 
