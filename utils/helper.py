@@ -30,17 +30,20 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
         labels = {'x': 'X-Axis', 'y': 'Y-Axis'}
 
     if plot_type == 'line':
-        fig = px.line(df,x=df.index, y=df[y],color='month',color_discrete_sequence=month_colors, title=title, labels=labels)
-        fig.update_traces(line=dict(color=color))
+        fig = px.line(df,x=df.index, y=df[y],color='month',color_discrete_sequence=[color], title=title, labels=labels)
+        # fig.update_traces(line=dict(color=color))
+        fig.update_traces(marker=dict(color=color_scale))
 
     elif plot_type == 'scatter':
-        fig = px.scatter(df,x=df.index,color_discrete_sequence=month_colors,color='month', y=df[y], title=title, labels=labels)
+        fig = px.scatter(df,x=df.index,color_discrete_sequence=[color],color='month', y=df[y], title=title, labels=labels)
         # fig.update_traces(marker=dict(color=color))
+        fig.update_traces(marker=dict(color=color_scale))
         
 
     elif plot_type == 'area':
-        fig = px.area(df, x=df.index,color='month',color_discrete_sequence=month_colors, y=df[y], title=title, labels=labels)
+        fig = px.area(df, x=df.index,color='month',color_discrete_sequence=[color], y=df[y], title=title, labels=labels)
         # fig.update_traces(line=dict(colors=color))
+        fig.update_traces(marker=dict(color=color_scale))
 
     # elif plot_type == 'bar':
     #     fig = px.bar(df, x=df.index,color_discrete_sequence=[color],color='month', y=y,title=title, labels=labels,barmode='group')
@@ -48,20 +51,21 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
         
 
     elif plot_type == 'bar':
-        fig = px.bar(monthly_avg, x=y,color_discrete_sequence=month_colors,color='month', y=y,title=title, labels=labels,barmode='group')
+        fig = px.bar(monthly_avg, x=y,color_discrete_sequence=[color],color='month', y=y,title=title, labels=labels,barmode='group')
         # fig.update_traces(marker=dict(color=color))
-        
+        fig.update_traces(marker=dict(color=color_scale))
 
     elif plot_type == 'histogram':
-        fig = px.histogram(df, x=y,nbins=20, title=title,color_discrete_sequence=[color, 'blue'], labels={labels.get('x', 'X-Axis')})
+        fig = px.histogram(df, x=y,nbins=20, title=title,color_discrete_sequence=[color], labels={labels.get('x', 'X-Axis')})
         
 
     elif plot_type == 'box':
         fig = px.box(df,x='month',y=y,title=title,color='month',color_discrete_sequence=[color], labels=labels)
-        
+        fig.update_traces(marker=dict(color=color_scale))
 
     elif plot_type == 'violin':
         fig = px.violin(df,x='month', y=y,color='month',color_discrete_sequence=month_colors, title=title, labels=labels)
+        fig.update_traces(marker=dict(color=color_scale))
         
     elif plot_type == 'pie':
         fig = px.pie(monthly_avg,values=y, names='month', title=title)
