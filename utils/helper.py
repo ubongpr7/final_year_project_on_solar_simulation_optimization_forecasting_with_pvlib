@@ -1,6 +1,6 @@
 import plotly.express as px
 import plotly.graph_objects as go
-
+import plotly.colors as colors
 def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f77b4'):
     """
     Generate a Plotly graph based on the provided parameters.
@@ -21,20 +21,25 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
     df['month'] = df.index.month_name()
     monthly_avg = df.groupby('month')[y].mean().reindex(month_order)
     print('monthly_avg: ',monthly_avg.head())
+    color_scale = colors.qualitative.Set1
+
+    # Create a dictionary mapping month names to colors
+    month_colors = dict(zip(df['month'].unique(), color_scale))
+
     if labels is None:
         labels = {'x': 'X-Axis', 'y': 'Y-Axis'}
 
     if plot_type == 'line':
-        fig = px.line(df,x=df.index, y=df[y],color='month',color_discrete_sequence=[color], title=title, labels=labels)
+        fig = px.line(df,x=df.index, y=df[y],color='month',color_discrete_sequence=month_colors, title=title, labels=labels)
         fig.update_traces(line=dict(color=color))
 
     elif plot_type == 'scatter':
-        fig = px.scatter(df,x=df.index,color_discrete_sequence=[color],color='month', y=df[y], title=title, labels=labels)
+        fig = px.scatter(df,x=df.index,color_discrete_sequence=month_colors,color='month', y=df[y], title=title, labels=labels)
         # fig.update_traces(marker=dict(color=color))
         
 
     elif plot_type == 'area':
-        fig = px.area(df, x=df.index,color='month',color_discrete_sequence=[color], y=df[y], title=title, labels=labels)
+        fig = px.area(df, x=df.index,color='month',color_discrete_sequence=month_colors, y=df[y], title=title, labels=labels)
         # fig.update_traces(line=dict(colors=color))
 
     # elif plot_type == 'bar':
@@ -43,7 +48,7 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
         
 
     elif plot_type == 'bar':
-        fig = px.bar(monthly_avg, x='month',color_discrete_sequence=[color],color='month', y=y,title=title, labels=labels,barmode='group')
+        fig = px.bar(monthly_avg, x=y,color_discrete_sequence=month_colors,color='month', y=y,title=title, labels=labels,barmode='group')
         # fig.update_traces(marker=dict(color=color))
         
 
@@ -56,7 +61,7 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
         
 
     elif plot_type == 'violin':
-        fig = px.violin(df,x='month', y=y,color='month',color_discrete_sequence=[color], title=title, labels=labels)
+        fig = px.violin(df,x='month', y=y,color='month',color_discrete_sequence=month_colors, title=title, labels=labels)
         
     elif plot_type == 'pie':
         fig = px.pie(monthly_avg,values=y, names='month', title=title)
@@ -81,7 +86,7 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
         title=title,
         xaxis_title=labels.get('x', 'X-Axis'),
         yaxis_title=labels.get('y', 'Y-Axis'),
-        height=600,
+        height=700,
     )
 
     return fig
