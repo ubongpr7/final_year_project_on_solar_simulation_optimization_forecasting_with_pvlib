@@ -19,7 +19,9 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
     month_order = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
     df['month'] = df.index.month_name()
-    monthly_avg = df.groupby('month')[y].mean().reindex(month_order)
+    monthly_avg = df.groupby('month')[y].mean().reset_index()
+    monthly_avg['month'] = pd.Categorical(monthly_avg['month'], categories=month_order, ordered=True)
+    monthly_avg = monthly_avg.sort_values('month')
     print('monthly_avg: ',monthly_avg.head())
     color_scale = colors.qualitative.Set1
 
@@ -66,7 +68,7 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
     elif plot_type == 'violin':
         fig = px.violin(df,x='month', y=y,color='month',color_discrete_sequence=month_colors, title=title, labels=labels)
         fig.update_traces(marker=dict(color=color_scale))
-        
+
     elif plot_type == 'pie':
         fig = px.pie(monthly_avg,values=y, names='month', title=title)
 
