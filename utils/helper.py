@@ -1,7 +1,7 @@
 import plotly.express as px
 import plotly.graph_objects as go
 
-def generate_plot(x, y,df=None, plot_type='line', title='Plot', labels=None, color='#1f77b4'):
+def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f77b4'):
     """
     Generate a Plotly graph based on the provided parameters.
 
@@ -16,41 +16,47 @@ def generate_plot(x, y,df=None, plot_type='line', title='Plot', labels=None, col
     Returns:
     - fig: Plotly figure object
     """
-
+    df['month'] = df.index.month
+    monthly_avg = df.groupby('month')[y].mean()
+    
     if labels is None:
         labels = {'x': 'X-Axis', 'y': 'Y-Axis'}
 
     if plot_type == 'line':
-        fig = px.line(x=x, y=y, title=title, labels=labels)
+        fig = px.line(df,x=df.index, y=df[y], title=title, labels=labels)
         fig.update_traces(line=dict(color=color))
 
     elif plot_type == 'scatter':
-        fig = px.scatter(x=x, y=y, title=title, labels=labels)
-        fig.update_traces(marker=dict(color=color))
-
-    elif plot_type == 'bar':
-        fig = px.bar(df, value=y,title=title, labels=labels)
+        fig = px.scatter(df,x=df.index, y=df[y], title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'area':
-        fig = px.area(x=x, y=y, title=title, labels=labels)
+        fig = px.area(df, x=df.index, y=df[y], title=title, labels=labels)
         fig.update_traces(line=dict(color=color))
 
+    elif plot_type == 'bar':
+        fig = px.bar(monthly_avg, x=monthly_avg.index, y=monthly_avg[y],title=title, labels=labels,barmode='group')
+        fig.update_traces(marker=dict(color=color))
+
     elif plot_type == 'histogram':
-        fig = px.histogram(df, x=y, color='month', title=title, labels={labels.get('x', 'X-Axis')})
+        fig = px.histogram(monthly_avg, x=y,nbins=20,color='month',color_discrete_sequence=['blue'], title=title, labels={labels.get('x', 'X-Axis')})
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'box':
-        fig = px.box(df,x=y, y=x,title=title, labels=labels)
+        fig = px.box(monthly_avg,y=y,title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'violin':
-        fig = px.violin(df,x=y, y=x, title=title, labels=labels)
+        fig = px.violin(monthly_avg, y=y, title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'pie':
-        fig = px.pie(df,values=y, names=df.month, title=title)
+        fig = px.pie(monthly_avg,values=y, names=monthly_avg.index, title=title)
         fig.update_traces(marker=dict(colors=[color]))
+
+    elif plot_type == 'heatmap':
+        z = df.pivot(index='month', columns='month', values=y)
+        fig = px.imshow(z, color_continuous_scale='Viridis', title='Heatmap')
 
     elif plot_type == 'density_contour':
         fig = px.density_contour(df, title=title, labels=labels)

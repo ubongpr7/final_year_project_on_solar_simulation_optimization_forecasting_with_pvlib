@@ -95,7 +95,8 @@ class PVTrackingForm(forms.Form):
             ('violin', 'Violin'),
             ('pie', 'Pie'),
             ('density_contour', 'Density Contour'),
-            ('funnel', 'Funnel')
+            ('funnel', 'Funnel'),
+            ('heatmap', 'Heatmap')
         ],
         initial='line',
         help_text="Select the type of plot you want to generate."
