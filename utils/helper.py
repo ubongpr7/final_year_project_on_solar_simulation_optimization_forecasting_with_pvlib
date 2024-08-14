@@ -23,11 +23,12 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
         labels = {'x': 'X-Axis', 'y': 'Y-Axis'}
 
     if plot_type == 'line':
-        fig = px.line(df,x=df.index, y=df[y],color='month',facet_row='month', title=title, labels=labels)
+        fig = px.line(df,x=df.index, y=df[y],color='month', title=title, labels=labels)
         fig.update_traces(line=dict(color=color))
 
     elif plot_type == 'scatter':
         fig = px.scatter(df,x=df.index,facet_row='month',color='month', y=df[y], title=title, labels=labels)
+        fig.update_traces(marker=dict(color=color))
         
 
     elif plot_type == 'area':
@@ -36,22 +37,25 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
 
     elif plot_type == 'bar':
         fig = px.bar(monthly_avg, x='month', y=y,title=title, labels=labels,barmode='group')
+        fig.update_traces(marker=dict(color=color))
         
 
     elif plot_type == 'histogram':
         fig = px.histogram(df, x=y,nbins=20,color_discrete_sequence=['blue'], title=title, labels={labels.get('x', 'X-Axis')})
+        fig.update_traces(marker=dict(color=color))
         
 
     elif plot_type == 'box':
         fig = px.box(df,x='month',y=y,title=title, labels=labels)
+        fig.update_traces(marker=dict(color=color))
         
 
     elif plot_type == 'violin':
-        fig = px.violin(monthly_avg, y=y, title=title, labels=labels)
+        fig = px.violin(df,x='month', y=y,color='month', title=title, labels=labels)
+        fig.update_traces(marker=dict(color=color))
         
-
     elif plot_type == 'pie':
-        fig = px.pie(monthly_avg,values=y, names=monthly_avg.index, title=title)
+        fig = px.pie(monthly_avg,values=y, names='month', title=title)
         fig.update_traces(marker=dict(colors=[color]))
 
     elif plot_type == 'heatmap':
@@ -64,12 +68,12 @@ def generate_plot(y,df, plot_type='line', title='Plot', labels=None, color='#1f7
 
     elif plot_type == 'funnel':
         fig = px.funnel(df, title=title, labels=labels)
+        fig.update_traces(marker=dict(color=color))
         
 
     else:
         raise ValueError(f"Unknown plot_type: {plot_type}")
     
-    fig.update_traces(marker=dict(color=color))
     fig.update_layout(
         title=title,
         xaxis_title=labels.get('x', 'X-Axis'),
