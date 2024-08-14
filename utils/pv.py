@@ -175,7 +175,6 @@ def climate_plots(lat, lon,y_,plot_type='line', tz='UTC', title='Ambient Tempera
     })
     print(weather.columns)
     weather['month']=weather.index.month
-    df_month = weather.groupby('month').mean()
 
     fig = generate_plot(
         df= weather, 
