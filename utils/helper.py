@@ -136,5 +136,4 @@ def generate_plot(y, df, plot_type='line', title=None, labels=None, color='#1f77
         yaxis_title=labels.get('y', 'Y-Axis'),
         height=700,
     )
-
     return fig
