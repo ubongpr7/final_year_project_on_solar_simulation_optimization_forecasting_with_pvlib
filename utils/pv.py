@@ -117,13 +117,14 @@ def pv_tracking(tz='US/Eastern',color=None,plot_type='line',from_='2024-08-23',t
         ) 
 
     truetracking_angles = truetracking_angles.fillna({'tracker_theta':0})
-    
+    df_month=truetracking_angles.groupby(truetracking_angles.index.month).mean()
     fig = generate_plot(
         x=truetracking_angles.index,
         y=truetracking_angles.tracker_theta,
         title='True Tracking Angle',
         labels={'x':'Time','y':'Tracking angle'},
         color=color,
+        df=df_month,
         plot_type=plot_type,
     )
     return {"fig":fig.to_html(),"sample":"sample"}
@@ -174,10 +175,13 @@ def climate_plots(lat, lon,y_,plot_type='line', tz='UTC', title='Ambient Tempera
 
     })
     print(weather.columns)
-    
+    weather['month']=weather.index.month
+    df_month = weather.groupby('month').mean()
+
     fig = generate_plot(
         x=weather.index,
         y=weather[y_],
+        df=df_month,
         title=title,
         labels={'x': 'Time', 'y': y_},
         color=color,

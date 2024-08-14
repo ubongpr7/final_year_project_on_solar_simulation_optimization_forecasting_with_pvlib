@@ -1,7 +1,7 @@
 import plotly.express as px
 import plotly.graph_objects as go
 
-def generate_plot(x, y, plot_type='line', title='Plot', labels=None, color='#1f77b4'):
+def generate_plot(x, y,df=None, plot_type='line', title='Plot', labels=None, color='#1f77b4'):
     """
     Generate a Plotly graph based on the provided parameters.
 
@@ -29,7 +29,7 @@ def generate_plot(x, y, plot_type='line', title='Plot', labels=None, color='#1f7
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'bar':
-        fig = px.bar(x=x, y=y, title=title, labels=labels)
+        fig = px.bar(df, title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'area':
@@ -37,27 +37,27 @@ def generate_plot(x, y, plot_type='line', title='Plot', labels=None, color='#1f7
         fig.update_traces(line=dict(color=color))
 
     elif plot_type == 'histogram':
-        fig = px.histogram(x=x, title=title, labels={labels.get('x', 'X-Axis')})
+        fig = px.histogram(df, title=title, labels={labels.get('x', 'X-Axis')})
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'box':
-        fig = px.box(x=x, y=y, title=title, labels=labels)
+        fig = px.box(df, title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'violin':
-        fig = px.violin(x=x, y=y, title=title, labels=labels)
+        fig = px.violin(df, title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
 
     elif plot_type == 'pie':
-        fig = px.pie(names=x, values=y, title=title)
+        fig = px.pie(df, title=title)
         fig.update_traces(marker=dict(colors=[color]))
 
     elif plot_type == 'density_contour':
-        fig = px.density_contour(x=x, y=y, title=title, labels=labels)
+        fig = px.density_contour(df, title=title, labels=labels)
         fig.update_traces(contours_coloring="fill", colorscale=[[0, color], [1, color]])
 
     elif plot_type == 'funnel':
-        fig = px.funnel(x=x, y=y, title=title, labels=labels)
+        fig = px.funnel(df, title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
 
     else:
