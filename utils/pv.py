@@ -345,7 +345,24 @@ def plot_dhi(lat, lon, plot_type='line', tz='UTC', title='Diffuse Horizontal Irr
     return climate_plots(lat, lon, 'dhi', plot_type, tz, title, color)
 
 
-def plot_relative_humidity(lat, lon, plot_type='line', tz='UTC', title='Relative Humidity Irradiance (DHI)', color='#603a47'):
+def plot_pressure(lat, lon, plot_type='line', tz='UTC', title='Pressure', color='#603a47'):
+    """
+    Plot the Diffuse Horizontal Irradiance (DHI).
+
+    Parameters:
+    - lat: float, latitude of the location
+    - lon: float, longitude of the location
+    - plot_type: str, type of plot (e.g., 'line')
+    - tz: str, time zone of the location
+    - title: str, title of the plot
+    - color: str, color of the plot line
+
+    Returns:
+    - dict: dictionary containing plot HTML representation
+    """
+    return climate_plots(lat, lon, 'pressure', plot_type, tz, title, color)
+
+def plot_relative_humidity(lat, lon, plot_type='line', tz='UTC', title='Relative Humidity', color='#603a47'):
     """
     Plot the Diffuse Horizontal Irradiance (DHI).
 
