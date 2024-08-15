@@ -83,7 +83,7 @@ def fetch_pvgis_data(lat, lon, start=None, end=None, raddatabase=None, component
     except Exception as e:
         print(f"Error fetching data from PVGIS: {e}")
         return None
-result = fetch_pvgis_data(lat=40.7128, lon=-74.0060, start='2020-01-01', end='2020-01-31')
+result = fetch_pvgis_data(lat=40.7128, lon=-74.0060, start=2014, end=2015)
 if result:
     data = result['data']
     meta = result['meta']
@@ -91,6 +91,8 @@ if result:
     print("Metadata:", meta)
 else:
     print("Failed to fetch data from PVGIS.")
+g_df= pd.read_csv('../g_temp.csv')
+print('gobel_temp: ', g_df.head())
 
 
 def get_timezone(lat, lng):
