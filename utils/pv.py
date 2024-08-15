@@ -238,7 +238,8 @@ def climate_plots(lat, lon, y_, plot_type='line', tz='UTC', title='Ambient Tempe
         'Gd(h)': 'dhi',
         'T2m': 'air_temperature',
         'WS10m': 'wind_speed'
-    }).fillna({
+    })
+    weather = weather.fillna({
         'ghi': weather['ghi'].mean(),
         'dhi': weather['dhi'].mean(),
         'air_temperature': weather['air_temperature'].mean(),
