@@ -10,6 +10,8 @@ from timezonefinder import TimezoneFinder
 from .helper import generate_plot
 import pvlib
 import os 
+import requests
+from .data_processor import get_solar_irradiation
 
 # Cache requests to avoid repeated API calls
 requests_cache.install_cache('pvgis_requests_cache', backend='sqlite')
@@ -56,8 +58,8 @@ def fetch_pvgis_data(lat, lon, start=None, end=None, raddatabase=None, component
     """
     try:
         data, meta = pvlib.iotools.get_pvgis_hourly(
-            lat,
-            lon,
+            latitude,
+            longitude,
             start=start,
             end=end,
             raddatabase=raddatabase,
@@ -91,9 +93,6 @@ if result:
     print("Metadata:", meta)
 else:
     print("Failed to fetch data from PVGIS.")
-g_df= pd.read_csv(f'{os.getcwd()}/g_temp.csv')
-print('gobel_temp: ', g_df.columns)
-print(g_df.head())
 
 
 def get_timezone(lat, lng):
@@ -160,7 +159,6 @@ def interactive_map(address='Ondo, Nigeria'):
     """
     m = Map(location=[10, 0], zoom_start=10)
     location = get_lat_long(address)
-
     if location:
         lat, lng = location.latitude, location.longitude
         if lat is None or lng is None:
@@ -195,6 +193,7 @@ def pv_tracking(tz='US/Eastern', color=None, plot_type='line',title=None, from_=
     """
     times = pd.date_range(from_, to_, freq=freq, tz=tz)
     solpos = solarposition.get_solarposition(times, lat, lon)
+    print('openweather:' , get_solar_irradiation(lat=lat, lon=lon, date=from_, interval='1h', tz=tz).head())
 
     truetracking_angles = tracking.singleaxis(
         apparent_zenith=solpos['apparent_zenith'],
@@ -386,3 +385,7 @@ def plot_relative_humidity(lat, lon, plot_type='line', tz='UTC', title='Relative
     - dict: dictionary containing plot HTML representation
     """
     return climate_plots(lat, lon, 'relative_humidity', plot_type, tz, title, color)
+
+
+
+
