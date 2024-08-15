@@ -85,14 +85,14 @@ def fetch_pvgis_data(lat, lon, start=None, end=None, raddatabase=None, component
     except Exception as e:
         print(f"Error fetching data from PVGIS: {e}")
         return None
-result = fetch_pvgis_data(lat=40.7128, lon=-74.0060, start=2015, end=2015)
-if result:
-    data = result['data']
-    meta = result['meta']
-    print("Data:", data)
-    print("Metadata:", meta)
-else:
-    print("Failed to fetch data from PVGIS.")
+# result = fetch_pvgis_data(lat=40.7128, lon=-74.0060, start=2015, end=2015)
+# if result:
+#     data = result['data']
+#     meta = result['meta']
+#     print("Data:", data)
+#     print("Metadata:", meta)
+# else:
+#     print("Failed to fetch data from PVGIS.")
 
 
 def get_timezone(lat, lng):
