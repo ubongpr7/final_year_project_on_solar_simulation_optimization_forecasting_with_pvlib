@@ -27,7 +27,8 @@ def generate_plot(y, df, plot_type='line',title=None, labels=None, color='#1f77b
     month_colors = dict(zip(df['month'].unique(), color_scale))
 
     # Calculate monthly average once
-    monthly_avg = df.groupby('month')[y].mean().reset_index()
+    # monthly_avg = df.groupby('month')[y].mean().reset_index()
+    monthly_avg = df.groupby('month', observed=False)[y].mean().reset_index()
 
     # Titles and labels based on the plot type and y variable
     title_dict = {
