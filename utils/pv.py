@@ -9,7 +9,7 @@ from pvlib.iotools import pvgis
 from timezonefinder import TimezoneFinder
 from .helper import generate_plot
 import pvlib
-
+import os 
 
 # Cache requests to avoid repeated API calls
 requests_cache.install_cache('pvgis_requests_cache', backend='sqlite')
@@ -83,7 +83,7 @@ def fetch_pvgis_data(lat, lon, start=None, end=None, raddatabase=None, component
     except Exception as e:
         print(f"Error fetching data from PVGIS: {e}")
         return None
-result = fetch_pvgis_data(lat=40.7128, lon=-74.0060, start=2014, end=2015)
+result = fetch_pvgis_data(lat=40.7128, lon=-74.0060, start=2015, end=2015)
 if result:
     data = result['data']
     meta = result['meta']
@@ -91,8 +91,9 @@ if result:
     print("Metadata:", meta)
 else:
     print("Failed to fetch data from PVGIS.")
-g_df= pd.read_csv('../g_temp.csv')
-print('gobel_temp: ', g_df.head())
+g_df= pd.read_csv(f'{os.getcwd()}/g_temp.csv')
+print('gobel_temp: ', g_df.columns)
+print(g_df.head())
 
 
 def get_timezone(lat, lng):
