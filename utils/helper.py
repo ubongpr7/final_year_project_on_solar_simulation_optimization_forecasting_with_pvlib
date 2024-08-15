@@ -2,6 +2,8 @@ import plotly.express as px
 import plotly.colors as colors
 import pandas as pd
 
+
+
 def generate_plot(y, df, plot_type='line',title=None, labels=None, color='#1f77b4'):
     """
     Generate a Plotly graph based on the provided parameters.
@@ -70,6 +72,8 @@ def generate_plot(y, df, plot_type='line',title=None, labels=None, color='#1f77b
         fig.update_traces(line=dict(color=color))
     elif plot_type == 'bar':
         fig = px.bar(monthly_avg, x='month', y=y, title=title, labels=labels)
+        fig.update_traces(line=dict(color=color))
+
     elif plot_type == 'histogram':
         fig = px.histogram(df, x=y, nbins=20, title=title, labels=labels)
     elif plot_type == 'box':

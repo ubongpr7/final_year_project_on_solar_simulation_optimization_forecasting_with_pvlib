@@ -8,6 +8,8 @@ from pvlib import solarposition, tracking
 from pvlib.iotools import pvgis
 from timezonefinder import TimezoneFinder
 from .helper import generate_plot
+import pvlib
+
 
 # Cache requests to avoid repeated API calls
 requests_cache.install_cache('pvgis_requests_cache', backend='sqlite')
@@ -15,6 +17,78 @@ requests_cache.install_cache('pvgis_requests_cache', backend='sqlite')
 # Initialize Geolocator
 geolocator = Nominatim(user_agent="solar_app")
 
+
+def fetch_pvgis_data(lat, lon, start=None, end=None, raddatabase=None, components=True,
+                     surface_tilt=0, surface_azimuth=180, outputformat='json', usehorizon=True, 
+                     userhorizon=None, pvcalculation=False, peakpower=None, 
+                     pvtechchoice='crystSi', mountingplace='free', loss=0, 
+                     trackingtype=0, optimal_surface_tilt=False, optimalangles=False, 
+                     url='https://re.jrc.ec.europa.eu/api/', map_variables=True, timeout=30):
+    """
+    Fetches hourly data from the PVGIS API using the pvlib library.
+
+    Parameters:
+        lat (float): Latitude of the location.
+        lon (float): Longitude of the location.
+        start (str): Start date of the data (format: 'YYYY-MM-DD').
+        end (str): End date of the data (format: 'YYYY-MM-DD').
+        raddatabase (str): Radiation database to use.
+        components (bool): Whether to include components in the data.
+        surface_tilt (float): Tilt of the surface in degrees.
+        surface_azimuth (float): Azimuth of the surface in degrees.
+        outputformat (str): Format of the output ('json' or 'csv').
+        usehorizon (bool): Whether to include the horizon.
+        userhorizon (list): User-defined horizon.
+        pvcalculation (bool): Whether to perform PV calculation.
+        peakpower (float): Peak power of the PV system.
+        pvtechchoice (str): Technology of the PV system.
+        mountingplace (str): Mounting place ('free', 'building', etc.).
+        loss (float): System loss in percentage.
+        trackingtype (int): Type of tracking (0: fixed, 1: single-axis, etc.).
+        optimal_surface_tilt (bool): Whether to calculate the optimal surface tilt.
+        optimalangles (bool): Whether to calculate optimal angles.
+        url (str): URL of the PVGIS API.
+        map_variables (bool): Whether to map variable names to more human-readable format.
+        timeout (int): Timeout for the API request in seconds.
+
+    Returns:
+        dict: Parsed JSON data from the PVGIS API.
+    """
+    try:
+        data, meta = pvlib.iotools.get_pvgis_hourly(
+            lat=lat,
+            lon=lon,
+            start=start,
+            end=end,
+            raddatabase=raddatabase,
+            components=components,
+            surface_tilt=surface_tilt,
+            surface_azimuth=surface_azimuth,
+            outputformat=outputformat,
+            usehorizon=usehorizon,
+            userhorizon=userhorizon,
+            pvcalculation=pvcalculation,
+            peakpower=peakpower,
+            pvtechchoice=pvtechchoice,
+            mountingplace=mountingplace,
+            loss=loss,
+            trackingtype=trackingtype,
+            optimal_surface_tilt=optimal_surface_tilt,
+            optimalangles=optimalangles,
+            url=url,
+            map_variables=map_variables,
+            timeout=timeout
+        )
+        return {'data': data, 'meta': meta}
+    except Exception as e:
+        print(f"Error fetching data from PVGIS: {e}")
+        return None
+result = fetch_pvgis_data(lat=40.7128, lon=-74.0060, start='2020-01-01', end='2020-01-31')
+if result:
+    data = result['data']
+    meta = result['meta']
+    print("Data:", data)
+    print("Metadata:", meta)
 
 def get_timezone(lat, lng):
     """
@@ -269,3 +343,21 @@ def plot_dhi(lat, lon, plot_type='line', tz='UTC', title='Diffuse Horizontal Irr
     - dict: dictionary containing plot HTML representation
     """
     return climate_plots(lat, lon, 'dhi', plot_type, tz, title, color)
+
+
+def plot_relative_humidity(lat, lon, plot_type='line', tz='UTC', title='Relative Humidity Irradiance (DHI)', color='#603a47'):
+    """
+    Plot the Diffuse Horizontal Irradiance (DHI).
+
+    Parameters:
+    - lat: float, latitude of the location
+    - lon: float, longitude of the location
+    - plot_type: str, type of plot (e.g., 'line')
+    - tz: str, time zone of the location
+    - title: str, title of the plot
+    - color: str, color of the plot line
+
+    Returns:
+    - dict: dictionary containing plot HTML representation
+    """
+    return climate_plots(lat, lon, 'relative_humidity', plot_type, tz, title, color)

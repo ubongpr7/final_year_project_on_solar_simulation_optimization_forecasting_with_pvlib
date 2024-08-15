@@ -4,8 +4,8 @@
 # PVGIS-SARAH2
 
 pvlib.iotools.get_pvgis_hourly(
-    latitude,
-    longitude, 
+    lat,
+    lon, 
     start=None, 
     end=None,
     raddatabase=None,
