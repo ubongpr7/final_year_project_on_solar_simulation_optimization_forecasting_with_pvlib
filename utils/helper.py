@@ -1,139 +1,101 @@
-import pandas as pd
 import plotly.express as px
 import plotly.colors as colors
+import pandas as pd
 
-def generate_plot(y, df, plot_type='line', title=None, labels=None, color='#1f77b4'):
+def generate_plot(y, df, plot_type='line', color='#1f77b4'):
     """
-    Generate a Plotly graph based on the provided parameters with dynamic titles and labels.
+    Generate a Plotly graph based on the provided parameters.
 
     Parameters:
     - y: Data for the y-axis (or values for pie chart)
+    - df: DataFrame containing the data
     - plot_type: Type of plot ('line', 'scatter', 'bar', 'area', 'histogram', 'box', 'violin', 'pie', 'density_contour', 'funnel')
-    - title: Title of the plot (Optional)
-    - labels: Dictionary with 'x' and 'y' keys for axis labels (Optional)
     - color: Color of the plot elements
 
     Returns:
     - fig: Plotly figure object
     """
-    month_order = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-
-    # Add a month column
+    # Assigning month names based on the index
     df['month'] = df.index.month_name()
-
-    # Convert the 'month' column to a categorical type with the proper order
+    month_order = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     df['month'] = pd.Categorical(df['month'], categories=month_order, ordered=True)
 
-    # Sort the DataFrame by the categorical month column
-    df_sorted = df.sort_values('month')
-
-    monthly_avg = df_sorted.groupby('month')[y].mean().reset_index()
-
+    # Create a dictionary mapping month names to colors
     color_scale = colors.qualitative.Set1
-    month_colors = dict(zip(df_sorted['month'].unique(), color_scale))
+    month_colors = dict(zip(df['month'].unique(), color_scale))
 
-    # Generate titles and labels based on the plot type and y variable
-    if title is None:
-        title = f'{plot_type.capitalize()} of {y}'
+    # Calculate monthly average once
+    monthly_avg = df.groupby('month')[y].mean().reset_index()
 
-    if labels is None:
-        labels = {'x': 'Date', 'y': y.capitalize()}
+    # Titles and labels based on the plot type and y variable
+    title_dict = {
+        'line': f"Trend of {y.capitalize()} Over Time",
+        'scatter': f"Scatter Plot of {y.capitalize()} Over Time",
+        'area': f"Cumulative {y.capitalize()} Over Time",
+        'bar': f"Monthly Average {y.capitalize()}",
+        'histogram': f"Distribution of {y.capitalize()}",
+        'box': f"Monthly Distribution of {y.capitalize()}",
+        'violin': f"Monthly Distribution of {y.capitalize()}",
+        'pie': f"Proportion of Monthly Average {y.capitalize()}",
+        'heatmap': f"Heatmap of {y.capitalize()} by Month",
+        'density_contour': f"Density Contour of {y.capitalize()} Over Time",
+        'funnel': f"Funnel Plot of {y.capitalize()} Over Time"
+    }
 
-    # Modify labels based on the plot type
+    label_dict = {
+        'line': {'x': 'Date', 'y': f'{y.capitalize()}'},
+        'scatter': {'x': 'Date', 'y': f'{y.capitalize()}'},
+        'area': {'x': 'Date', 'y': f'Cumulative {y.capitalize()}'},
+        'bar': {'x': 'Month', 'y': f'Average {y.capitalize()}'},
+        'histogram': {'x': f'{y.capitalize()}', 'y': 'Frequency'},
+        'box': {'x': 'Month', 'y': f'{y.capitalize()}'},
+        'violin': {'x': 'Month', 'y': f'{y.capitalize()}'},
+        'pie': {'x': 'Month', 'y': f'Proportion of {y.capitalize()}'},
+        'heatmap': {'x': 'Month', 'y': 'Month'},
+        'density_contour': {'x': 'Date', 'y': f'{y.capitalize()}'},
+        'funnel': {'x': 'Date', 'y': f'{y.capitalize()}'}
+    }
+
+    title = title_dict.get(plot_type, f"{y.capitalize()} vs Time")
+    labels = label_dict.get(plot_type, {'x': 'Date', 'y': y.capitalize()})
+
+    # Create plots
     if plot_type == 'line':
-        title = f'Time Series of {y}'
-        labels = {'x': 'Date', 'y': y.capitalize()}
-
-    elif plot_type == 'scatter':
-        title = f'Scatter Plot of {y} by Month'
-        labels = {'x': 'Date', 'y': y.capitalize()}
-
-    elif plot_type == 'area':
-        title = f'Cumulative Area of {y} Over Time'
-        labels = {'x': 'Date', 'y': f'Cumulative {y.capitalize()}'}
-
-    elif plot_type == 'bar':
-        title = f'Bar Plot of {y} Over Time'
-        labels = {'x': 'Date', 'y': y.capitalize()}
-
-    elif plot_type == 'histogram':
-        title = f'Histogram of {y}'
-        labels = {'x': y.capitalize(), 'y': 'Frequency'}
-
-    elif plot_type == 'box':
-        title = f'Box Plot of {y} by Month'
-        labels = {'x': 'Month', 'y': y.capitalize()}
-
-    elif plot_type == 'violin':
-        title = f'Violin Plot of {y} by Month'
-        labels = {'x': 'Month', 'y': y.capitalize()}
-
-    elif plot_type == 'pie':
-        title = f'Pie Chart of {y} by Month'
-        labels = {'x': 'Month', 'y': y.capitalize()}
-
-    elif plot_type == 'heatmap':
-        title = f'Heatmap of {y}'
-        labels = {'x': 'Month', 'y': 'Month'}
-
-    elif plot_type == 'density_contour':
-        title = f'Density Contour Plot of {y}'
-        labels = {'x': 'X-Axis', 'y': y.capitalize()}
-
-    elif plot_type == 'funnel':
-        title = f'Funnel Plot of {y}'
-        labels = {'x': 'X-Axis', 'y': y.capitalize()}
-
-    else:
-        raise ValueError(f"Unknown plot_type: {plot_type}")
-    
-    # Generate the appropriate plot based on the plot type
-    if plot_type == 'line':
-        fig = px.line(df_sorted, x=df_sorted.index, y=df_sorted[y], title=title, labels=labels)
+        fig = px.line(df, x=df.index, y=df[y], title=title, labels=labels)
         fig.update_traces(line=dict(color=color))
-
     elif plot_type == 'scatter':
-        fig = px.scatter(df_sorted, x=df_sorted.index, y=df_sorted[y], color='month', color_discrete_sequence=color_scale, title=title, labels=labels)
-
+        fig = px.scatter(df, x=df.index, y=df[y], color='month', color_discrete_map=month_colors, title=title, labels=labels)
     elif plot_type == 'area':
-        fig = px.area(df_sorted, x=df_sorted.index, y=df_sorted[y], title=title, labels=labels)
+        fig = px.area(df, x=df.index, y=df[y], title=title, labels=labels)
         fig.update_traces(line=dict(color=color))
-
     elif plot_type == 'bar':
-        fig = px.bar(df_sorted, x=df_sorted.index, y=df_sorted[y], title=title, labels=labels, barmode='group')
-        fig.update_traces(marker=dict(color=color))
-
+        fig = px.bar(monthly_avg, x='month', y=y, title=title, labels=labels)
     elif plot_type == 'histogram':
-        fig = px.histogram(df_sorted, x=y, nbins=20, title=title, labels=labels)
-
+        fig = px.histogram(df, x=y, nbins=20, title=title, labels=labels)
     elif plot_type == 'box':
-        fig = px.box(df_sorted, x='month', y=y, color='month', color_discrete_sequence=color_scale, title=title, labels=labels)
-
+        fig = px.box(df, x='month', y=y, color='month', color_discrete_map=month_colors, title=title, labels=labels)
     elif plot_type == 'violin':
-        fig = px.violin(df_sorted, x='month', y=y, color='month', color_discrete_sequence=color_scale, title=title, labels=labels)
-
+        fig = px.violin(df, x='month', y=y, color='month', color_discrete_map=month_colors, title=title, labels=labels)
     elif plot_type == 'pie':
         fig = px.pie(monthly_avg, values=y, names='month', title=title)
-
     elif plot_type == 'heatmap':
-        z = df_sorted.pivot(index='month', columns='month', values=y)
+        z = df.pivot_table(index='month', columns='month', values=y)
         fig = px.imshow(z, color_continuous_scale='Viridis', title=title)
-
     elif plot_type == 'density_contour':
-        fig = px.density_contour(df_sorted, title=title, labels=labels)
+        fig = px.density_contour(df, x=df.index, y=df[y], title=title, labels=labels)
         fig.update_traces(contours_coloring="fill", colorscale=[[0, color], [1, color]])
-
     elif plot_type == 'funnel':
-        fig = px.funnel(df_sorted, title=title, labels=labels)
+        fig = px.funnel(df, x=df.index, y=df[y], title=title, labels=labels)
         fig.update_traces(marker=dict(color=color))
-
     else:
         raise ValueError(f"Unknown plot_type: {plot_type}")
-    
+
+    # Update layout
     fig.update_layout(
         title=title,
         xaxis_title=labels.get('x', 'X-Axis'),
         yaxis_title=labels.get('y', 'Y-Axis'),
-        height=700,
+        height=600,
     )
+
     return fig
