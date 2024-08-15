@@ -74,60 +74,14 @@ class PVTrackingView(FormView):
         context = self.get_context_data(result=result, graph_title=graph_title)
         return self.render_to_response(context)
 
-    # def get_plot_result(self, visualizer, data):
-    #     """Return the appropriate plot result and title based on the visualizer type."""
-    #     plot_functions = {
-    #         'temp_air': (plot_temperature, 'Temperature Variation Over Time'),
-    #         'wind_speed': (plot_wind_speed, 'Wind Speed Variation Over Time'),
-    #         'ghi': (plot_ghi, 'GHI Variation Over Time'),
-    #         'dni': (plot_dni, 'DNI Variation Over Time'),
-    #         'relative_humidity': (plot_relative_humidity, 'Humidity Variation Over Time'),
-    #         'pressure': (plot_pressure, 'Pressure Variation Over Time'),
-    #         'dhi': (plot_dhi, 'DHI Variation Over Time'),
-    #         'true_tracker': (pv_tracking, 'True Tracking Angle'),
-    #     }
-
-    #     plot_func, title = plot_functions.get(visualizer, (None, ''))
-
-    #     if plot_func:
-    #         if visualizer == 'true_tracker':
-    #             result = plot_func(
-    #                 tz=data['tz'],
-    #                 from_=data['from_date'],
-    #                 to_=data['to_date'],
-    #                 lat=data['lat'],
-    #                 lon=data['lon'],
-    #                 freq=f"{data['freq']}min",
-    #                 max_angle=data['max_angle'],
-    #                 axis_tilt=data['axis_tilt'],
-    #                 axis_azimuth=data['axis_azimuth'],
-    #                 color=data['plot_color'],
-    #                 plot_type=data['plot_type'],
-    #                 title=data['location'],
-    #             )
-    #         else:
-    #             result = plot_func(
-    #                 tz=data['tz'],
-    #                 lat=data['lat'],
-    #                 lon=data['lon'],
-    #                 color=data['plot_color'],
-    #                 plot_type=data['plot_type'],
-    #                 title=data['location'],
-    #             )
-    #     else:
-    #         result = None
-
-    #     return result, title
-
-
     def get_plot_result(self, visualizer, data):
         """Return the appropriate plot result and title based on the visualizer type."""
         plot_functions = {
-            'temp': (plot_temperature, 'Temperature Variation Over Time'),
-            'wind': (plot_wind_speed, 'Wind Speed Variation Over Time'),
+            'temp_air': (plot_temperature, 'Temperature Variation Over Time'),
+            'wind_speed': (plot_wind_speed, 'Wind Speed Variation Over Time'),
             'ghi': (plot_ghi, 'GHI Variation Over Time'),
             'dni': (plot_dni, 'DNI Variation Over Time'),
-            'humidity': (plot_relative_humidity, 'Humidity Variation Over Time'),
+            'relative_humidity': (plot_relative_humidity, 'Humidity Variation Over Time'),
             'pressure': (plot_pressure, 'Pressure Variation Over Time'),
             'dhi': (plot_dhi, 'DHI Variation Over Time'),
             'true_tracker': (pv_tracking, 'True Tracking Angle'),
@@ -136,34 +90,32 @@ class PVTrackingView(FormView):
         plot_func, title = plot_functions.get(visualizer, (None, ''))
 
         if plot_func:
-            print(f"Generating plot for {visualizer}")
-            try:
-                if visualizer == 'true_tracker':
-                    result = plot_func(
-                        tz=data['tz'],
-                        from_=data['from_date'],
-                        to_=data['to_date'],
-                        lat=data['lat'],
-                        lon=data['lon'],
-                        freq=f"{data['freq']}min",
-                        max_angle=data['max_angle'],
-                        axis_tilt=data['axis_tilt'],
-                        axis_azimuth=data['axis_azimuth'],
-                        color=data['plot_color'],
-                        plot_type=data['plot_type'],
-                    )
-                else:
-                    result = plot_func(
-                        tz=data['tz'],
-                        lat=data['lat'],
-                        lon=data['lon'],
-                        color=data['plot_color'],
-                        plot_type=data['plot_type'],
-                    )
-                return result, title
-            except Exception as e:
-                print(f"Error generating plot for {visualizer}: {e}")
-                return None, 'Error Generating Plot'
+            if visualizer == 'true_tracker':
+                result = plot_func(
+                    tz=data['tz'],
+                    from_=data['from_date'],
+                    to_=data['to_date'],
+                    lat=data['lat'],
+                    lon=data['lon'],
+                    freq=f"{data['freq']}min",
+                    max_angle=data['max_angle'],
+                    axis_tilt=data['axis_tilt'],
+                    axis_azimuth=data['axis_azimuth'],
+                    color=data['plot_color'],
+                    plot_type=data['plot_type'],
+                    title=data['location'],
+                )
+            else:
+                result = plot_func(
+                    tz=data['tz'],
+                    lat=data['lat'],
+                    lon=data['lon'],
+                    color=data['plot_color'],
+                    plot_type=data['plot_type'],
+                    title=data['location'],
+                )
         else:
-            print(f"Invalid visualizer type: {visualizer}")
-            return None, 'Invalid Visualizer Type'
+            result = None
+
+        return result, title
+
