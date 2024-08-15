@@ -232,6 +232,7 @@ def climate_plots(lat, lon, y_, plot_type='line', tz='UTC', title='Ambient Tempe
     weather, _, info, _ = pvgis.get_pvgis_tmy(lat, lon, map_variables=True)
     
     # Rename columns to more descriptive names
+    print(weather.columns)
     weather = weather.rename(columns={
         'G(h)': 'ghi',
         'Gb(n)': 'dni',
@@ -239,14 +240,15 @@ def climate_plots(lat, lon, y_, plot_type='line', tz='UTC', title='Ambient Tempe
         'T2m': 'air_temperature',
         'WS10m': 'wind_speed'
     })
-    weather = weather.fillna({
-        'ghi': weather['ghi'].mean(),
-        'dhi': weather['dhi'].mean(),
-        'air_temperature': weather['air_temperature'].mean(),
-        'wind_speed': weather['wind_speed'].mean(),
-        'pressure': weather['pressure'].mean(),
-        'relative_humidity': weather['relative_humidity'].mean(),
-    })
+    print(weather.columns)
+    # weather = weather.fillna({
+    #     'ghi': weather['ghi'].mean(),
+    #     'dhi': weather['dhi'].mean(),
+    #     'air_temperature': weather['air_temperature'].mean(),
+    #     'wind_speed': weather['wind_speed'].mean(),
+    #     'pressure': weather['pressure'].mean(),
+    #     'relative_humidity': weather['relative_humidity'].mean(),
+    # })
 
     fig = generate_plot(
         df=weather,
