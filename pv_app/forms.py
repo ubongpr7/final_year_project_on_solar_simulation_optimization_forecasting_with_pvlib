@@ -81,7 +81,6 @@ class PVTrackingForm(forms.Form):
         initial=180,
         help_text="Enter the azimuth angle of the tracking axis."
     )
-    location = forms.CharField(widget=forms.HiddenInput())
     # Add a field to select the plot type
     plot_type = forms.ChoiceField(
         label="Plot Type",
@@ -128,6 +127,7 @@ class PVTrackingForm(forms.Form):
         initial='#1f77b4',
         help_text="Select the color for your plot."
     )
+    location = forms.CharField(widget=forms.HiddenInput())
 
 
 
