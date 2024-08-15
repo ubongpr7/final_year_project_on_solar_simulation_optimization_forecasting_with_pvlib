@@ -59,7 +59,7 @@ def generate_plot(y, df, plot_type='line',location=None, labels=None, color='#1f
         'funnel': {'x': 'Date', 'y': f'{y.capitalize()}'}
     }
 
-    title = title_dict.get(plot_type, f"{y.capitalize()} vs Time for {location()}")
+    title = title_dict.get(plot_type, f"{y.capitalize()} vs Time for {location}")
     labels = label_dict.get(plot_type, {'x': 'Date', 'y': y.capitalize()})
 
     # Create plots
