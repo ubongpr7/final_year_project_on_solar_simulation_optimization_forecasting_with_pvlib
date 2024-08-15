@@ -2,7 +2,7 @@ import plotly.express as px
 import plotly.colors as colors
 import pandas as pd
 
-def generate_plot(y, df, plot_type='line', color='#1f77b4'):
+def generate_plot(y, df, plot_type='line',title=None, labels=None, color='#1f77b4'):
     """
     Generate a Plotly graph based on the provided parameters.
 
