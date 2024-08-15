@@ -103,6 +103,7 @@ class PVTrackingView(FormView):
                     axis_azimuth=data['axis_azimuth'],
                     color=data['plot_color'],
                     plot_type=data['plot_type'],
+                    title=data['location'],
                 )
             else:
                 result = plot_func(
@@ -111,6 +112,7 @@ class PVTrackingView(FormView):
                     lon=data['lon'],
                     color=data['plot_color'],
                     plot_type=data['plot_type'],
+                    title=data['location'],
                 )
         else:
             result = None

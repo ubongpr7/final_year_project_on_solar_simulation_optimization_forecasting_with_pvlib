@@ -4,7 +4,7 @@ import pandas as pd
 
 
 
-def generate_plot(y, df, plot_type='line',title=None, labels=None, color='#1f77b4'):
+def generate_plot(y, df, plot_type='line',location=None, labels=None, color='#1f77b4'):
     """
     Generate a Plotly graph based on the provided parameters.
 
@@ -32,7 +32,7 @@ def generate_plot(y, df, plot_type='line',title=None, labels=None, color='#1f77b
 
     # Titles and labels based on the plot type and y variable
     title_dict = {
-        'line': f"Trend of {y.capitalize()} Over Time",
+        'line': f"Trend of {y.capitalize()} Over Time ",
         'scatter': f"Scatter Plot of {y.capitalize()} Over Time",
         'area': f"Cumulative {y.capitalize()} Over Time",
         'bar': f"Monthly Average {y.capitalize()}",
@@ -50,7 +50,7 @@ def generate_plot(y, df, plot_type='line',title=None, labels=None, color='#1f77b
         'scatter': {'x': 'Date', 'y': f'{y.capitalize()}'},
         'area': {'x': 'Date', 'y': f'Cumulative {y.capitalize()}'},
         'bar': {'x': 'Month', 'y': f'Average {y.capitalize()}'},
-        'histogram': {'x': f'{y.capitalize()}', 'y': 'Frequency'},
+        'histogram': {'x': f'{y.capitalize()}', 'y': 'Frequency of Occurence  of {y.capitalize()}'},
         'box': {'x': 'Month', 'y': f'{y.capitalize()}'},
         'violin': {'x': 'Month', 'y': f'{y.capitalize()}'},
         'pie': {'x': 'Month', 'y': f'Proportion of {y.capitalize()}'},
@@ -59,7 +59,7 @@ def generate_plot(y, df, plot_type='line',title=None, labels=None, color='#1f77b
         'funnel': {'x': 'Date', 'y': f'{y.capitalize()}'}
     }
 
-    title = title_dict.get(plot_type, f"{y.capitalize()} vs Time")
+    title = title_dict.get(plot_type, f"{y.capitalize()} vs Time for {location.capitalize()}")
     labels = label_dict.get(plot_type, {'x': 'Date', 'y': y.capitalize()})
 
     # Create plots
@@ -97,7 +97,7 @@ def generate_plot(y, df, plot_type='line',title=None, labels=None, color='#1f77b
 
     # Update layout
     fig.update_layout(
-        title=title,
+        title=f"{title} for {location.capitalize()}",
         xaxis_title=labels.get('x', 'X-Axis'),
         yaxis_title=labels.get('y', 'Y-Axis'),
         height=600,

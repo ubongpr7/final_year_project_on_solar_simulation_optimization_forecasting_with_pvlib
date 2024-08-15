@@ -89,6 +89,9 @@ if result:
     meta = result['meta']
     print("Data:", data)
     print("Metadata:", meta)
+else:
+    print("Failed to fetch data from PVGIS.")
+
 
 def get_timezone(lat, lng):
     """
@@ -167,7 +170,7 @@ def interactive_map(address='Ondo, Nigeria'):
     return {'search_status': 'failed', 'map': m._repr_html_()}
 
 
-def pv_tracking(tz='US/Eastern', color=None, plot_type='line', from_='2024-08-23', to_='2024-09-01', lat=40, lon=-89, freq='5min', max_angle=90, axis_tilt=0, axis_azimuth=180):
+def pv_tracking(tz='US/Eastern', color=None, plot_type='line',title=None, from_='2024-08-23', to_='2024-09-01', lat=40, lon=-89, freq='5min', max_angle=90, axis_tilt=0, axis_azimuth=180):
     """
     Generate a plot of solar panel tracking angles over time.
 
@@ -202,7 +205,7 @@ def pv_tracking(tz='US/Eastern', color=None, plot_type='line', from_='2024-08-23
     fig = generate_plot(
         df=truetracking_angles,
         y='tracker_theta',
-        title='True Tracking Angle',
+        location=title,
         labels={'x': 'Time', 'y': 'Tracking angle'},
         color=color,
         plot_type=plot_type,
@@ -217,7 +220,7 @@ def climate_plots(lat, lon, y_, plot_type='line', tz='UTC', title='Ambient Tempe
     Parameters:
     - lat: float, latitude of the location
     - lon: float, longitude of the location
-    - y_: str, column to plot (e.g., 'temp_air', 'wind_speed')
+    - y_: str, column to plot (e.g., 'air_temperature', 'wind_speed')
     - plot_type: str, type of plot (e.g., 'line')
     - tz: str, time zone of the location
     - title: str, title of the plot
@@ -233,12 +236,12 @@ def climate_plots(lat, lon, y_, plot_type='line', tz='UTC', title='Ambient Tempe
         'G(h)': 'ghi',
         'Gb(n)': 'dni',
         'Gd(h)': 'dhi',
-        'T2m': 'temp_air',
+        'T2m': 'air_temperature',
         'WS10m': 'wind_speed'
     }).fillna({
         'ghi': weather['ghi'].mean(),
         'dhi': weather['dhi'].mean(),
-        'temp_air': weather['temp_air'].mean(),
+        'air_temperature': weather['air_temperature'].mean(),
         'wind_speed': weather['wind_speed'].mean(),
         'pressure': weather['pressure'].mean(),
         'relative_humidity': weather['relative_humidity'].mean(),
@@ -247,7 +250,7 @@ def climate_plots(lat, lon, y_, plot_type='line', tz='UTC', title='Ambient Tempe
     fig = generate_plot(
         df=weather,
         y=y_,
-        title=title,
+        location=title,
         labels={'x': 'Time', 'y': y_},
         color=color,
         plot_type=plot_type,
@@ -270,7 +273,7 @@ def plot_temperature(lat, lon, plot_type='line', tz='UTC', title='Ambient Temper
     Returns:
     - dict: dictionary containing plot HTML representation
     """
-    return climate_plots(lat, lon, 'temp_air', plot_type, tz, title, color)
+    return climate_plots(lat, lon, 'air_temperature', plot_type, tz, title, color)
 
 
 def plot_wind_speed(lat, lon, plot_type='line', tz='UTC', title='Wind Speed', color='#603a47'):
