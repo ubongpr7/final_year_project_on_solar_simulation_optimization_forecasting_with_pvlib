@@ -72,8 +72,8 @@ def generate_plot(y, df, plot_type='line',location=None, labels=None, color='#1f
         fig = px.area(df, x=df.index, y=df[y], title=title, labels=labels)
         fig.update_traces(line=dict(color=color))
     elif plot_type == 'bar':
-        fig = px.bar(monthly_avg, x='month', y=y, title=title, labels=labels)
-        fig.update_traces(line=dict(color=color))
+        fig = px.bar(monthly_avg, x='month',color='month', color_discrete_map=month_colors, y=y, title=title, labels=labels)
+        # fig.update_traces(line=dict(color=color))
 
     elif plot_type == 'histogram':
         fig = px.histogram(df, x=y, nbins=20, title=title, labels=labels)
@@ -97,7 +97,7 @@ def generate_plot(y, df, plot_type='line',location=None, labels=None, color='#1f
 
     # Update layout
     fig.update_layout(
-        title=f"{title} for {location}",
+        title=f"{title} for {location} \n Source: PVGIS",
         xaxis_title=labels.get('x', 'X-Axis'),
         yaxis_title=labels.get('y', 'Y-Axis'),
         height=600,

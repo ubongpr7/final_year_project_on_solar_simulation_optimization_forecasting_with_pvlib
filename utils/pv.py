@@ -56,8 +56,8 @@ def fetch_pvgis_data(lat, lon, start=None, end=None, raddatabase=None, component
     """
     try:
         data, meta = pvlib.iotools.get_pvgis_hourly(
-            lat=lat,
-            lon=lon,
+            lat,
+            lon,
             start=start,
             end=end,
             raddatabase=raddatabase,
@@ -220,7 +220,7 @@ def climate_plots(lat, lon, y_, plot_type='line', tz='UTC', title='Ambient Tempe
     Parameters:
     - lat: float, latitude of the location
     - lon: float, longitude of the location
-    - y_: str, column to plot (e.g., 'air_temperature', 'wind_speed')
+    - y_: str, column to plot (e.g., 'temp_air', 'wind_speed')
     - plot_type: str, type of plot (e.g., 'line')
     - tz: str, time zone of the location
     - title: str, title of the plot
@@ -237,14 +237,13 @@ def climate_plots(lat, lon, y_, plot_type='line', tz='UTC', title='Ambient Tempe
         'G(h)': 'ghi',
         'Gb(n)': 'dni',
         'Gd(h)': 'dhi',
-        'T2m': 'air_temperature',
+        'T2m': 'temp_air',
         'WS10m': 'wind_speed'
     })
-    print(weather.columns)
     # weather = weather.fillna({
     #     'ghi': weather['ghi'].mean(),
     #     'dhi': weather['dhi'].mean(),
-    #     'air_temperature': weather['air_temperature'].mean(),
+    #     'temp_air': weather['temp_air'].mean(),
     #     'wind_speed': weather['wind_speed'].mean(),
     #     'pressure': weather['pressure'].mean(),
     #     'relative_humidity': weather['relative_humidity'].mean(),
@@ -276,7 +275,7 @@ def plot_temperature(lat, lon, plot_type='line', tz='UTC', title='Ambient Temper
     Returns:
     - dict: dictionary containing plot HTML representation
     """
-    return climate_plots(lat, lon, 'air_temperature', plot_type, tz, title, color)
+    return climate_plots(lat, lon, 'temp_air', plot_type, tz, title, color)
 
 
 def plot_wind_speed(lat, lon, plot_type='line', tz='UTC', title='Wind Speed', color='#603a47'):
