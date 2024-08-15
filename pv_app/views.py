@@ -136,6 +136,7 @@ class PVTrackingView(FormView):
         plot_func, title = plot_functions.get(visualizer, (None, ''))
 
         if plot_func:
+            print(f"Generating plot for {visualizer}")
             try:
                 if visualizer == 'true_tracker':
                     result = plot_func(
@@ -164,4 +165,5 @@ class PVTrackingView(FormView):
                 print(f"Error generating plot for {visualizer}: {e}")
                 return None, 'Error Generating Plot'
         else:
+            print(f"Invalid visualizer type: {visualizer}")
             return None, 'Invalid Visualizer Type'
