@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime,date
 import requests
 
 def transform_data(df, date, sky_type='clear_sky'):
@@ -101,19 +101,16 @@ def extract_weather_data_to_df(data):
     return df
 
 
-
-
 def convert_to_unix_time(date_str):
     if isinstance(date_str, datetime):
         dt = date_str
-    elif isinstance(date_str, datetime.date):
+    elif isinstance(date_str, date):
         dt = datetime.combine(date_str, datetime.min.time())  # Convert date to datetime
     else:
         dt = datetime.strptime(date_str, "%Y-%m-%d")  # Convert string to datetime
     
     unix_time = int(dt.timestamp())
     return unix_time
-
 
 def get_solar_irradiation(lat, lon, start, end, tz, api_key='297b91bc87fac0f26c4d65efa6eb2443'):
     # Convert start and end dates from yyyy-mm-dd to Unix time
