@@ -46,10 +46,3 @@ def extract_weather_data(json_data):
     
     return df
 
-# Example usage with the provided JSON data
-json_data = {
-    # ... (your JSON data here)
-}
-
-df_weather = extract_weather_data(json_data)
-print(df_weather)
