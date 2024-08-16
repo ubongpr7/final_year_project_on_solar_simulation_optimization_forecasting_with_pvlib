@@ -7,7 +7,7 @@ from geopy.geocoders import Nominatim
 from pvlib import solarposition, tracking
 from pvlib.iotools import pvgis
 from timezonefinder import TimezoneFinder
-from .helper import generate_plot
+from .helper import generate_plot,df_sample_to_bootstrap_cards
 import pvlib
 import os 
 import requests

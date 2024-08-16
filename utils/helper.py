@@ -3,6 +3,17 @@ import plotly.colors as colors
 import pandas as pd
 
 
+def df_sample_to_bootstrap_cards(df):
+    html_table = df.to_html(classes='table table-striped')
+
+    # Wrap the table in a div with overflow styling
+    html = f'''
+    <div style="overflow-x: auto;">
+        {html_table}
+        {df.shape}
+    </div>
+    '''
+    return html
 
 def generate_plot(y, df, plot_type='line',location=None, labels=None, color='#1f77b4'):
     """
