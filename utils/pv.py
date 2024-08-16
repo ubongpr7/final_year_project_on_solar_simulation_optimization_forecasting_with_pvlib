@@ -190,7 +190,7 @@ def pv_tracking(tz='US/Eastern', color=None, plot_type='line',title=None, from_=
     try:
         ow_df =extract_weather_data(ow_json)
         print(f'ow_df: {ow_df.columns}')
-        ow_sample=df_sample_to_bootstrap_cards(ow_df.head(5))
+        ow_sample=df_sample_to_bootstrap_cards(ow_df)
     except Exception as e:
         print(f'Error extracting weather data: {e}')
 
