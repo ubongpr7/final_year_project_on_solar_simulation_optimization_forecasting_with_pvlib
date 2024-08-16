@@ -51,9 +51,9 @@ result_df = transform_data(df, date, sky_type='clear_sky')
 print(result_df.head())
 
 import requests
-
+# pro.openweathermap.org/data/2.5/weather?q=London,uk&APPID=297b91bc87fac0f26c4d65efa6eb2443
 def get_solar_irradiation(lat, lon, date, interval, tz, api_key='297b91bc87fac0f26c4d65efa6eb2443'):
-    url = "https://api.openweathermap.org/energy/1.0/solar/interval_data"
+    url = "https://pro.openweathermap.org/energy/1.0/solar/interval_data"
     params = {
         'lat': lat,
         'lon': lon,
