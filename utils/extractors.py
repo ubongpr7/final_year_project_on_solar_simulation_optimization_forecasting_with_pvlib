@@ -33,7 +33,9 @@ def get_solar_irradiation(lat, lon, start, end, tz, api_key='297b91bc87fac0f26c4
         'date': start_unix,
         'end': end_unix,
         'tz': tz,
-        'APPID': api_key
+        'APPID': api_key,
+        'type': 'hour',
+        'units': 'metric'
     }
     
     response = requests.get(url, params=params)
