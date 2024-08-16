@@ -43,6 +43,6 @@ def extract_weather_data(json_data):
 
     # Convert the list of data into a DataFrame
     df = pd.DataFrame(data)
-    
+    df.set_index('datetime', inplace=True)
     return df
 
