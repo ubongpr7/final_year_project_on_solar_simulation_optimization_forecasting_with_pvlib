@@ -1,4 +1,6 @@
 import pandas as pd
+from datetime import datetime
+import requests
 
 def transform_data(df, date, sky_type='clear_sky'):
     """
@@ -50,39 +52,50 @@ result_df = transform_data(df, date, sky_type='clear_sky')
 
 print(result_df.head())
 
-import requests
-# pro.openweathermap.org/data/2.5/weather?q=London,uk&APPID=297b91bc87fac0f26c4d65efa6eb2443
-def get_solar_irradiation(lat, lon, date, interval, tz, api_key='297b91bc87fac0f26c4d65efa6eb2443'):
-    url = "https://pro.openweathermap.org/energy/1.0/solar/interval_data"
+
+
+def convert_to_unix_time(date_str):
+    # Convert the date string to a datetime object
+    dt = datetime.strptime(date_str, "%Y-%m-%d")
+    # Convert the datetime object to Unix time (seconds since epoch)
+    unix_time = int(dt.timestamp())
+    return unix_time
+
+def get_solar_irradiation(lat, lon, start, end, tz, api_key='297b91bc87fac0f26c4d65efa6eb2443'):
+    # Convert start and end dates from yyyy-mm-dd to Unix time
+    start_unix = convert_to_unix_time(start)
+    end_unix = convert_to_unix_time(end)
+    
+    url = "https://history.openweathermap.org/data/2.5/history/city"
     params = {
         'lat': lat,
         'lon': lon,
-        'date': date,
-        'interval': interval,
+        'date': start_unix,
+        'end': end_unix,
         'tz': tz,
-        'appid': api_key
+        'APPID': api_key
     }
     
     response = requests.get(url, params=params)
-    
+    print(f'Response Status Code: {response.status_code}')
+
+         
     if response.status_code == 200:
         data = response.json()
-        print(f"Solar Irradiation Data for {lat}, {lon} on {date}:")
+        print(f"Solar Irradiation Data for {lat}, {lon} from {start} to {end}:")
         for item in data.get('data', []):
             print(f"Time: {item.get('time')}, Solar Irradiance: {item.get('irradiance')} W/m²")
-            return transform_data(data,date) 
+        return transform_data(data, start) 
     else:
         print(f"Failed to retrieve data. HTTP Status code: {response.status_code}")
         print("Response:", response.text)
 
 # Example usage
-api_key = "YOUR_API_KEY"
-latitude = 6.5244  # Replace with your latitude
-longitude = 3.3792  # Replace with your longitude
-date = "2022-01-01"  # Replace with your desired date
-interval = "1h"  # Options: hourly, daily
-tz = "UTC"  # Time zone
+lat = 52.5200  # Example latitude
+lon = 13.4050  # Example longitude
+start = "2023-08-01"
+end = "2023-08-02"
+tz = "UTC"  # Time zone, this might depend on the API's requirements
+api_key = "your_openweather_api_key"
 
-semi_df=get_solar_irradiation(latitude, longitude, date, interval, tz, )
-
-print(semi_df)
+get_solar_irradiation(lat, lon, start, end, tz, api_key)
