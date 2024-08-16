@@ -182,6 +182,7 @@ def pv_tracking(tz='US/Eastern', color=None, plot_type='line',title=None, from_=
     Returns:
     - dict: dictionary containing plot HTML representation
     """
+    ow_sample=''
     times = pd.date_range(from_, to_, freq=freq, tz=tz)
     solpos = solarposition.get_solarposition(times, lat, lon)
     print('openweather:' , get_solar_irradiation(lat=lat, lon=lon, start=from_, end=to_, tz=tz))
@@ -189,6 +190,7 @@ def pv_tracking(tz='US/Eastern', color=None, plot_type='line',title=None, from_=
     try:
         ow_df =extract_weather_data(ow_json)
         print(f'ow_df: {ow_df.columns}')
+        ow_sample=df_sample_to_bootstrap_cards(ow_df.head(5))
     except Exception as e:
         print(f'Error extracting weather data: {e}')
 
@@ -210,7 +212,7 @@ def pv_tracking(tz='US/Eastern', color=None, plot_type='line',title=None, from_=
         color=color,
         plot_type=plot_type,
     )
-    return {"fig": fig.to_html(), "sample": "sample"}
+    return {"fig": fig.to_html(), "sample": ow_sample}
 
 
 def climate_plots(lat, lon, y_, plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):

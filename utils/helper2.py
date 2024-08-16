@@ -70,38 +70,13 @@ def generate_plot(y, df, plot_type='line', title='Plot', labels=None, color='#1f
 
     return fig
 
-def df_sample_to_bootstrap_cards(df, x_col, y_col, title='Sample Data'):
-    # Take 10 random samples
-    sample_df = df[[x_col, y_col]].sample(10)
+def df_sample_to_bootstrap_cards(df):
+    html_table = df.to_html(classes='table table-striped')
 
-    # Initialize HTML for Bootstrap cards
-    html_output = '<div class="row">'
-
-    # Loop through the sample and create cards
-    for _, row in sample_df.iterrows():
-        x_val = row[x_col]
-        y_val = row[y_col]
-        
-        # Create the plot using Plotly
-        fig = px.scatter(x=[x_val], y=[y_val], title=f'{x_col}: {x_val}, {y_col}: {y_val}')
-        fig.update_traces(marker=dict(size=12))
-        
-        # Convert Plotly figure to HTML
-        plot_html = fig.to_html(full_html=False)
-        
-        # Create Bootstrap card
-        card_html = f'''
-        <div class="col-md-4">
-            <div class="card mb-4 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{x_col}: {x_val}, {y_col}: {y_val}</h5>
-                    <div>{plot_html}</div>
-                </div>
-            </div>
-        </div>
-        '''
-        html_output += card_html
-
-    html_output += '</div>'
-    
-    return html_output
+    # Wrap the table in a div with overflow styling
+    html = f'''
+    <div style="overflow-x: auto;">
+        {html_table}
+    </div>
+    '''
+    return html
