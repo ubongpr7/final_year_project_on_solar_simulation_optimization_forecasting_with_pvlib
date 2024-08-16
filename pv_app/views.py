@@ -10,7 +10,6 @@ from utils.pv import interactive_map, get_timezone_from_address, plot_temperatur
 # Create your views here.
 def home(request):
     context = {
-        'pv_tracking': pv_tracking(),
         'map': interactive_map().get('map'),
     }
     return render(request, 'index.html', context)
