@@ -8,7 +8,7 @@ def extract_weather_data(json_data):
     # Iterate through the weather data in the JSON
     for entry in json_data['list']:
         # Extract relevant information
-        dt = datetime.datetime.utcfromtimestamp(entry['dt'])  # Convert UNIX timestamp to datetime
+        dt = datetime.utcfromtimestamp(entry['dt'])  # Convert UNIX timestamp to datetime
         temp = entry['main']['temp']
         feels_like = entry['main']['feels_like']
         pressure = entry['main']['pressure']
