@@ -193,7 +193,7 @@ def pv_tracking(tz='US/Eastern', color=None, plot_type='line',title=None, from_=
     """
     times = pd.date_range(from_, to_, freq=freq, tz=tz)
     solpos = solarposition.get_solarposition(times, lat, lon)
-    print('openweather:' , get_solar_irradiation(lat=lat, lon=lon, date=from_, interval='1h', tz=tz).head())
+    print('openweather:' , get_solar_irradiation(lat=lat, lon=lon, date=from_, interval='1h', tz=tz))
 
     truetracking_angles = tracking.singleaxis(
         apparent_zenith=solpos['apparent_zenith'],

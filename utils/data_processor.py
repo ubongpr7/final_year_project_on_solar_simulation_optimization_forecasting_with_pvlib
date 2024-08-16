@@ -52,7 +52,7 @@ print(result_df.head())
 
 import requests
 
-def get_solar_irradiation(lat, lon, date, interval, tz, api_key='a7c0740d6d12554a20d45b8a65c09504'):
+def get_solar_irradiation(lat, lon, date, interval, tz, api_key='297b91bc87fac0f26c4d65efa6eb2443'):
     url = "https://api.openweathermap.org/energy/1.0/solar/interval_data"
     params = {
         'lat': lat,
@@ -84,3 +84,5 @@ interval = "1h"  # Options: hourly, daily
 tz = "UTC"  # Time zone
 
 semi_df=get_solar_irradiation(latitude, longitude, date, interval, tz, )
+
+print(semi_df)
