@@ -11,7 +11,7 @@ from .helper import generate_plot,df_sample_to_bootstrap_cards
 import pvlib
 import os 
 import requests
-from .extractors import get_solar_irradiation
+from .extractors import get_solar_irradiation,fetch_all_weather_data
 from .transformers import extract_weather_data
 # Cache requests to avoid repeated API calls
 requests_cache.install_cache('pvgis_requests_cache', backend='sqlite')
@@ -185,8 +185,7 @@ def pv_tracking(from_,lat, lon, to_,tz, color=None, plot_type='line',title=None,
     ow_sample=''
     times = pd.date_range(from_, to_, freq=freq, tz=tz)
     solpos = solarposition.get_solarposition(times, lat, lon)
-    # print('openweather:' , get_solar_irradiation(lat=lat, lon=lon, start=from_, end=to_, tz=tz))
-    ow_json=get_solar_irradiation(lat=lat, lon=lon, start=from_, end=to_, tz=tz)
+    ow_json=fetch_all_weather_data(start_date=from_, end_date=to_, latitude=lat, longitude=lon)
     try:
         ow_df =extract_weather_data(ow_json)
         # print(f'ow_df: {ow_df.columns}')
