@@ -162,7 +162,7 @@ def interactive_map(address='Ondo, Nigeria'):
     return {'search_status': 'failed', 'map': m._repr_html_()}
 
 
-def pv_tracking(from_,lat, lon=, to,_tz, color=None, plot_type='line',title=None, freq='5min', max_angle=90, axis_tilt=0, axis_azimuth=180):
+def pv_tracking(from_,lat, lon, to_,tz, color=None, plot_type='line',title=None, freq='5min', max_angle=90, axis_tilt=0, axis_azimuth=180):
     """
     Generate a plot of solar panel tracking angles over time.
 
