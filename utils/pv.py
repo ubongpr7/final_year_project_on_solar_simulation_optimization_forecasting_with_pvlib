@@ -85,15 +85,6 @@ def fetch_pvgis_data(lat, lon, start=None, end=None, raddatabase=None, component
     except Exception as e:
         print(f"Error fetching data from PVGIS: {e}")
         return None
-# result = fetch_pvgis_data(lat=40.7128, lon=-74.0060, start=2015, end=2015)
-# if result:
-#     data = result['data']
-#     meta = result['meta']
-#     print("Data:", data)
-#     print("Metadata:", meta)
-# else:
-#     print("Failed to fetch data from PVGIS.")
-
 
 def get_timezone(lat, lng):
     """
@@ -193,7 +184,7 @@ def pv_tracking(tz='US/Eastern', color=None, plot_type='line',title=None, from_=
     """
     times = pd.date_range(from_, to_, freq=freq, tz=tz)
     solpos = solarposition.get_solarposition(times, lat, lon)
-    print('openweather:' , get_solar_irradiation(lat=lat, lon=lon, date=from_, interval='1h', tz=tz))
+    print('openweather:' , get_solar_irradiation(lat=lat, lon=lon, start=from_, end='1h', tz=tz))
 
     truetracking_angles = tracking.singleaxis(
         apparent_zenith=solpos['apparent_zenith'],
@@ -242,15 +233,7 @@ def climate_plots(lat, lon, y_, plot_type='line', tz='UTC', title='Ambient Tempe
         'T2m': 'temp_air',
         'WS10m': 'wind_speed'
     })
-    # weather = weather.fillna({
-    #     'ghi': weather['ghi'].mean(),
-    #     'dhi': weather['dhi'].mean(),
-    #     'temp_air': weather['temp_air'].mean(),
-    #     'wind_speed': weather['wind_speed'].mean(),
-    #     'pressure': weather['pressure'].mean(),
-    #     'relative_humidity': weather['relative_humidity'].mean(),
-    # })
-
+   
     fig = generate_plot(
         df=weather,
         y=y_,

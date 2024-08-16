@@ -54,12 +54,63 @@ print(result_df.head())
 
 
 
+
+
+
+
+
+
+import pandas as pd
+from datetime import datetime
+
+def convert_unix_to_datetime(unix_time):
+    return datetime.utcfromtimestamp(unix_time).strftime('%Y-%m-%d %H:%M:%S')
+
+def extract_weather_data_to_df(data):
+    # Prepare a list to hold the rows of data
+    weather_data = []
+
+    for item in data.get('list', []):
+        dt = convert_unix_to_datetime(item.get('dt'))
+        temp = item['main'].get('temp')
+        feels_like = item['main'].get('feels_like')
+        pressure = item['main'].get('pressure')
+        humidity = item['main'].get('humidity')
+        temp_min = item['main'].get('temp_min')
+        temp_max = item['main'].get('temp_max')
+        wind_speed = item['wind'].get('speed')
+        wind_deg = item['wind'].get('deg')
+        clouds_all = item['clouds'].get('all')
+        weather_main = item['weather'][0].get('main') if item.get('weather') else None
+        weather_description = item['weather'][0].get('description') if item.get('weather') else None
+        rain_1h = item['rain'].get('1h', 0) if item.get('rain') else 0
+
+        # Append the extracted data as a row in the weather_data list
+        weather_data.append([
+            dt, temp, feels_like, pressure, humidity, temp_min, temp_max,
+            wind_speed, wind_deg, clouds_all, weather_main, weather_description, rain_1h
+        ])
+    
+    # Create a DataFrame from the collected data
+    df = pd.DataFrame(weather_data, columns=[
+        'datetime', 'temp', 'feels_like', 'pressure', 'humidity',
+        'temp_min', 'temp_max', 'wind_speed', 'wind_deg', 'clouds_all',
+        'weather_main', 'weather_description', 'rain_1h'
+    ])
+    
+    return df
+
+
+
+
 def convert_to_unix_time(date_str):
     # Convert the date string to a datetime object
     dt = datetime.strptime(date_str, "%Y-%m-%d")
     # Convert the datetime object to Unix time (seconds since epoch)
     unix_time = int(dt.timestamp())
     return unix_time
+
+
 
 def get_solar_irradiation(lat, lon, start, end, tz, api_key='297b91bc87fac0f26c4d65efa6eb2443'):
     # Convert start and end dates from yyyy-mm-dd to Unix time
@@ -83,19 +134,7 @@ def get_solar_irradiation(lat, lon, start, end, tz, api_key='297b91bc87fac0f26c4
     if response.status_code == 200:
         data = response.json()
         print(f"Solar Irradiation Data for {lat}, {lon} from {start} to {end}:")
-        for item in data.get('data', []):
-            print(f"Time: {item.get('time')}, Solar Irradiance: {item.get('irradiance')} W/m²")
-        return transform_data(data, start) 
+        return data
     else:
-        print(f"Failed to retrieve data. HTTP Status code: {response.status_code}")
-        print("Response:", response.text)
-
-# Example usage
-lat = 52.5200  # Example latitude
-lon = 13.4050  # Example longitude
-start = "2023-08-01"
-end = "2023-08-02"
-tz = "UTC"  # Time zone, this might depend on the API's requirements
-api_key = "your_openweather_api_key"
-
-get_solar_irradiation(lat, lon, start, end, tz, api_key)
+        print(f"Failed to fetch data. Status code: {response.status_code}")
+        return None
