@@ -185,7 +185,7 @@ def pv_tracking(from_,lat, lon, to_,tz, color=None, plot_type='line',title=None,
     ow_sample=''
     times = pd.date_range(from_, to_, freq=freq, tz=tz)
     solpos = solarposition.get_solarposition(times, lat, lon)
-    meteo_df=fetch_all_weather_data(start_date=from_, end_date=to_, latitude=lat, longitude=lon)
+    meteo_df=fetch_all_weather_data(start_date=from_, end_date=to_, latitude=lat, longitude=lon,user_timezone=tz)
     try:
         ow_sample=df_sample_to_bootstrap_cards(meteo_df)
     except Exception as e:

@@ -64,51 +64,6 @@ def get_solar_irradiation(lat, lon, start, end, tz, api_key='297b91bc87fac0f26c4
         return None
 
 
-# def fetch_weather_data_meteo(latitude, longitude, start_date, end_date):
-#     # Setup the Open-Meteo API client with cache and retry on error
-#     cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
-#     retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
-#     openmeteo = openmeteo_requests.Client(session=retry_session)
-#     hourly_vars = "temperature_2m,dewpoint_2m,relative_humidity_2m,surface_pressure,precipitation,snowfall,windspeed_10m,winddirection_10m,windgusts_10m,cloudcover,shortwave_radiation,direct_radiation,direct_normal_irradiance,diffuse_radiation,global_tilted_irradiance"
-#     # hourly_vars = "temperature_2m,dewpoint_2m,relative_humidity_2m,surface_pressure,precipitation,snowfall,windspeed_10m,winddirection_10m,windgusts_10m,cloudcover,shortwave_radiation,visibility,evapotranspiration,soil_temperature_0_7cm,soil_moisture_0_7cm"
-
-#     # Construct the API request URL and parameters
-#     url = "https://historical-forecast-api.open-meteo.com/v1/forecast"
-#     params = {
-#         "latitude": latitude,
-#         "longitude": longitude,
-#         "start_date": start_date,
-#         "end_date": end_date,
-#         "hourly": hourly_vars
-#     }
-
-#     # Make the API request
-#     responses = openmeteo.weather_api(url, params=params)
-
-#     # Process the response for the first location (modify for multiple locations if needed)
-#     response = responses[0]
-
-#     # Extract hourly data
-#     hourly = response.Hourly()
-#     hourly_data = {
-#         "date": pd.date_range(
-#             start=pd.to_datetime(hourly.Time(), unit="s", utc=True),
-#             end=pd.to_datetime(hourly.TimeEnd(), unit="s", utc=True),
-#             freq=pd.Timedelta(seconds=hourly.Interval()),
-#             inclusive="left"
-#         )
-#     }
-
-#     # Extract and add all requested variables to the DataFrame
-#     for i, var in enumerate(hourly_vars.split(',')):
-#         variable_name = var.strip()
-#         variable_values = hourly.Variables(i).ValuesAsNumpy()
-#         hourly_data[variable_name] = variable_values
-
-#     # Convert the data to a DataFrame
-#     hourly_dataframe = pd.DataFrame(data=hourly_data)
-
-#     return hourly_dataframe
 from datetime import datetime, timedelta
 
 def generate_date_ranges(start_date, end_date, delta_days=30):
@@ -154,14 +109,14 @@ def fetch_weather_data(start_date, end_date, latitude, longitude):
     responses = openmeteo.weather_api(url, params=params)
     return responses[0]
 
-def process_weather_response(response):
+def process_weather_response(response, user_timezone="Europe/Berlin"):
     """
     Process the weather API response and convert it to a DataFrame with correctly spaced datetime indices.
     """
     hourly = response.Hourly()
 
     # If `hourly.Time()` returns a single timestamp
-    first_timestamp = pd.to_datetime(hourly.Time(), unit="s", utc=True)
+    first_timestamp = pd.to_datetime(hourly.Time(), unit="s", utc=True).tz_convert(user_timezone)
 
     # Assuming the interval between data points is 1 hour (3600 seconds)
     interval_seconds = 3600
@@ -202,7 +157,7 @@ def process_weather_response(response):
     return df
 
 
-def fetch_all_weather_data(start_date, end_date, latitude, longitude):
+def fetch_all_weather_data(start_date, end_date, latitude, longitude,user_timezone):
     """
     Fetch weather data for a range of dates, handling up to 30 days at a time.
     """
@@ -212,7 +167,7 @@ def fetch_all_weather_data(start_date, end_date, latitude, longitude):
     for start, end in date_ranges:
         print(f"Fetching data from {start} to {end}")
         response = fetch_weather_data(start, end, latitude, longitude)
-        df = process_weather_response(response)
+        df = process_weather_response(response,user_timezone)
         all_data_frames.append(df)
     
     # Combine all DataFrames into one
