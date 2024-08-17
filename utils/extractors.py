@@ -5,7 +5,6 @@ import requests
 
 import openmeteo_requests
 import requests_cache
-import pandas as pd
 from datetime import datetime, timedelta
 from retry_requests import retry
 
@@ -154,8 +153,6 @@ def fetch_weather_data(start_date, end_date, latitude, longitude):
     }
     responses = openmeteo.weather_api(url, params=params)
     return responses[0]
-import pandas as pd
-import pandas as pd
 
 def process_weather_response(response):
     """
@@ -200,7 +197,7 @@ def process_weather_response(response):
     df = pd.DataFrame(hourly_data)
     
     # Set datetime as the index
-    df.set_index("datetime", inplace=True)
+    # df.set_index("datetime", inplace=True)
     
     return df
 
@@ -220,7 +217,7 @@ def fetch_all_weather_data(start_date, end_date, latitude, longitude):
     
     # Combine all DataFrames into one
     all_data = pd.concat(all_data_frames, ignore_index=True)
-    # all_data.set_index('datetime', inplace=True)
+    all_data.set_index('datetime', inplace=True)
     return all_data
 
 # Example usage
