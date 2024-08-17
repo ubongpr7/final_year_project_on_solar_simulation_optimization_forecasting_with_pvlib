@@ -107,6 +107,8 @@ class PVTrackingView(FormView):
             else:
                 result = plot_func(
                     tz=data['tz'],
+                    from_=data['from_date'],
+                    to_=data['to_date'],
                     lat=data['lat'],
                     lon=data['lon'],
                     color=data['plot_color'],
