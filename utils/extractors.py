@@ -174,11 +174,3 @@ def fetch_all_weather_data(start_date, end_date, latitude, longitude,user_timezo
     all_data = pd.concat(all_data_frames, ignore_index=True)
     all_data.set_index('datetime', inplace=True)
     return all_data
-
-# Example usage
-latitude = 52.52
-longitude = 13.41
-start_date = date(2021,9,8)
-end_date = date(2022,6,7)
-weather_data_df = fetch_all_weather_data(start_date, end_date, latitude, longitude,"Europe/Berlin")
-print(f"example of weather data from meteo\n: {weather_data_df}")
