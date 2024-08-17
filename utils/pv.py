@@ -185,11 +185,9 @@ def pv_tracking(from_,lat, lon, to_,tz, color=None, plot_type='line',title=None,
     ow_sample=''
     times = pd.date_range(from_, to_, freq=freq, tz=tz)
     solpos = solarposition.get_solarposition(times, lat, lon)
-    ow_json=fetch_all_weather_data(start_date=from_, end_date=to_, latitude=lat, longitude=lon)
+    meteo_df=fetch_all_weather_data(start_date=from_, end_date=to_, latitude=lat, longitude=lon)
     try:
-        ow_df =extract_weather_data(ow_json)
-        # print(f'ow_df: {ow_df.columns}')
-        ow_sample=df_sample_to_bootstrap_cards(ow_df)
+        ow_sample=df_sample_to_bootstrap_cards(meteo_df)
     except Exception as e:
         print(f'Error extracting weather data: {e}')
 
