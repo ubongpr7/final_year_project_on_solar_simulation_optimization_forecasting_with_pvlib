@@ -155,6 +155,7 @@ def fetch_weather_data(start_date, end_date, latitude, longitude):
     responses = openmeteo.weather_api(url, params=params)
     return responses[0]
 import pandas as pd
+import pandas as pd
 
 def process_weather_response(response):
     """
@@ -162,13 +163,16 @@ def process_weather_response(response):
     """
     hourly = response.Hourly()
 
+    # If `hourly.Time()` returns a single timestamp
+    first_timestamp = pd.to_datetime(hourly.Time(), unit="s", utc=True)
+
     # Assuming the interval between data points is 1 hour (3600 seconds)
     interval_seconds = 3600
 
     # Generate the datetime index using the first timestamp and the number of periods
     date_range = pd.date_range(
-        start=pd.to_datetime(hourly.Time()[0], unit="s", utc=True),
-        periods=len(hourly.Time()),
+        start=first_timestamp,
+        periods=len(hourly.Variables(0).ValuesAsNumpy()),  # Assuming the number of periods matches the length of data
         freq=pd.Timedelta(seconds=interval_seconds)
     )
     
@@ -201,8 +205,6 @@ def process_weather_response(response):
     return df
 
 
-
-
 def fetch_all_weather_data(start_date, end_date, latitude, longitude):
     """
     Fetch weather data for a range of dates, handling up to 30 days at a time.
@@ -218,7 +220,7 @@ def fetch_all_weather_data(start_date, end_date, latitude, longitude):
     
     # Combine all DataFrames into one
     all_data = pd.concat(all_data_frames, ignore_index=True)
-    all_data.set_index('datetime', inplace=True)
+    # all_data.set_index('datetime', inplace=True)
     return all_data
 
 # Example usage
