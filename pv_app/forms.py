@@ -51,13 +51,13 @@ class PVTrackingForm(forms.Form):
     )
     from_date = forms.DateField(
         label="From Date",
-        initial="2024-08-23",
+        initial="2024-06-23",
         widget=forms.TextInput(attrs={'type': 'date'}),
         help_text="Choose the start date for the tracking period."
     )
     to_date = forms.DateField(
         label="To Date",
-        initial="2024-09-01",
+        initial="2024-07-01",
         widget=forms.TextInput(attrs={'type': 'date'}),
         help_text="Choose the end date for the tracking period."
     )

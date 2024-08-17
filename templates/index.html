@@ -18,9 +18,18 @@
         
 </head>
 <body>
-
 <style>
-        /* Page loader container */
+    body {
+            margin-top: 56px; /* Adjust based on header height */
+        }
+        .fixed-header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1030;
+        }
+      /* Page loader container */
 
 /* first loader  */
 .loader {
@@ -87,10 +96,35 @@
 }
 
 
-    </style>
-    <!-- <div id="page-loader" class="loader" style="display: none;">
-        <div class="spinner"></div>
-    </div> -->
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-header">
+    <a class="navbar-brand" href="#">My Website</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Visualizers
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">Solar Single Axis Tracking (True Tracker)</a>
+                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=back_tracker" hx-target="#content-area" hx-trigger="click">Solar Single Axis Tracking (Back Tracker)</a>
+                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">PV Modeling</a>
+                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=pressure" hx-target="#content-area" hx-trigger="click">Pressure Variation</a>
+                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=relative_humidity" hx-target="#content-area" hx-trigger="click">Humidity Variation</a>
+                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=ghi" hx-target="#content-area" hx-trigger="click">GHI Variation</a>
+                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=dni" hx-target="#content-area" hx-trigger="click">DNI Variation</a>
+                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=dhi" hx-target="#content-area" hx-trigger="click">DHI Variation</a>
+                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=wind_speed" hx-target="#content-area" hx-trigger="click">Wind Variation</a>
+                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=temp_air" hx-target="#content-area" hx-trigger="click">Temperature Forecasting</a>
+                </div>
+            </li>
+            <!-- Add more nav items or dropdowns here as needed -->
+        </ul>
+    </div>
+</nav>
     
 <div class="container" hx->
     {% bootstrap_messages %}
@@ -103,20 +137,6 @@
         </div>
     
     </div>    
-</div>
-<div class="tabs">
-
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">Solar Single Axis Tracking(True tracker)</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=back_tracker" hx-target="#content-area" hx-trigger="click">Solar Single Axis Tracking(True tracker)</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">PV modeling</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=pressure" hx-target="#content-area" hx-trigger="click">Pressure Variation/button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=relative_humidity" hx-target="#content-area" hx-trigger="click">Humidty Variation</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=ghi" hx-target="#content-area" hx-trigger="click">GHI Variation</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=dni" hx-target="#content-area" hx-trigger="click">DNI Variation</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=dhi" hx-target="#content-area" hx-trigger="click">DHI Variation</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=wind_speed" hx-target="#content-area" hx-trigger="click">Wind Variation</button>
-    <button class="tab-button" hx-get="{% url 'pv_tracking' %}?visualizer=temp_air" hx-target="#content-area" hx-trigger="click">Temperature Forecating </button>
-    
 </div>
 
 <div id="content-area" class="content-area">
