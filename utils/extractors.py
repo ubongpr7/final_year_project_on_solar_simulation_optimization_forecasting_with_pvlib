@@ -154,14 +154,27 @@ def fetch_weather_data(start_date, end_date, latitude, longitude):
     }
     responses = openmeteo.weather_api(url, params=params)
     return responses[0]
+import pandas as pd
 
 def process_weather_response(response):
     """
-    Process the weather API response and convert it to a DataFrame.
+    Process the weather API response and convert it to a DataFrame with correctly spaced datetime indices.
     """
     hourly = response.Hourly()
+
+    # Assuming the interval between data points is 1 hour (3600 seconds)
+    interval_seconds = 3600
+
+    # Generate the datetime index using the first timestamp and the number of periods
+    date_range = pd.date_range(
+        start=pd.to_datetime(hourly.Time()[0], unit="s", utc=True),
+        periods=len(hourly.Time()),
+        freq=pd.Timedelta(seconds=interval_seconds)
+    )
+    
+    # Create a dictionary for the DataFrame
     hourly_data = {
-        "datetime": pd.to_datetime(hourly.Time(), unit="s", utc=True),
+        "datetime": date_range,
         "temperature_2m": hourly.Variables(0).ValuesAsNumpy(),
         "dewpoint_2m": hourly.Variables(1).ValuesAsNumpy(),
         "relative_humidity_2m": hourly.Variables(2).ValuesAsNumpy(),
@@ -178,7 +191,17 @@ def process_weather_response(response):
         "diffuse_radiation": hourly.Variables(13).ValuesAsNumpy(),
         "global_tilted_irradiance": hourly.Variables(14).ValuesAsNumpy()
     }
-    return pd.DataFrame(hourly_data)
+    
+    # Convert the dictionary to a DataFrame
+    df = pd.DataFrame(hourly_data)
+    
+    # Set datetime as the index
+    df.set_index("datetime", inplace=True)
+    
+    return df
+
+
+
 
 def fetch_all_weather_data(start_date, end_date, latitude, longitude):
     """
