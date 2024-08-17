@@ -110,15 +110,25 @@ def get_solar_irradiation(lat, lon, start, end, tz, api_key='297b91bc87fac0f26c4
 #     hourly_dataframe = pd.DataFrame(data=hourly_data)
 
 #     return hourly_dataframe
+from datetime import datetime, timedelta
 
 def generate_date_ranges(start_date, end_date, delta_days=30):
     """
     Generate a list of date ranges, each with a maximum length of delta_days.
     """
-    start = datetime.strptime(start_date, "%Y-%m-%d")
-    end = datetime.strptime(end_date, "%Y-%m-%d")
-    ranges = []
+    # If start_date and end_date are datetime.date objects, convert them to datetime
+    if isinstance(start_date, datetime):
+        start = start_date
+    else:
+        start = datetime.combine(start_date, datetime.min.time())
     
+    if isinstance(end_date, datetime):
+        end = end_date
+    else:
+        end = datetime.combine(end_date, datetime.min.time())
+    
+    ranges = []
+
     # Handle the case where the range is shorter than delta_days
     if (end - start).days <= delta_days:
         ranges.append((start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")))
