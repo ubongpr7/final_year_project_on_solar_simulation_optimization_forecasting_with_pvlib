@@ -195,6 +195,7 @@ def fetch_all_weather_data(start_date, end_date, latitude, longitude):
     
     # Combine all DataFrames into one
     all_data = pd.concat(all_data_frames, ignore_index=True)
+    all_data.set_index('datetime', inplace=True)
     return all_data
 
 # Example usage
@@ -203,4 +204,4 @@ longitude = 13.41
 start_date = "2021-09-08"
 end_date = "2022-06-07"
 weather_data_df = fetch_all_weather_data(start_date, end_date, latitude, longitude)
-print(f"example of weather data from meteo: {weather_data_df}")
+print(f"example of weather data from meteo\n: {weather_data_df}")

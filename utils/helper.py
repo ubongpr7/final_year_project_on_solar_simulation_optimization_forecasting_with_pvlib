@@ -4,7 +4,7 @@ import pandas as pd
 
 
 def df_sample_to_bootstrap_cards(df):
-    html_table = df.sample(n=10).to_html(classes='table table-striped')
+    html_table = df.head(12).to_html(classes='table table-striped')
 
     # Wrap the table in a div with overflow styling
     html = f'''
