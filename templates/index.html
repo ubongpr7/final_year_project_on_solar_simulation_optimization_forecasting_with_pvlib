@@ -20,15 +20,17 @@
 <body>
 <style>
     body {
-            margin-top: 56px; /* Adjust based on header height */
-        }
-        .fixed-header {
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1030;
-        }
+        margin-top: 56px; /* Adjust based on header height */
+    }
+    .fixed-header {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1030;
+        background-color: #f8f9fa; /* Light background for better contrast */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+    }
       /* Page loader container */
 
 /* first loader  */
@@ -97,35 +99,36 @@
 
 
 </style>
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-header">
+<nav class="navbar navbar-expand-lg navbar-light fixed-header">
     <a class="navbar-brand" href="#">My Website</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Visualizers
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
-                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">Solar Single Axis Tracking (True Tracker)</a>
-                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=back_tracker" hx-target="#content-area" hx-trigger="click">Solar Single Axis Tracking (Back Tracker)</a>
-                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">PV Modeling</a>
-                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=pressure" hx-target="#content-area" hx-trigger="click">Pressure Variation</a>
-                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=relative_humidity" hx-target="#content-area" hx-trigger="click">Humidity Variation</a>
-                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=ghi" hx-target="#content-area" hx-trigger="click">GHI Variation</a>
-                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=dni" hx-target="#content-area" hx-trigger="click">DNI Variation</a>
-                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=dhi" hx-target="#content-area" hx-trigger="click">DHI Variation</a>
-                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=wind_speed" hx-target="#content-area" hx-trigger="click">Wind Variation</a>
-                    <a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=temp_air" hx-target="#content-area" hx-trigger="click">Temperature Forecasting</a>
-                </div>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">Solar Single Axis Tracking (True Tracker)</a></li>
+                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=back_tracker" hx-target="#content-area" hx-trigger="click">Solar Single Axis Tracking (Back Tracker)</a></li>
+                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">PV Modeling</a></li>
+                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=pressure" hx-target="#content-area" hx-trigger="click">Pressure Variation</a></li>
+                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=relative_humidity" hx-target="#content-area" hx-trigger="click">Humidity Variation</a></li>
+                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=ghi" hx-target="#content-area" hx-trigger="click">GHI Variation</a></li>
+                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=dni" hx-target="#content-area" hx-trigger="click">DNI Variation</a></li>
+                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=dhi" hx-target="#content-area" hx-trigger="click">DHI Variation</a></li>
+                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=wind_speed" hx-target="#content-area" hx-trigger="click">Wind Variation</a></li>
+                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=temp_air" hx-target="#content-area" hx-trigger="click">Temperature Forecasting</a></li>
+                </ul>
             </li>
             <!-- Add more nav items or dropdowns here as needed -->
         </ul>
     </div>
 </nav>
-    
+
+ 
 <div class="container" hx->
     {% bootstrap_messages %}
     <h1>PV System Tracking Setup</h1>
@@ -188,6 +191,11 @@ document.querySelector('.loader').style.display = 'none';
     });
        
 </script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 
    
 </body>
