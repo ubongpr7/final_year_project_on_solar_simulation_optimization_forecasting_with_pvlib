@@ -180,5 +180,5 @@ latitude = 52.52
 longitude = 13.41
 start_date = date(2021,9,8)
 end_date = date(2022,6,7)
-weather_data_df = fetch_all_weather_data(start_date, end_date, latitude, longitude)
+weather_data_df = fetch_all_weather_data(start_date, end_date, latitude, longitude,"Europe/Berlin")
 print(f"example of weather data from meteo\n: {weather_data_df}")
