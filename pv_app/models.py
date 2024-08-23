@@ -1,31 +1,41 @@
 from django.db import models
 from django.utils import timezone
 import pytz
+import pvlib
+import pandas as pd
+import numpy as np
+from django.utils.translation import gettext_lazy as _
+
 class PVLocation(models.Model):
     """
     Represents the geographical location of the PV system.
     """
+    LATITUDE_MAX_DIGITS = 9
+    LATITUDE_DECIMAL_PLACES = 6
+    LONGITUDE_MAX_DIGITS = 9
+    LONGITUDE_DECIMAL_PLACES = 6
+
+    TIMEZONE_CHOICES = [(tz, tz) for tz in pytz.all_timezones]
+
     latitude = models.DecimalField(
-        max_digits=9, 
-        decimal_places=6, 
+        max_digits=LATITUDE_MAX_DIGITS, 
+        decimal_places=LATITUDE_DECIMAL_PLACES, 
         help_text="Latitude of the location in decimal degrees (e.g., 40.7128 for New York)."
     )
     longitude = models.DecimalField(
-        max_digits=9, 
-        decimal_places=6, 
+        max_digits=LONGITUDE_MAX_DIGITS, 
+        decimal_places=LONGITUDE_DECIMAL_PLACES, 
         help_text="Longitude of the location in decimal degrees (e.g., -74.0060 for New York)."
     )
     timezone = models.CharField(
-        max_length=15, 
+        max_length=63,  # max length for timezone strings
         help_text="Timezone of the location (e.g., 'Etc/GMT+5' for New York).",
         default='Etc/GMT+0',
-        choices=pytz.all_timezones,
-
+        choices=TIMEZONE_CHOICES,
     )
     
     def __str__(self):
         return f"Location (Lat: {self.latitude}, Lon: {self.longitude})"
-
 
 class PVModule(models.Model):
     """
@@ -125,10 +135,8 @@ class PVModule(models.Model):
 
 
 
+
 class PVSimulation(models.Model):
-    """
-    Represents a simulation run for a PV system.
-    """
     module = models.ForeignKey(PVModule, on_delete=models.CASCADE, help_text="The PV module used in the simulation.")
     location = models.ForeignKey(PVLocation, on_delete=models.CASCADE, help_text="The location of the PV system.")
     start_time = models.DateTimeField(help_text="Start time of the simulation in the user's local time.")
@@ -156,5 +164,77 @@ class PVSimulation(models.Model):
         return f"Simulation ({self.start_time} to {self.end_time}, Module: {self.module})"
     
     def run_simulation(self):
-        # Simulation logic goes here
-        pass
+        # Convert latitude, longitude, and timezone
+        latitude = float(self.location.latitude)
+        longitude = float(self.location.longitude)
+        timezone_str = self.location.timezone
+        
+        # Define the module parameters
+        module_params = {
+            'area': float(self.module.area),
+            'cells_in_series': self.module.cells_in_series,
+            'isc_ref': float(self.module.isc_ref),
+            'voc_ref': float(self.module.voc_ref),
+            'imp_ref': float(self.module.imp_ref),
+            'vmp_ref': float(self.module.vmp_ref),
+            'alpha_sc': float(self.module.alpha_sc),
+            'beta_oc': float(self.module.beta_oc),
+            'a_ref': float(self.module.a_ref),
+            'i_l_ref': float(self.module.i_l_ref),
+            'i_o_ref': float(self.module.i_o_ref),
+            'rs': float(self.module.rs),
+            'rsh_ref': float(self.module.rsh_ref),
+            'gamma_r': float(self.module.gamma_r),
+            'noct': float(self.module.noct)
+        }
+        
+        # Set up the time range for the simulation
+        times = pd.date_range(start=self.start_time, end=self.end_time, freq='H')
+        
+        # Create a PVLib location object
+        location = pvlib.location.Location(latitude, longitude, timezone_str)
+        
+        # Generate the weather data (e.g., using a model or actual data)
+        weather_data = {
+            'temperature_air': np.full(len(times), self.ambient_temperature),
+            'ghi': np.random.normal(500, 100, len(times))  # Example GHI data
+        }
+        
+        # Create a DataFrame for weather data
+        weather_df = pd.DataFrame(weather_data, index=times)
+        
+        # Create a PV System using PVLib's ModelChain
+        pv_system = pvlib.pvsystem.PVSystem(
+            module_parameters={
+                'pdc0': module_params['imp_ref'] * module_params['vmp_ref'],
+                'gamma_pdc': module_params['gamma_r'] / 100,
+                'v_oc_ref': module_params['voc_ref'],
+                'i_sc_ref': module_params['isc_ref']
+            },
+            temperature_coefficient=module_params['alpha_sc'],
+            nominal_voltage=module_params['vmp_ref']
+        )
+        
+        # Create an inverter model (optional)
+        inverter = pvlib.inverter.Adams3000()
+        
+        # Set up the ModelChain
+        model_chain = pvlib.modelchain.ModelChain(pv_system, location, inverter=inverter)
+        
+        # Run the ModelChain
+        weather_df['dni'] = np.random.normal(700, 100, len(times))  # Direct Normal Irradiance (DNI) data
+        weather_df['dhi'] = np.random.normal(100, 50, len(times))  # Diffuse Horizontal Irradiance (DHI) data
+        
+        # Run the model chain
+        model_chain.run_model(weather_df)
+        
+        # Access the output
+        power_output = model_chain.results.ac
+        
+        # Save the results to the database or return them
+        result = {
+            'times': times,
+            'power_output': power_output
+        }
+        
+        return result

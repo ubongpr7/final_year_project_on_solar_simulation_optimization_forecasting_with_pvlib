@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Confirm Deletion</h1>
+    <p>Are you sure you want to delete {{ obj }}?</p>
+    <form method="post" action="{{ del_url }}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm</button>
+        <a href="{% url 'pv_app:generic_list' app_name=app_label model_name=model_label %}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %}

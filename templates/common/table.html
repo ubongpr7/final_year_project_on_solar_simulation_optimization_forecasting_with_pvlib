@@ -1,0 +1,39 @@
+
+{% load static %}
+
+{% load bootstrap5 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<!-- <script src="https://unpkg.com/htmx.org@1.9.2"></script> -->
+    
+<script src="{% static 'js/htmx/htmx.min.js' %}" defer></script>
+<script src="{% static 'js/htmx/debug.js' %}" defer></script>
+
+
+{% block content %}
+    <h1>{{ view.title }}</h1>
+    <ul>
+        {% for item in items %}
+            <li>
+                <a href="{% url 'pv_app:generic_detail' app_name=model_name model_name=item.pk %}">{{ item }}</a>
+            </li>
+        {% empty %}
+            <li>No items found.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Pagination controls -->
+    <div>
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        <div>
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
