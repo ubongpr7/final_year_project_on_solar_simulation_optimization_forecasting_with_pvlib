@@ -68,14 +68,7 @@ class GenericUpdateView(UpdateView):
     def get_form_class(self):
         return modelform_factory(self.get_model(), fields='__all__')
 
-    def dispatch(self, request, *args, **kwargs):
-        management_dispatch_dispatcher(self, request)
-        if not request.user.has_perm(f'{self.kwargs["app_name"]}.change_{self.kwargs["model_name"]}'):
-            if request.htmx:
-                return HttpResponse('<div hx-swap-oob="true" id="error-message"><h2>404</h2> <h3>User does not have permission to update this item </h3></div>')
-            return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
-
+    
     def get_template(self):
         return ['common/htmx/create.html'] if self.request.htmx else ['common/create.html']
 
@@ -126,13 +119,6 @@ class GenericCreateView(CreateView):
     def get_form_class(self):
         return modelform_factory(self.get_model(), fields='__all__')
 
-    def dispatch(self, request, *args, **kwargs):
-        management_dispatch_dispatcher(self, request)
-        if not request.user.has_perm(f'{self.kwargs["app_name"]}.add_{self.kwargs["model_name"]}'):
-            if request.htmx:
-                return HttpResponse('<div hx-swap-oob="true" id="error-message"><h2>404</h2> <h3>User does not have permission to create this item </h3></div>')
-            return self.handle_no_permission()
-        return super().dispatch(request, *args, **kwargs)
 
     def get_template(self):
         return render_templete(self.request, 'common/htmx/create.html', 'common/create.html', self.get_context_data())
