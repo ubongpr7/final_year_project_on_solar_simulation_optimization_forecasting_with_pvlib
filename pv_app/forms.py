@@ -2,7 +2,17 @@
 from django import forms
 import pytz
 
+from .models import PVSimulation
 
+
+class PVSimulationForm(forms.ModelForm):
+    class Meta:
+        model = PVSimulation
+        fields ='__all__'
+        widgets = {
+            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+            'end_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        }
 
 class AddressForm(forms.Form):
     address = forms.CharField(
@@ -19,11 +29,33 @@ class AddressForm(forms.Form):
 
 
 PLOT_CHOICES = [
-    ('scatter', 'Scatter Plot'),
-    ('bar', 'Bar Chart'),
-    ('line', 'Line Chart'),
-    # Add more plot types as needed
+    ('line', 'Line'),
+    ('scatter', 'Scatter'),
+    ('bar', 'Bar'),
+    ('area', 'Area'),
+    ('histogram', 'Histogram'),
+    ('box', 'Box'),
+    ('violin', 'Violin'),
+    ('pie', 'Pie'),
 ]
+
+PURPOSE_CHOICES = [
+    ('compare', 'Compare Variables'),
+    ('power_output', 'Power Output Analysis'),
+    ('uv_index', 'UV Index Analysis'),
+    ('time_series', 'Variation of weather data with time.'),
+]
+
+class PlotTypeForm(forms.Form):
+    plot_type = forms.ChoiceField(
+        choices=PLOT_CHOICES, 
+        label="Select the type of plot you want to create"
+    )
+    
+    purpose_of_plot = forms.ChoiceField(
+        choices=PURPOSE_CHOICES, 
+        label="Select the purpose of your plot"
+    )
 
 class PlotForm(forms.Form):
     plot_type = forms.ChoiceField(choices=PLOT_CHOICES, label="Select Plot Type")
@@ -33,6 +65,22 @@ import pytz
 from django import forms
 
 class PVTrackingForm(forms.Form):
+    VISUALIZER_CHOICES = [
+        ('true_tracker', 'Solar Single Axis Tracking (True Tracker)'),
+        ('back_tracker', 'Solar Single Axis Tracking (Back Tracker)'),
+        ('pv_modeling', 'PV Modeling'),
+        ('pressure', 'Pressure Variation'),
+        ('relative_humidity', 'Humidity Variation'),
+        ('ghi', 'GHI Variation'),
+        ('dni', 'DNI Variation'),
+        ('dhi', 'DHI Variation'),
+        ('wind_speed', 'Wind Variation'),
+        ('temp_air', 'Temperature Forecasting'),
+        ('uv_index_clear_sky_max', 'UV index max For Clear sky '),
+        ('uv_index_max', 'UV index max'),
+    ]
+    
+    visualizer = forms.ChoiceField(choices=VISUALIZER_CHOICES, label="Select Visualization Type")
     lat = forms.FloatField(
         label="Latitude",
         required=True,

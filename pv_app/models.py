@@ -1,31 +1,83 @@
 from django.db import models
 from django.utils import timezone
 import pytz
+from geopy.geocoders import Nominatim
 import pvlib
+# from pvlib.modelchain import  ac_models
 import pandas as pd
 import numpy as np
 from django.utils.translation import gettext_lazy as _
+
+from utils.extractors import fetch_all_weather_data
+from utils.pv import get_lat_long, get_timezone_from_address
+import pvlib
+
+import pvlib
+import requests_cache
+import os
+
+# Enable caching using requests_cache
+cache_path = os.path.join(os.getcwd(), 'cache2')
+requests_cache.install_cache(cache_name=cache_path, backend='sqlite', expire_after=3600)  # Cache expires after 1 hour
+
+def get_cached_inverter_db():
+    try:
+        # Try retrieving the inverter DB from cache
+        inverter_db = pvlib.pvsystem.retrieve_sam('cecinverter')
+        return inverter_db
+    except Exception as e:
+        print(f"Error fetching inverter database: {e}")
+        return None
+
+def get_cached_module_db():
+    try:
+        # Try retrieving the module DB from cache
+        module_db = pvlib.pvsystem.retrieve_sam('sandiamod')
+        return module_db
+    except Exception as e:
+        print(f"Error fetching module database: {e}")
+        return None
+
+# Retrieve databases with caching
+inverter_db = get_cached_inverter_db()
+module_db = get_cached_module_db()
+
+
+# Extract all available temperature model configurations from pvlib
+temperature_model_choices = [
+    (key, key.replace('_', ' ').title()) 
+    for key in pvlib.temperature.TEMPERATURE_MODEL_PARAMETERS['sapm'].keys()
+]
 
 class PVLocation(models.Model):
     """
     Represents the geographical location of the PV system.
     """
-    LATITUDE_MAX_DIGITS = 9
-    LATITUDE_DECIMAL_PLACES = 6
-    LONGITUDE_MAX_DIGITS = 9
-    LONGITUDE_DECIMAL_PLACES = 6
+    LATITUDE_MAX_DIGITS = 15
+    LATITUDE_DECIMAL_PLACES = 12
+    LONGITUDE_MAX_DIGITS = 15
+    LONGITUDE_DECIMAL_PLACES = 12
+
 
     TIMEZONE_CHOICES = [(tz, tz) for tz in pytz.all_timezones]
-
+    address= models.CharField(
+    max_length=120,
+    blank=False,
+    null=True,
+    help_text='Enter address'
+    )
     latitude = models.DecimalField(
         max_digits=LATITUDE_MAX_DIGITS, 
         decimal_places=LATITUDE_DECIMAL_PLACES, 
-        help_text="Latitude of the location in decimal degrees (e.g., 40.7128 for New York)."
+        help_text="Latitude of the location in decimal degrees (e.g., 40.7128 for New York).",
+        blank=True
     )
     longitude = models.DecimalField(
         max_digits=LONGITUDE_MAX_DIGITS, 
         decimal_places=LONGITUDE_DECIMAL_PLACES, 
-        help_text="Longitude of the location in decimal degrees (e.g., -74.0060 for New York)."
+        help_text="Longitude of the location in decimal degrees (e.g., -74.0060 for New York).",
+        blank=True
+
     )
     timezone = models.CharField(
         max_length=63,  # max length for timezone strings
@@ -33,208 +85,138 @@ class PVLocation(models.Model):
         default='Etc/GMT+0',
         choices=TIMEZONE_CHOICES,
     )
+    class Meta:
+        ordering=('address',)
+
     
-    def __str__(self):
-        return f"Location (Lat: {self.latitude}, Lon: {self.longitude})"
-
-class PVModule(models.Model):
-    """
-    Represents a photovoltaic module with its parameters.
-    """
-    area = models.DecimalField(
-        max_digits=6, 
-        decimal_places=2, 
-        help_text="Area of the PV module in square meters (A_c).",
-        default=1.7
-    )
-    cells_in_series = models.PositiveIntegerField(
-        help_text="Number of cells in series (N_s).",
-        default=96
-    )
-    isc_ref = models.DecimalField(
-        max_digits=5, 
-        decimal_places=2, 
-        help_text="Short-circuit current at reference conditions (I_sc_ref) in amperes.",
-        default=5.1
-    )
-    voc_ref = models.DecimalField(
-        max_digits=5, 
-        decimal_places=2, 
-        help_text="Open-circuit voltage at reference conditions (V_oc_ref) in volts.",
-        default=59.4
-    )
-    imp_ref = models.DecimalField(
-        max_digits=5, 
-        decimal_places=2, 
-        help_text="Current at maximum power point at reference conditions (I_mp_ref) in amperes.",
-        default=4.8
-    )
-    vmp_ref = models.DecimalField(
-        max_digits=5, 
-        decimal_places=2, 
-        help_text="Voltage at maximum power point at reference conditions (V_mp_ref) in volts.",
-        default=48.3
-    )
-    alpha_sc = models.DecimalField(
-        max_digits=5, 
-        decimal_places=4, 
-        help_text="Temperature coefficient of short-circuit current (alpha_sc) in A/°C.",
-        default=0.0045
-    )
-    beta_oc = models.DecimalField(
-        max_digits=7, 
-        decimal_places=5, 
-        help_text="Temperature coefficient of open-circuit voltage (beta_oc) in V/°C.",
-        default=-0.22216
-    )
-    a_ref = models.DecimalField(
-        max_digits=7, 
-        decimal_places=5, 
-        help_text="Diode ideality factor multiplied by the thermal voltage at reference conditions (a_ref).",
-        default=2.6373
-    )
-    i_l_ref = models.DecimalField(
-        max_digits=5, 
-        decimal_places=3, 
-        help_text="Light-generated current at reference conditions (I_L_ref) in amperes.",
-        default=5.114
-    )
-    i_o_ref = models.DecimalField(
-        max_digits=10, 
-        decimal_places=10, 
-        help_text="Saturation current at reference conditions (I_o_ref) in amperes.",
-        default=8.196e-10
-    )
-    rs = models.DecimalField(
-        max_digits=5, 
-        decimal_places=3, 
-        help_text="Series resistance of the module (R_s) in ohms.",
-        default=1.065
-    )
-    rsh_ref = models.DecimalField(
-        max_digits=7, 
-        decimal_places=2, 
-        help_text="Shunt resistance at reference conditions (R_sh_ref) in ohms.",
-        default=381.68
-    )
-    gamma_r = models.DecimalField(
-        max_digits=5, 
-        decimal_places=3, 
-        help_text="Temperature coefficient of power (gamma_r) in %/°C.",
-        default=-0.476
-    )
-    noct = models.DecimalField(
-        max_digits=4, 
-        decimal_places=1, 
-        help_text="Nominal operating cell temperature (T_NOCT) in °C.",
-        default=42.4
-    )
     
+    def get_address(self):
+        geolocator = Nominatim(user_agent="abcd")
+        location = geolocator.reverse(query=(self.latitude,self.longitude),exactly_one=True, limit=1)  # Limit to 100 suggestions
+        return location
+    def save(self, *args, **kwargs):
+        if not self.latitude:
+            location=get_lat_long(self.address)
+            self.latitude,self.longitude=location.latitude,location.longitude
+        if not self.timezone:
+            self.timezone=get_timezone_from_address(self.address)
+        if self.latitude and self.longitude:
+            if not self.address:
+
+                self.address=self.get_address
+
+
+        super().save(*args, **kwargs)
+
+
     def __str__(self):
-        return f"PV Module (Area: {self.area} m², Cells: {self.cells_in_series})"
+        return f"Location:{self.address}, lat: {self.latitude} lon:{self.longitude} )"
 
 
+# Retrieve inverter and module databases
 
+inverter_choices = [(name, name) for name in inverter_db.keys()]
+module_choices = [(name, name) for name in module_db.keys()]
 
 class PVSimulation(models.Model):
-    module = models.ForeignKey(PVModule, on_delete=models.CASCADE, help_text="The PV module used in the simulation.")
-    location = models.ForeignKey(PVLocation, on_delete=models.CASCADE, help_text="The location of the PV system.")
-    start_time = models.DateTimeField(help_text="Start time of the simulation in the user's local time.")
-    end_time = models.DateTimeField(help_text="End time of the simulation in the user's local time.")
-    ambient_temperature = models.DecimalField(
-        max_digits=4, 
-        decimal_places=1, 
-        help_text="Ambient temperature during the simulation in °C.",
-        default=25.0
+    # Assuming you have these choices defined elsewhere
+    inverter_choices = [(key, key.replace('_', ' ').title()) for key in inverter_db.keys()]
+    module_choices = [(key, key.replace('_', ' ').title()) for key in module_db.keys()]
+    
+    location = models.ForeignKey(PVLocation, null=True, on_delete=models.SET_NULL)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    
+    inverter = models.CharField(
+        choices=inverter_choices,
+        max_length=100,
+        verbose_name="Choose Inverter",
+        default=inverter_choices[0][0]  # Set default to the first choice
     )
     
-    def save(self, *args, **kwargs):
-        # Convert local time to UTC before saving
-        if timezone.is_naive(self.start_time):
-            self.start_time = timezone.make_aware(self.start_time, timezone.get_current_timezone())
-        self.start_time = self.start_time.astimezone(timezone.utc)
-        
-        if timezone.is_naive(self.end_time):
-            self.end_time = timezone.make_aware(self.end_time, timezone.get_current_timezone())
-        self.end_time = self.end_time.astimezone(timezone.utc)
-        
-        super().save(*args, **kwargs)
+    module = models.CharField(
+        choices=module_choices,
+        max_length=100,
+        verbose_name="Choose Module",
+        default=module_choices[0][0]  # Set default to the first choice
+    )
     
-    def __str__(self):
-        return f"Simulation ({self.start_time} to {self.end_time}, Module: {self.module})"
+    temperature_model = models.CharField(
+        max_length=50,
+        choices=temperature_model_choices,
+        default='open_rack_glass_glass',
+        help_text="Select the temperature model for the simulation"
+    )
+    modules_per_string=models.IntegerField(default=10)
     
-    def run_simulation(self):
-        # Convert latitude, longitude, and timezone
+    def run_simulation(self,):
+        # Access location parameters
         latitude = float(self.location.latitude)
         longitude = float(self.location.longitude)
         timezone_str = self.location.timezone
-        
-        # Define the module parameters
-        module_params = {
-            'area': float(self.module.area),
-            'cells_in_series': self.module.cells_in_series,
-            'isc_ref': float(self.module.isc_ref),
-            'voc_ref': float(self.module.voc_ref),
-            'imp_ref': float(self.module.imp_ref),
-            'vmp_ref': float(self.module.vmp_ref),
-            'alpha_sc': float(self.module.alpha_sc),
-            'beta_oc': float(self.module.beta_oc),
-            'a_ref': float(self.module.a_ref),
-            'i_l_ref': float(self.module.i_l_ref),
-            'i_o_ref': float(self.module.i_o_ref),
-            'rs': float(self.module.rs),
-            'rsh_ref': float(self.module.rsh_ref),
-            'gamma_r': float(self.module.gamma_r),
-            'noct': float(self.module.noct)
-        }
-        
-        # Set up the time range for the simulation
-        times = pd.date_range(start=self.start_time, end=self.end_time, freq='H')
-        
-        # Create a PVLib location object
-        location = pvlib.location.Location(latitude, longitude, timezone_str)
-        
-        # Generate the weather data (e.g., using a model or actual data)
-        weather_data = {
-            'temperature_air': np.full(len(times), self.ambient_temperature),
-            'ghi': np.random.normal(500, 100, len(times))  # Example GHI data
-        }
-        
-        # Create a DataFrame for weather data
-        weather_df = pd.DataFrame(weather_data, index=times)
-        
-        # Create a PV System using PVLib's ModelChain
+
+        # Retrieve parameters from pvlib databases
+        inverter_params = inverter_db[self.inverter]
+        module_params = module_db[self.module]
+        temp_model_params = pvlib.temperature.TEMPERATURE_MODEL_PARAMETERS['sapm'][self.temperature_model]
+
+        # Ensure that start_time and end_time are timezone-aware
+        if pd.Timestamp(self.start_time).tz is None:
+            start_time = pd.to_datetime(self.start_time).tz_localize(timezone_str, ambiguous='NaT', nonexistent='NaT')
+        else:
+            start_time = pd.to_datetime(self.start_time).tz_convert(timezone_str)
+
+        if pd.Timestamp(self.end_time).tz is None:
+            end_time = pd.to_datetime(self.end_time).tz_localize(timezone_str, ambiguous='NaT', nonexistent='NaT')
+        else:
+            end_time = pd.to_datetime(self.end_time).tz_convert(timezone_str)
+
+        # Create the PV system
         pv_system = pvlib.pvsystem.PVSystem(
-            module_parameters={
-                'pdc0': module_params['imp_ref'] * module_params['vmp_ref'],
-                'gamma_pdc': module_params['gamma_r'] / 100,
-                'v_oc_ref': module_params['voc_ref'],
-                'i_sc_ref': module_params['isc_ref']
-            },
-            temperature_coefficient=module_params['alpha_sc'],
-            nominal_voltage=module_params['vmp_ref']
+            module_parameters=module_params,
+            inverter_parameters=inverter_params,
+            temperature_model_parameters=temp_model_params,
+            modules_per_string=self.modules_per_string
         )
-        
-        # Create an inverter model (optional)
-        inverter = pvlib.inverter.Adams3000()
-        
-        # Set up the ModelChain
-        model_chain = pvlib.modelchain.ModelChain(pv_system, location, inverter=inverter)
-        
-        # Run the ModelChain
-        weather_df['dni'] = np.random.normal(700, 100, len(times))  # Direct Normal Irradiance (DNI) data
-        weather_df['dhi'] = np.random.normal(100, 50, len(times))  # Diffuse Horizontal Irradiance (DHI) data
-        
-        # Run the model chain
-        model_chain.run_model(weather_df)
-        
-        # Access the output
-        power_output = model_chain.results.ac
-        
-        # Save the results to the database or return them
-        result = {
-            'times': times,
-            'power_output': power_output
-        }
-        
-        return result
+
+        # Fetch weather data with timezone-awareness
+        location = pvlib.location.Location(latitude, longitude, timezone_str)
+        weather_df = fetch_all_weather_data(start_time, end_time, latitude, longitude, timezone_str)
+        daily_weather_df = fetch_all_weather_data(start_time, end_time, latitude, longitude, timezone_str,df_interval='daily')
+
+        # Ensure that weather_df's index is localized to the correct timezone
+        if weather_df.index.tz is None:
+            weather_df.index = pd.to_datetime(weather_df.index).tz_localize(timezone_str, ambiguous='NaT', nonexistent='NaT')
+        else:
+            weather_df.index = weather_df.index.tz_convert(timezone_str)
+
+        # Create a date range with explicit timezone
+        times = pd.date_range(start=start_time, end=end_time, freq='h', tz=timezone_str)
+
+        # Ensure that the weather_df contains only the required columns for the model chain
+        required_weather_columns = ['dni', 'ghi', 'dhi']
+        weather_df_filtered = weather_df[required_weather_columns]
+
+        # Get clear sky data for the location
+        sky = location.get_clearsky(times=times)
+
+        # Set up and run the model chain
+        model_chain = pvlib.modelchain.ModelChain(system=pv_system, location=location)
+
+        # Run the model with actual weather data
+        model_chain.run_model(weather_df_filtered)
+        real_ac_power_output = model_chain.results.ac
+
+        # Run the model with clear sky data
+        model_chain.run_model(sky)
+        clear_sky_ac_power_output = model_chain.results.ac
+
+        # Merge the real AC power output and clear sky AC power output into the weather_df
+        weather_df['ac_power_output'] = real_ac_power_output
+        weather_df['clear_sky_ac_power_output'] = clear_sky_ac_power_output
+        print(daily_weather_df.columns)
+        # Return the combined dataframe
+        return {'weather_df':weather_df,'daily_weather_df':daily_weather_df}
+
+
+registerable_models=[PVLocation,PVSimulation]

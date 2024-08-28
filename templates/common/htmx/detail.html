@@ -1,0 +1,17 @@
+
+<h2>PV Simulation Visualization</h2>
+{% if model_name == 'pvsimulation' %}
+<div id="update-con" hx-get="{% url 'pv_app:generic_update' 'pv_app' 'pvsimulation' item.pk %}" hx-trigger="load" hx-target="#update-con"></div>
+<!-- Variable Selection Form -->
+{% include 'include/graph_form.html'%}
+<!-- Graph Container -->
+
+    
+    <div id="graph">
+        <!-- Plotly Graph will be inserted here -->
+        <div id="plotlyGraph"></div>
+    </div>
+
+</div>
+{% endif %}
+

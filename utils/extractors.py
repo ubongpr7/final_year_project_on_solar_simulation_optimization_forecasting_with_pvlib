@@ -104,7 +104,8 @@ def fetch_weather_data(start_date, end_date, latitude, longitude):
         "longitude": longitude,
         "start_date": start_date,
         "end_date": end_date,
-        "hourly": "temperature_2m,dewpoint_2m,relative_humidity_2m,surface_pressure,precipitation,snowfall,windspeed_10m,winddirection_10m,windgusts_10m,cloudcover,shortwave_radiation,direct_radiation,direct_normal_irradiance,diffuse_radiation,global_tilted_irradiance"
+        "hourly": "temperature_2m,dewpoint_2m,relative_humidity_2m,surface_pressure,precipitation,snowfall,windspeed_10m,winddirection_10m,windgusts_10m,cloudcover,shortwave_radiation,direct_radiation,direct_normal_irradiance,diffuse_radiation,global_tilted_irradiance",
+        "daily": ["uv_index_max", "uv_index_clear_sky_max"],
     }
     responses = openmeteo.weather_api(url, params=params)
     return responses[0]
@@ -114,7 +115,8 @@ def process_weather_response(response, user_timezone="Europe/Berlin"):
     Process the weather API response and convert it to a DataFrame with correctly spaced datetime indices.
     """
     hourly = response.Hourly()
-
+    daily = response.Daily()
+    
     # If `hourly.Time()` returns a single timestamp
     first_timestamp = pd.to_datetime(hourly.Time(), unit="s", utc=True).tz_convert(user_timezone)
 
@@ -141,36 +143,59 @@ def process_weather_response(response, user_timezone="Europe/Berlin"):
         "winddirection_10m": hourly.Variables(7).ValuesAsNumpy(),
         "windgusts_10m": hourly.Variables(8).ValuesAsNumpy(),
         "cloudcover": hourly.Variables(9).ValuesAsNumpy(),
+        "ghi": hourly.Variables(10).ValuesAsNumpy(),
         "shortwave_radiation": hourly.Variables(10).ValuesAsNumpy(),
         "direct_radiation": hourly.Variables(11).ValuesAsNumpy(),
-        "direct_normal_irradiance": hourly.Variables(12).ValuesAsNumpy(),
-        "diffuse_radiation": hourly.Variables(13).ValuesAsNumpy(),
-        "global_tilted_irradiance": hourly.Variables(14).ValuesAsNumpy()
+        # "direct_normal_irradiance": hourly.Variables(12).ValuesAsNumpy(),
+        "dni": hourly.Variables(12).ValuesAsNumpy(),
+        # "diffuse_radiation": hourly.Variables(13).ValuesAsNumpy(),
+        "dhi": hourly.Variables(13).ValuesAsNumpy(),
+        # "ghi": hourly.Variables(14).ValuesAsNumpy(),
+        "global_tilted_irradiance": hourly.Variables(14).ValuesAsNumpy(),
+        
     }
+    daily_data = {"datetime": pd.date_range(
+	start = pd.to_datetime(daily.Time(), unit = "s", utc = True),
+	end = pd.to_datetime(daily.TimeEnd(), unit = "s", utc = True),
+	freq = pd.Timedelta(seconds = daily.Interval()),
+	inclusive = "left"
+    ),
+    "uv_index_max":daily.Variables(0).ValuesAsNumpy(),
+    "uv_index_clear_sky_max":daily.Variables(1).ValuesAsNumpy(),
     
+}
+    
+    daily_df=pd.DataFrame(daily_data)
     # Convert the dictionary to a DataFrame
     df = pd.DataFrame(hourly_data)
     
     # Set datetime as the index
     # df.set_index("datetime", inplace=True)
     
-    return df
+    return {'hourly_df':df,'daily_df':daily_df}
 
 
-def fetch_all_weather_data(start_date, end_date, latitude, longitude,user_timezone):
+def fetch_all_weather_data(start_date, end_date, latitude, longitude,user_timezone,df_interval='hourly'):
     """
     Fetch weather data for a range of dates, handling up to 30 days at a time.
     """
     date_ranges = generate_date_ranges(start_date, end_date, delta_days=30)
-    all_data_frames = []
+    all_hourly_data_frames = []
+    all_daily_data_frames = []
     
     for start, end in date_ranges:
         print(f"Fetching data from {start} to {end}")
         response = fetch_weather_data(start, end, latitude, longitude)
-        df = process_weather_response(response,user_timezone)
-        all_data_frames.append(df)
+        hourly_df = process_weather_response(response,user_timezone).get('hourly_df')
+        daily_df = process_weather_response(response,user_timezone).get('daily_df')
+        all_daily_data_frames.append(daily_df)
+        all_hourly_data_frames.append(hourly_df)
     
     # Combine all DataFrames into one
-    all_data = pd.concat(all_data_frames, ignore_index=True)
-    all_data.set_index('datetime', inplace=True)
-    return all_data
+    daily_df_all= pd.concat(all_daily_data_frames, ignore_index=True)
+    hourly_df_all= pd.concat(all_hourly_data_frames, ignore_index=True)
+    hourly_df_all.set_index('datetime', inplace=True)
+    daily_df_all.set_index('datetime', inplace=True)
+    if df_interval != 'hourly':
+        return daily_df_all
+    return hourly_df_all

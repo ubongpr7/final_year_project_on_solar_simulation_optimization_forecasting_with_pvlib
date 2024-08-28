@@ -1,0 +1,102 @@
+
+{% load bootstrap5 %}
+
+<form hx-get="{% url 'pv_app:update_graph' item.id %}" hx-target="#graph" hx-trigger="change" class="container mt-3">
+    <div class="row">
+        <!-- Use column classes to make the form responsive -->
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="uv-summary" checked class="form-check-input">
+                    UV Analysis
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="ac_power_output" checked class="form-check-input">
+                    Actual Power Output
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="uv_index_clear_sky_max" checked class="form-check-input">
+                    Clear Sky Daily UV
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="uv_index" checked class="form-check-input">
+                    Daily UV 
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="dni" class="form-check-input">
+                    DNI
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="ghi" class="form-check-input">
+                    GHI
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="dhi" class="form-check-input">
+                    DHI
+                </label>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="pressure" class="form-check-input">
+                    Pressure
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="relative_humidity_2m" class="form-check-input">
+                    Relative Humidity
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="temperature_2m" class="form-check-input">
+                    Temperature
+                </label>
+            </div>
+            <div class="form-group">
+                <label class="form-check-label">
+                    <input type="checkbox" name="variables" value="windspeed_10m" class="form-check-input">
+                    Wind Speed
+                </label>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            {%bootstrap_form plot_type %}
+        </div>
+    </div>
+
+    <!-- Include the Bootstrap form element for plot_type -->
+    <!-- {% bootstrap_form plot_type %} -->
+</form>
+
+<!-- Optional: Add some CSS to enhance styling -->
+<style>
+    .form-check-label {
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+    .form-check-input {
+        margin-right: 0.5rem;
+    }
+    @media (max-width: 767px) {
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    }
+</style>

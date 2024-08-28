@@ -58,8 +58,8 @@ def fetch_pvgis_data(lat, lon, start=None, end=None, raddatabase=None, component
     """
     try:
         data, meta = pvlib.iotools.get_pvgis_hourly(
-            latitude,
-            longitude,
+            latitude=lat,
+            longitude=lon,
             start=start,
             end=end,
             raddatabase=raddatabase,
@@ -209,7 +209,7 @@ def pv_tracking(from_,lat, lon, to_,tz, color=None, plot_type='line',title=None,
     return {"fig": fig.to_html(), "sample": ow_sample}
 
 
-def climate_plots(lat,from_,to_, lon, y_, plot_type='line', tz='UTC', title='Ambient Temperature', color='#603a47'):
+def climate_plots(lat,from_,to_, lon, y_, plot_type='line',df_interval='hourly', tz='UTC', title='Ambient Temperature', color='#603a47'):
     """
     Fetch TMY weather data for the given location and plot the specified variable.
 
@@ -226,7 +226,7 @@ def climate_plots(lat,from_,to_, lon, y_, plot_type='line', tz='UTC', title='Amb
     - dict: dictionary containing plot HTML representation
     """
     ow_sample=''
-    weather=fetch_all_weather_data(start_date=from_, end_date=to_, latitude=lat, longitude=lon,user_timezone=tz)
+    weather=fetch_all_weather_data(start_date=from_, end_date=to_, latitude=lat, longitude=lon,user_timezone=tz,df_interval=df_interval)
     try:
         ow_sample=df_sample_to_bootstrap_cards(weather)
     except Exception as e:
@@ -295,7 +295,7 @@ def plot_ghi(lat, lon,from_,to_, plot_type='line', tz='UTC', title='Global Horiz
     Returns:
     - dict: dictionary containing plot HTML representation
     """
-    return climate_plots(lat,from_,to_, lon, 'shortwave_radiation', plot_type, tz, title, color)
+    return climate_plots(lat,from_,to_, lon, 'ghi', plot_type, tz, title, color)
 
 
 def plot_dni(lat, lon,from_,to_, plot_type='line', tz='UTC', title='Direct Normal Irradiance (DNI)', color='#603a47'):
@@ -313,7 +313,7 @@ def plot_dni(lat, lon,from_,to_, plot_type='line', tz='UTC', title='Direct Norma
     Returns:
     - dict: dictionary containing plot HTML representation
     """
-    return climate_plots(lat,from_,to_, lon, 'direct_normal_irradiance', plot_type, tz, title, color)
+    return climate_plots(lat,from_,to_, lon, 'dni', plot_type, tz, title, color)
 
 
 def plot_dhi(lat, lon,from_,to_, plot_type='line', tz='UTC', title='Diffuse Horizontal Irradiance (DHI)', color='#603a47'):
@@ -331,7 +331,7 @@ def plot_dhi(lat, lon,from_,to_, plot_type='line', tz='UTC', title='Diffuse Hori
     Returns:
     - dict: dictionary containing plot HTML representation
     """
-    return climate_plots(lat,from_,to_, lon, 'diffuse_radiation', plot_type, tz, title, color)
+    return climate_plots(lat,from_,to_, lon, 'dhi', plot_type, tz, title, color)
 
 
 def plot_pressure(lat,from_,to_, lon, plot_type='line', tz='UTC', title='Pressure', color='#603a47'):
@@ -350,6 +350,39 @@ def plot_pressure(lat,from_,to_, lon, plot_type='line', tz='UTC', title='Pressur
     - dict: dictionary containing plot HTML representation
     """
     return climate_plots(lat,from_,to_, lon, 'surface_pressure', plot_type, tz, title, color)
+
+def plot_uv_index_clear_sky_max(lat,from_,to_, lon, plot_type='line', tz='UTC', title='UV index max For Clear sky ', color='#603a47'):
+    """
+    Plot the Diffuse Horizontal Irradiance (DHI).
+
+    Parameters:
+    - lat: float, latitude of the location
+    - lon: float, longitude of the location
+    - plot_type: str, type of plot (e.g., 'line')
+    - tz: str, time zone of the location
+    - title: str, title of the plot
+    - color: str, color of the plot line
+
+    Returns:
+    - dict: dictionary containing plot HTML representation
+    """
+    return climate_plots(lat,from_,to_, lon, 'uv_index_clear_sky_max', plot_type, tz, title, color)
+def plot_puv_index_max(lat,from_,to_, lon, plot_type='line', tz='UTC', title='UV index max', color='#603a47'):
+    """
+    Plot the Diffuse Horizontal Irradiance (DHI).
+
+    Parameters:
+    - lat: float, latitude of the location
+    - lon: float, longitude of the location
+    - plot_type: str, type of plot (e.g., 'line')
+    - tz: str, time zone of the location
+    - title: str, title of the plot
+    - color: str, color of the plot line
+
+    Returns:
+    - dict: dictionary containing plot HTML representation
+    """
+    return climate_plots(lat,from_,to_, lon, 'uv_index_max', plot_type, tz, title, color)
 
 def plot_relative_humidity(lat,from_,to_, lon, plot_type='line', tz='UTC', title='Relative Humidity', color='#603a47'):
     """

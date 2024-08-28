@@ -1,27 +1,4 @@
-
-{% load static %}
-
-{% load bootstrap5 %}
-
-{# Load CSS and JavaScript #}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-<!-- <script src="https://unpkg.com/htmx.org@1.9.2"></script> -->
-    
-<script src="{% static 'js/htmx/htmx.min.js' %}" defer></script>
-<script src="{% static 'js/htmx/debug.js' %}" defer></script>
-
-
+{% extends 'base.html' %}
 {% block content %}
-    <div>
-        <h1>Detail of {{ item }}</h1>
-        <!-- Display details here -->
-        <p>ID: {{ item.id }}</p>
-        <p>Name: {{ item.name }}</p>
-        <!-- Add more fields as needed -->
-
-        <!-- Buttons for Edit and Delete -->
-        <a href="{% url 'pv_app:generic_update' app_name=model_name model_name=item.pk %}" class="btn btn-primary">Edit</a>
-        <a href="{% url 'pv_app:generic_delete' app_name=model_name model_name=item.pk %}" class="btn btn-danger" hx-confirm="Are you sure?">Delete</a>
-    </div>
+{% include 'common/htmx/list.html'%}
 {% endblock %}

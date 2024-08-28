@@ -6,10 +6,10 @@
 {# Load CSS and JavaScript #}
 {% bootstrap_css %}
 {% bootstrap_javascript %}
-<!-- <script src="https://unpkg.com/htmx.org@1.9.2"></script> -->
+<script src="https://unpkg.com/htmx.org@1.9.2"></script>
     
-<script src="{% static 'js/htmx/htmx.min.js' %}" defer></script>
-<script src="{% static 'js/htmx/debug.js' %}" defer></script>
+<!-- <script src="{% static 'js/htmx/htmx.min.js' %}" defer></script>
+<script src="{% static 'js/htmx/debug.js' %}" defer></script> -->
 
 
 {% block content %}
@@ -17,58 +17,13 @@
 
 <div>
     <h2>Create New</h2>
-    <ul>
-        <li>
-            <a href="{% url 'generic_create' app_name='pv_app' model_name='pvlocation' %}" hx-get="{% url 'generic_create' app_name='pv_app' model_name='pvlocation' %}" hx-target="#content" hx-swap="innerHTML">
-                Create New PV Location
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'generic_create' app_name='pv_app' model_name='pvsystem' %}" hx-get="{% url 'generic_create' app_name='pv_app' model_name='pvsystem' %}" hx-target="#content" hx-swap="innerHTML">
-                Create New PV System
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'generic_create' app_name='pv_app' model_name='inverter' %}" hx-get="{% url 'generic_create' app_name='pv_app' model_name='inverter' %}" hx-target="#content" hx-swap="innerHTML">
-                Create New Inverter
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'generic_create' app_name='pv_app' model_name='modelchain' %}" hx-get="{% url 'generic_create' app_name='pv_app' model_name='modelchain' %}" hx-target="#content" hx-swap="innerHTML">
-                Create New Model Chain
-            </a>
-        </li>
-    </ul>
-</div>
 
-<div>
-    <h2>View Existing</h2>
-    <ul>
-        <li>
-            <a href="{% url 'generic_list' app_name='pv_app' model_name='pvlocation' %}" hx-get="{% url 'generic_list' app_name='pv_app' model_name='pvlocation' %}" hx-target="#content" hx-swap="innerHTML">
-                View PV Locations
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'generic_list' app_name='pv_app' model_name='pvsystem' %}" hx-get="{% url 'generic_list' app_name='pv_app' model_name='pvsystem' %}" hx-target="#content" hx-swap="innerHTML">
-                View PV Systems
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'generic_list' app_name='pv_app' model_name='inverter' %}" hx-get="{% url 'generic_list' app_name='pv_app' model_name='inverter' %}" hx-target="#content" hx-swap="innerHTML">
-                View Inverters
-            </a>
-        </li>
-        <li>
-            <a href="{% url 'generic_list' app_name='pv_app' model_name='modelchain' %}" hx-get="{% url 'generic_list' app_name='pv_app' model_name='modelchain' %}" hx-target="#content" hx-swap="innerHTML">
-                View Model Chains
-            </a>
-        </li>
-    </ul>
-</div>
 
-<div id="content">
-    <!-- Content will be loaded here via HTMX -->
-</div>
+<h2>PV Simulation Visualization</h2>
+
+<!-- Variable Selection Form -->
+ 
+<!-- Graph Container -->
+
 
 {% endblock %}

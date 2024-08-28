@@ -1,5 +1,7 @@
 from django.urls import path
+
 from .views import *
+app_name='pv_app'
 urlpatterns=[
     path('',home,name='home'),
     path('map/',map_view,name='map'),
@@ -11,6 +13,8 @@ urlpatterns=[
     # path('view-sample/', ViewSampleDataView.as_view(), name='view_sample_data'),
     # # path('clean-and-visualize/', CleanAndVisualizeView.as_view(), name='clean_and_visualize'),
     # path('clean-and-visualize/', get_columns_view, name='clean_and_visualize'),
+    path('run-simulation/', run_simulation_view, name='run_simulation'),
+    path('update-graph/<int:simulation_id>/', update_graph_view, name='update_graph'),
     path('simulation/', SimulationInterfaceView.as_view(), name='simulation_interface'),
     path('list/<str:app_name>/<str:model_name>/', GenericListView.as_view(), name='generic_list'),
     path('detail/<str:app_name>/<str:model_name>/<int:pk>/', GenericDetailView.as_view(), name='generic_detail'),

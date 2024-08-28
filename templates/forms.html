@@ -14,7 +14,7 @@
             <div class="card-header">Edit to Generate graph</div>
             <div class="card-body">
                 
-            <form hx-post="{{request.path}}" hx-target="#content-area" hx-trigger="submit" hx-swap="post"  >
+            <form hx-post="{{request.path}}" hx-target="#content-area" hx-trigger="change" hx-swap="post"  >
                 {% csrf_token %}
                 <div class="row">
 
@@ -29,7 +29,7 @@
                     
                 </div>
                 
-                <button type="submit" class="btn btn-primary ">Generate Graph</button>
+                <!-- <button type="submit" class="btn btn-primary ">Generate Graph</button> -->
             </form>
             </div>
         </div>

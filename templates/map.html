@@ -22,7 +22,7 @@
 <div class="card">
     <div class="card-header">Search Address on Map</div>
     <div class="card-body">
-        <form hx-post="{% url 'map' %}" hx-target="#map-container" hx-trigger="submit" hx-swap="post">
+        <form hx-post="{% url 'pv_app:map' %}" hx-target="#map-container" hx-trigger="submit" hx-swap="post">
             {% csrf_token %}
             {% bootstrap_form form %}
             <div class="mb-3">

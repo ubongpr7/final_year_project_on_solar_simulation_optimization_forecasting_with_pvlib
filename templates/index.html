@@ -1,203 +1,24 @@
-
+{% extends 'base.html'%}
 {% load static %}
 
 {% load bootstrap5 %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PV Tracking</title>
-    
-{# Load CSS and JavaScript #}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
-<!-- <script src="https://unpkg.com/htmx.org@1.9.2"></script> -->
-    
-<script src="{% static 'js/htmx/htmx.min.js' %}" defer></script>
-<script src="{% static 'js/htmx/debug.js' %}" defer></script>
-</head>
-<body>
-<style>
-    body {
-        margin-top: 56px; /* Adjust based on header height */
-    }
-    .fixed-header {
-        position: fixed;
-        width: 100%;
-        top: 0;
-        left: 0;
-        z-index: 1030;
-        background-color: #f8f9fa; /* Light background for better contrast */
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
-    }
-      /* Page loader container */
 
-/* first loader  */
-.loader {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.tabs {
-    display: flex;
-    border-bottom: 2px solid #ddd;
-    margin-bottom: 20px;
-}
-
-.tab-button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #f1f1f1;
-    cursor: pointer;
-    margin-right: 5px;
-    transition: background-color 0.3s;
-}
-
-.tab-button:hover, .tab-button:focus {
-    background-color: #ddd;
-}
-
-.tab-button:active {
-    background-color: #bbb;
-}
-
-.content-area {
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.card {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-}
-
-.card-header {
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-
-</style>
-<nav class="navbar navbar-expand-lg navbar-light fixed-header">
-    <a class="navbar-brand" href="#">My Website</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Visualizers
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">Solar Single Axis Tracking (True Tracker)</a></li>
-                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=back_tracker" hx-target="#content-area" hx-trigger="click">Solar Single Axis Tracking (Back Tracker)</a></li>
-                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=true_tracker" hx-target="#content-area" hx-trigger="click">PV Modeling</a></li>
-                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=pressure" hx-target="#content-area" hx-trigger="click">Pressure Variation</a></li>
-                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=relative_humidity" hx-target="#content-area" hx-trigger="click">Humidity Variation</a></li>
-                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=ghi" hx-target="#content-area" hx-trigger="click">GHI Variation</a></li>
-                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=dni" hx-target="#content-area" hx-trigger="click">DNI Variation</a></li>
-                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=dhi" hx-target="#content-area" hx-trigger="click">DHI Variation</a></li>
-                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=wind_speed" hx-target="#content-area" hx-trigger="click">Wind Variation</a></li>
-                    <li><a class="dropdown-item" href="#" hx-get="{% url 'pv_tracking' %}?visualizer=temp_air" hx-target="#content-area" hx-trigger="click">Temperature Forecasting</a></li>
-                </ul>
-            </li>
-            <!-- Add more nav items or dropdowns here as needed -->
-        </ul>
+ {% block content %}
+ <div class="container" hx->
+     {% bootstrap_messages %}
+     <h1>PV System Tracking Setup</h1>
+     <p>To get your latitude and longitude, click on the map below where your PV system is located.</p>
+     
+     <div class="container">
+         <div id="map-container" hx-get="{% url 'pv_app:map' %}" hx-trigger="revealed" hx-target="#map-container">
+             <!-- The map will be loaded here -->
+            </div>
+            
+        </div>    
     </div>
-</nav>
 
- 
-<div class="container" hx->
-    {% bootstrap_messages %}
-    <h1>PV System Tracking Setup</h1>
-    <p>To get your latitude and longitude, click on the map below where your PV system is located.</p>
     
-    <div class="container">
-        <div id="map-container" hx-get="{% url 'map' %}" hx-trigger="load" hx-target="#map-container">
-            <!-- The map will be loaded here -->
-        </div>
-    
-    </div>    
-</div>
-
-<div id="content-area" class="content-area">
-    <!-- HTMX-loaded content will appear here -->
-</div>
+    {% endblock content %}
 
 
-<div class="loader"></div>
-<script>
-document.addEventListener('htmx:afterOnLoad', function(evt) {
-const contentDiv = evt.detail.target;
-console.log('target: ', contentDiv)
-const newTitle = contentDiv.querySelector('[data-title]')?.getAttribute('data-title');
-if (newTitle){
-document.getElementById('page-title').innerText = newTitle;
-
-}
-});
-
-
-document.addEventListener('htmx:configRequest', function(evt) {
-document.querySelector('.loader').style.display = 'block';
-});
-
-document.addEventListener('htmx:afterOnLoad', function(evt) {
-document.querySelector('.loader').style.display = 'none';
-});
-
-document.addEventListener('htmx:afterSwap', function(evt) {
-document.querySelector('.loader').style.display = 'none';
-});
-</script>
-
-<script>
-   
-
-    document.addEventListener('htmx:afterRequest', function(event) {  
-        if (document.getElementById('latitude'))  {
-            if (document.getElementById('id_lon')){
-                console.log(document.getElementById('latitude').value)
-                document.getElementById('id_lat').value = document.getElementById('latitude').value;
-        
-                document.getElementById('id_lon').value =document.getElementById('longitude').value ;
-                document.getElementById('id_location').value =document.getElementById('address-input').value ;
-
-            }
-
-        }   
-    });
-       
-</script>
-
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
-
-   
-</body>
-</html>

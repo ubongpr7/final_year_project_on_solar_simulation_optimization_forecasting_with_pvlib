@@ -1,10 +1,11 @@
 import plotly.express as px
 import plotly.colors as colors
 import pandas as pd
+from scipy.stats import linregress
 
 
 def df_sample_to_bootstrap_cards(df):
-    html_table = df.head(12).to_html(classes='table table-striped')
+    html_table = df.sample(n=12).to_html(classes='table table-striped')
 
     # Wrap the table in a div with overflow styling
     html = f'''
@@ -14,6 +15,50 @@ def df_sample_to_bootstrap_cards(df):
     </div>
     '''
     return html
+
+
+
+def generate_correlation_plot_with_regression(x_col, y_col, df, plot_type='scatter', location=None, color='#1f77b4'):
+    """
+    Generate a Plotly scatter plot with a correlation line (regression line).
+
+    Parameters:
+    - x_col: Column name for the x-axis.
+    - y_col: Column name for the y-axis.
+    - df: DataFrame containing the data.
+    - plot_type: Type of plot ('scatter' with regression line).
+    - color: Color of the scatter plot elements.
+
+    Returns:
+    - fig: Plotly figure object with a regression line.
+    """
+    if plot_type != 'scatter':
+        raise ValueError("Currently only 'scatter' plot with regression line is supported.")
+    
+    # Scatter plot
+    fig = px.scatter(df, x=x_col, y=y_col, title=f"{y_col} vs {x_col} for {location}")
+    
+    # Calculate linear regression
+    x = df[x_col]
+    y = df[y_col]
+    slope, intercept, r_value, p_value, std_err = linregress(x, y)
+
+    # Calculate the regression line
+    regression_line = slope * x + intercept
+    
+    # Add the regression line to the scatter plot
+    fig.add_traces(px.line(df, x=x_col, y=regression_line).data)
+    
+    # Customize the layout
+    fig.update_layout(
+        title=f"{y_col.title()} vs {x_col.title()} with Regression Line for {location}",
+        xaxis_title=x_col,
+        yaxis_title=y_col,
+        height=600
+    )
+
+    return fig
+
 
 def generate_plot(y, df, plot_type='line',location=None, labels=None, color='#1f77b4'):
     """
@@ -43,35 +88,35 @@ def generate_plot(y, df, plot_type='line',location=None, labels=None, color='#1f
 
     # Titles and labels based on the plot type and y variable
     title_dict = {
-        'line': f"Trend of {y.capitalize()} Over Time ",
-        'scatter': f"Scatter Plot of {y.capitalize()} Over Time",
-        'area': f"Cumulative {y.capitalize()} Over Time",
-        'bar': f"Monthly Average {y.capitalize()}",
-        'histogram': f"Distribution of {y.capitalize()}",
-        'box': f"Monthly Distribution of {y.capitalize()}",
-        'violin': f"Monthly Distribution of {y.capitalize()}",
-        'pie': f"Proportion of Monthly Average {y.capitalize()}",
-        'heatmap': f"Heatmap of {y.capitalize()} by Month",
-        'density_contour': f"Density Contour of {y.capitalize()} Over Time",
-        'funnel': f"Funnel Plot of {y.capitalize()} Over Time"
+        'line': f"Trend of {y.title()} Over Time ",
+        'scatter': f"Scatter Plot of {y.title()} Over Time",
+        'area': f"Cumulative {y.title()} Over Time",
+        'bar': f"Monthly Average {y.title()}",
+        'histogram': f"Distribution of {y.title()}",
+        'box': f"Monthly Distribution of {y.title()}",
+        'violin': f"Monthly Distribution of {y.title()}",
+        'pie': f"Proportion of Monthly Average {y.title()}",
+        'heatmap': f"Heatmap of {y.title()} by Month",
+        'density_contour': f"Density Contour of {y.title()} Over Time",
+        'funnel': f"Funnel Plot of {y.title()} Over Time"
     }
 
     label_dict = {
-        'line': {'x': 'Date', 'y': f'{y.capitalize()}'},
-        'scatter': {'x': 'Date', 'y': f'{y.capitalize()}'},
-        'area': {'x': 'Date', 'y': f'Cumulative {y.capitalize()}'},
-        'bar': {'x': 'Month', 'y': f'Average {y.capitalize()}'},
-        'histogram': {'x': f'{y.capitalize()}', 'y': 'Frequency of Occurence  of {y.capitalize()}'},
-        'box': {'x': 'Month', 'y': f'{y.capitalize()}'},
-        'violin': {'x': 'Month', 'y': f'{y.capitalize()}'},
-        'pie': {'x': 'Month', 'y': f'Proportion of {y.capitalize()}'},
+        'line': {'x': 'Date', 'y': f'{y.title()}'},
+        'scatter': {'x': 'Date', 'y': f'{y.title()}'},
+        'area': {'x': 'Date', 'y': f'Cumulative {y.title()}'},
+        'bar': {'x': 'Month', 'y': f'Average {y.title()}'},
+        'histogram': {'x': f'{y.title()}', 'y': f'Frequency of Occurence  of {y.title()}'},
+        'box': {'x': 'Month', 'y': f'{y.title()}'},
+        'violin': {'x': 'Month', 'y': f'{y.title()}'},
+        'pie': {'x': 'Month', 'y': f'Proportion of {y.title()}'},
         'heatmap': {'x': 'Month', 'y': 'Month'},
-        'density_contour': {'x': 'Date', 'y': f'{y.capitalize()}'},
-        'funnel': {'x': 'Date', 'y': f'{y.capitalize()}'}
+        'density_contour': {'x': 'Date', 'y': f'{y.title()}'},
+        'funnel': {'x': 'Date', 'y': f'{y.title()}'}
     }
 
-    title = title_dict.get(plot_type, f"{y.capitalize()} vs Time for {location}")
-    labels = label_dict.get(plot_type, {'x': 'Date', 'y': y.capitalize()})
+    title = title_dict.get(plot_type, f"{y.title()} vs Time for {location}")
+    labels = label_dict.get(plot_type, {'x': 'Date', 'y': y.title()})
 
     # Create plots
     if plot_type == 'line':
@@ -108,7 +153,7 @@ def generate_plot(y, df, plot_type='line',location=None, labels=None, color='#1f
 
     # Update layout
     fig.update_layout(
-        title=f"{title} for {location} \n Source: PVGIS",
+        title=f"{title} for {location} \n Source: Open-Meteo",
         xaxis_title=labels.get('x', 'X-Axis'),
         yaxis_title=labels.get('y', 'Y-Axis'),
         height=600,
