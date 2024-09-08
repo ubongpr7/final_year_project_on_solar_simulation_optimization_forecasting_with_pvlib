@@ -38,7 +38,7 @@ def get_solar_irradiation(lat, lon, start, end, tz, api_key='297b91bc87fac0f26c4
     # Convert start and end dates from yyyy-mm-dd to Unix time
     start_unix = convert_to_unix_time(start)
     end_unix = convert_to_unix_time(end)
-    
+    #  "https://api.open-meteo.com/v1/forecast"
     url = "https://history.openweathermap.org/data/2.5/history/city"
     params = {
         'lat': lat,
@@ -104,7 +104,7 @@ def fetch_weather_data(start_date, end_date, latitude, longitude):
         "longitude": longitude,
         "start_date": start_date,
         "end_date": end_date,
-        "hourly": "temperature_2m,dewpoint_2m,relative_humidity_2m,surface_pressure,precipitation,snowfall,windspeed_10m,winddirection_10m,windgusts_10m,cloudcover,shortwave_radiation,direct_radiation,direct_normal_irradiance,diffuse_radiation,global_tilted_irradiance",
+        "hourly": "temperature_2m,dewpoint_2m,relative_humidity_2m,surface_pressure,precipitation,snowfall,windspeed_10m,winddirection_10m,windgusts_10m,cloudcover,shortwave_radiation,direct_radiation,direct_normal_irradiance,diffuse_radiation,global_tilted_irradiance,precipitation_probability",
         "daily": ["uv_index_max", "uv_index_clear_sky_max"],
     }
     responses = openmeteo.weather_api(url, params=params)
@@ -152,6 +152,7 @@ def process_weather_response(response, user_timezone="Europe/Berlin"):
         "dhi": hourly.Variables(13).ValuesAsNumpy(),
         # "ghi": hourly.Variables(14).ValuesAsNumpy(),
         "global_tilted_irradiance": hourly.Variables(14).ValuesAsNumpy(),
+        "precipitation_probability": hourly.Variables(15).ValuesAsNumpy(),
         
     }
     daily_data = {"datetime": pd.date_range(

@@ -1,16 +1,14 @@
 
 {% load bootstrap5 %}
 
-<form hx-get="{% url 'pv_app:update_graph' item.id %}" hx-target="#graph" hx-trigger="change" class="container mt-3">
+<form id="update_graph" hx-get="{% url 'pv_app:update_graph' item.id %}" hx-target="#graph" hx-trigger="change" class="container mt-3">
     <div class="row">
+        
+        <div class="col-md-4">
+            {% bootstrap_form plot_form %}
+        </div>
         <!-- Use column classes to make the form responsive -->
         <div class="col-md-4">
-            <div class="form-group">
-                <label class="form-check-label">
-                    <input type="checkbox" name="variables" value="uv-summary" checked class="form-check-input">
-                    UV Analysis
-                </label>
-            </div>
             <div class="form-group">
                 <label class="form-check-label">
                     <input type="checkbox" name="variables" value="ac_power_output" checked class="form-check-input">
@@ -19,16 +17,11 @@
             </div>
             <div class="form-group">
                 <label class="form-check-label">
-                    <input type="checkbox" name="variables" value="uv_index_clear_sky_max" checked class="form-check-input">
-                    Clear Sky Daily UV
+                    <input type="checkbox" name="variables" value="precipitation_probability" checked class="form-check-input">
+                    Precipitation Probability
                 </label>
             </div>
-            <div class="form-group">
-                <label class="form-check-label">
-                    <input type="checkbox" name="variables" value="uv_index" checked class="form-check-input">
-                    Daily UV 
-                </label>
-            </div>
+            
             <div class="form-group">
                 <label class="form-check-label">
                     <input type="checkbox" name="variables" value="dni" class="form-check-input">
@@ -52,7 +45,7 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label class="form-check-label">
-                    <input type="checkbox" name="variables" value="pressure" class="form-check-input">
+                    <input type="checkbox" name="variables" value="surface_pressure" class="form-check-input">
                     Pressure
                 </label>
             </div>
@@ -76,14 +69,54 @@
             </div>
         </div>
         
-        <div class="col-md-4">
-            {%bootstrap_form plot_type %}
-        </div>
     </div>
-
-    <!-- Include the Bootstrap form element for plot_type -->
-    <!-- {% bootstrap_form plot_type %} -->
 </form>
+
+<script>
+    document.getElementById('update_graph').addEventListener("change", function() {
+        const form = document.querySelector("form");
+        const checkboxes = form.querySelectorAll("input[type='checkbox'][name='variables']");
+        const purposeField = form.querySelector("select[name='purpose_of_plot']");
+        
+        function updateCheckboxLimit() {
+            let maxChecked = 4;
+            const purpose = purposeField.value;
+
+            // Apply specific conditions based on the selected purpose
+            if (purpose === "compare") {
+                maxChecked = 2;
+            } else if (purpose === "uv_index") {
+                maxChecked = 1;
+            }
+
+            const checkedBoxes = [...checkboxes].filter(checkbox => checkbox.checked);
+
+            // Disable unchecked checkboxes if limit reached, otherwise enable them
+            checkboxes.forEach(checkbox => {
+                if (checkedBoxes.length >= maxChecked && !checkbox.checked) {
+                    checkbox.disabled = true;
+                } else {
+                    checkbox.disabled = false;
+                }
+
+                // If purpose is 'uv_index', force only the 'uv-summary' to be selected
+                if (purpose === "uv_index" && checkbox.value !== "uv-summary") {
+                    checkbox.checked = false;
+                    checkbox.disabled = true;
+                }
+            });
+        }
+
+        // Add event listeners
+        purposeField.addEventListener("change", updateCheckboxLimit);
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", updateCheckboxLimit);
+        });
+
+        // Initialize the checkbox limit on page load
+        updateCheckboxLimit();
+    });
+</script>
 
 <!-- Optional: Add some CSS to enhance styling -->
 <style>

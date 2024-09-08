@@ -11,8 +11,9 @@ from django.utils.translation import gettext_lazy as _
 from utils.extractors import fetch_all_weather_data
 from utils.pv import get_lat_long, get_timezone_from_address
 import pvlib
-
+from django.conf  import settings
 import pvlib
+from retry_requests import retry
 import requests_cache
 import os
 
@@ -214,9 +215,48 @@ class PVSimulation(models.Model):
         # Merge the real AC power output and clear sky AC power output into the weather_df
         weather_df['ac_power_output'] = real_ac_power_output
         weather_df['clear_sky_ac_power_output'] = clear_sky_ac_power_output
-        print(daily_weather_df.columns)
         # Return the combined dataframe
+        file_path = os.path.join(settings.BASE_DIR, 'data', 'weather_data.csv')
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        weather_df.to_csv(file_path)
         return {'weather_df':weather_df,'daily_weather_df':daily_weather_df}
 
+    def get_inverter_details(self):
+        """
+        Fetch details of the selected inverter from the pvlib inverter database.
+        Returns a dictionary containing the specifications of the selected inverter.
+        """
+        # Retrieve the selected inverter details from the inverter database
+        inverter_params = inverter_db[self.inverter]
+        module_params = module_db[self.module]
+        # Convert to a Pandas DataFrame for easy handling (optional)
+        if inverter_params is not None:
+            return pd.Series(inverter_params).to_dict()  # Return as dictionary
+        
+        return None
+    def get_model_details(self):
+        """
+        Fetch details of the selected inverter from the pvlib inverter database.
+        Returns a dictionary containing the specifications of the selected inverter.
+        """
+        # Retrieve the selected inverter details from the inverter database
+        module_params = module_db[self.module]
+        # Convert to a Pandas DataFrame for easy handling (optional)
+        if module_params is not None:
+            return pd.Series(module_params).to_dict()  # Return as dictionary
+        
+        return None
+    def get_temp_details(self):
+        """
+        Fetch details of the selected inverter from the pvlib inverter database.
+        Returns a dictionary containing the specifications of the selected inverter.
+        """
+        # Retrieve the selected inverter details from the inverter database
+        temp_model_params = pvlib.temperature.TEMPERATURE_MODEL_PARAMETERS['sapm'][self.temperature_model]
 
+        # Convert to a Pandas DataFrame for easy handling (optional)
+        if temp_model_params is not None:
+            return pd.Series(temp_model_params).to_dict()  # Return as dictionary
+        
+        return None
 registerable_models=[PVLocation,PVSimulation]

@@ -11,7 +11,7 @@ from geopy.geocoders import Nominatim
 from plotly.offline import plot
 import plotly.graph_objs as go
 
-from utils.helper import generate_plot
+from utils.helper import generate_correlation_plot_with_regression, generate_plot
 
 from .models import PVSimulation
 from .forms import PVSimulationForm, PVTrackingForm, AddressForm, PlotForm, PlotTypeForm
@@ -54,7 +54,7 @@ class GenericDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['model_name']=self.kwargs['model_name']
         context['app_name']=self.kwargs['app_name']
-        context['plot_type']=PlotTypeForm
+        context['plot_form']=PlotTypeForm
         context['title']=self.kwargs['model_name'].title()
 
         get_context_heper(self, context)
@@ -103,7 +103,7 @@ class GenericUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
-        get_context_heper(self, context)
+        context['view_type']='update'
         
         context['done_url'] = self.success_url
         return context
@@ -150,7 +150,8 @@ class GenericCreateView(CreateView):
         get_context_heper(self, context)
         context['ajax_url'] = f'/add/{self.kwargs["app_name"]}/{self.kwargs["model_name"]}/'
         context['get_url'] = f'/list/{self.kwargs["app_name"]}/{self.kwargs["model_name"]}/'
-
+        context['view_type']='create'
+        
         context['done_url'] = self.success_url
         context['model_name'] =self.kwargs['model_name']
         context['app_name'] =self.kwargs['app_name']
@@ -235,6 +236,8 @@ def update_graph_view(request, simulation_id):
     selected_variables = request.GET.getlist('variables')
     plot_type = 'line'
     plot_type_uv = request.GET.get('plot_type', 'line')  # Default to 'line'
+    purpose_of_plot = request.GET.get('purpose_of_plot', 'power_output')  # Default to 'line'
+    
     
     # Run the simulation once and get the result
     simulation_result = simulation.run_simulation()
@@ -246,39 +249,54 @@ def update_graph_view(request, simulation_id):
 
     # Create Plotly traces based on selected variables and plot type
     traces = []
+    try:
 
-    for variable in selected_variables:
-        try:
-            if variable == 'ac_power_output':
-                traces.append(create_trace(result.index, result['ac_power_output'], plot_type, 'AC Power Output', secondary_y=True))
-            # elif variable == 'clear_sky_ac_power_output':
-                # traces.append(create_trace(result.index, result['clear_sky_ac_power_output'], plot_type, 'Clear sky AC Power Output', secondary_y=True))
-            elif variable == 'uv_index':
-                traces.append(create_trace(daily.index, daily['uv_index_max'], plot_type, 'Daily UV Max', ))
-            elif variable == 'uv_index_clear_sky_max':
-                traces.append(create_trace(daily.index, daily['uv_index_clear_sky_max'], plot_type, 'Daily UV Max for Clear Sky', ))
-            elif variable == 'dni':
-                traces.append(create_trace(result.index, result['dni'], plot_type, 'DNI'))
-            elif variable == 'dhi':
-                traces.append(create_trace(result.index, result['dhi'], plot_type, 'DHI'))
-            elif variable == 'ghi':
-                traces.append(create_trace(result.index, result['ghi'], plot_type, 'GHI'))
-            elif variable == 'pressure':
-                traces.append(create_trace(result.index, result['surface_pressure'], plot_type, 'Surface Pressure'))
-            elif variable == 'relative_humidity_2m':
-                traces.append(create_trace(result.index, result['relative_humidity_2m'], plot_type, 'Relative Humidity 2m'))
-            elif variable == 'windspeed_10m':
-                traces.append(create_trace(result.index, result['windspeed_10m'], plot_type, 'Wind Speed 10m'))
-            elif variable == 'temperature_2m':
-                traces.append(create_trace(result.index, result['temperature_2m'], plot_type, 'Temperature 2m'))
-            elif variable == 'uv-summary':
-                fig=generate_plot(y='uv_index_max',df=daily,plot_type=plot_type_uv,location=simulation.location.address,)
-                return render(request, 'graph.html', {'graph':fig.to_html()})
-        except KeyError:
-            # Handle missing columns in the dataset
-            return render(request, 'graph.html', {'graph': f'Error: {variable} data is not available'})
-
-    # Create the figure and add the traces
+        if purpose_of_plot in ['power_output',]:
+                
+            for variable in selected_variables:
+                try:
+                    if variable == 'ac_power_output':
+                        traces.append(create_trace(result.index, result['ac_power_output'], plot_type, 'AC Power Output', secondary_y=True))
+                    # elif variable == 'clear_sky_ac_power_output':
+                        # traces.append(create_trace(result.index, result['clear_sky_ac_power_output'], plot_type, 'Clear sky AC Power Output', secondary_y=True))
+                    elif variable == 'uv_index_max':
+                        traces.append(create_trace(daily.index, daily['uv_index_max'], plot_type, 'Daily UV Max', ))
+                    elif variable == 'uv_index_clear_sky_max':
+                        traces.append(create_trace(daily.index, daily['uv_index_clear_sky_max'], plot_type, 'Daily UV Max for Clear Sky', ))
+                    elif variable == 'dni':
+                        traces.append(create_trace(result.index, result['dni'], plot_type, 'DNI'))
+                    elif variable == 'dhi':
+                        traces.append(create_trace(result.index, result['dhi'], plot_type, 'DHI'))
+                    elif variable == 'ghi':
+                        traces.append(create_trace(result.index, result['ghi'], plot_type, 'GHI'))
+                    elif variable == 'surface_pressure':
+                        traces.append(create_trace(result.index, result['surface_pressure'], plot_type, 'Surface Pressure'))
+                    elif variable == 'relative_humidity_2m':
+                        traces.append(create_trace(result.index, result['relative_humidity_2m'], plot_type, 'Relative Humidity 2m'))
+                    elif variable == 'windspeed_10m':
+                        traces.append(create_trace(result.index, result['windspeed_10m'], plot_type, 'Wind Speed 10m'))
+                    elif variable == 'temperature_2m':
+                        traces.append(create_trace(result.index, result['temperature_2m'], plot_type, 'Temperature 2m'))
+                    elif variable == 'precipitation_probability':
+                        traces.append(create_trace(result.index, result['precipitation_probability'], plot_type, 'Precipitation Probability'))
+                except KeyError:
+                    # Handle missing columns in the dataset
+                    return render(request, 'graph.html', {'graph': f'Error: {variable} data is not available'})
+        elif purpose_of_plot == 'uv_index':
+            fig=generate_plot(y='uv_index_max',df=daily,plot_type=plot_type_uv,location=simulation.location.address,)
+            return render(request, 'graph.html', {'graph':fig.to_html()})
+        elif purpose_of_plot == 'time_series':
+            y=selected_variables[0]
+            fig=generate_plot(y=y,df=result,plot_type=plot_type_uv,location=simulation.location.address,)
+            return render(request, 'graph.html', {'graph':fig.to_html()})
+        elif purpose_of_plot == 'compare':
+            x_col=selected_variables[0]
+            y_col=selected_variables[1]
+            fig=generate_correlation_plot_with_regression(x_col=x_col,y_col=y_col,df=result,location=simulation.location.address,)
+            return render(request, 'graph.html', {'graph':fig.to_html()})
+            # Create the figure and add the traces
+    except Exception as errror:
+        return render(request, 'graph.html', {'graph': f'Error: {errror} data is not available, try others'})
     fig = go.Figure()
 
     for trace in traces:
