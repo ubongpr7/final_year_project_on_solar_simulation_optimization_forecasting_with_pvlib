@@ -216,12 +216,14 @@ class PVSimulation(models.Model):
         weather_df['ac_power_output'] = real_ac_power_output
         weather_df['clear_sky_ac_power_output'] = clear_sky_ac_power_output
         # Return the combined dataframe
-        file_path = os.path.join(settings.BASE_DIR, 'data', 'weather_data.csv')
+        file_path = os.path.join(settings.BASE_DIR, 'data', f'uv_{self.location.latitude}.csv')
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         weather_df.to_csv(file_path)
         return {'weather_df':weather_df,'daily_weather_df':daily_weather_df}
 
+    
     def get_inverter_details(self):
+        
         """
         Fetch details of the selected inverter from the pvlib inverter database.
         Returns a dictionary containing the specifications of the selected inverter.
