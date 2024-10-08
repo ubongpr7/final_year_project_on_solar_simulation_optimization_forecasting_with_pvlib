@@ -63,7 +63,7 @@ class PVLocation(models.Model):
     TIMEZONE_CHOICES = [(tz, tz) for tz in pytz.all_timezones]
     address= models.CharField(
     max_length=120,
-    blank=False,
+    blank=True,
     null=True,
     help_text='Enter address'
     )
@@ -93,12 +93,14 @@ class PVLocation(models.Model):
     
     def get_address(self):
         geolocator = Nominatim(user_agent="abcd")
-        location = geolocator.reverse(query=(self.latitude,self.longitude),exactly_one=True, limit=1)  # Limit to 100 suggestions
-        return location
+        location = geolocator.reverse(query=(self.latitude,self.longitude),exactly_one=True, limit=1)  
+        return f'{location}'
     def save(self, *args, **kwargs):
         if not self.latitude:
             location=get_lat_long(self.address)
             self.latitude,self.longitude=location.latitude,location.longitude
+        # elif not self.address:
+        #     self.address= self.get_address
         if not self.timezone:
             self.timezone=get_timezone_from_address(self.address)
         if self.latitude and self.longitude:
@@ -111,7 +113,8 @@ class PVLocation(models.Model):
 
 
     def __str__(self):
-        return f"Location:{self.address}, lat: {self.latitude} lon:{self.longitude} )"
+
+        return f"Location:{self.address}, lat: {self.latitude} lon:{self.longitude} "
 
 
 # Retrieve inverter and module databases
@@ -216,7 +219,7 @@ class PVSimulation(models.Model):
         weather_df['ac_power_output'] = real_ac_power_output
         weather_df['clear_sky_ac_power_output'] = clear_sky_ac_power_output
         # Return the combined dataframe
-        file_path = os.path.join(settings.BASE_DIR, 'data', f'uv_{self.location.latitude}.csv')
+        file_path = os.path.join(settings.BASE_DIR, 'data', f'weather_data_{self.location.latitude}.csv')
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         weather_df.to_csv(file_path)
         return {'weather_df':weather_df,'daily_weather_df':daily_weather_df}
